@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="梅花义理·数智决策系统 3.3 — 专业梅花易数推演平台，融合传统易学与现代AI智能断卦">
+    <title>梅花义理 · 数智决策系统 3.3</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="index.css?v=3.3.6">
+
+    <style>
+        /* --- Modals --- */
+        .modal-overlay.hidden {
+            display: none !important;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.55);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200000;
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            max-width: 90vw;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-wide {
+            width: 640px;
+        }
+
+        .modal-slim {
+            width: 380px;
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-family: var(--font-serif);
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 4px;
+        }
+
+        .modal-close:hover {
+            color: var(--accent-plum);
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .modal-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            background: #fdfbff;
+        }
+
+        /* --- Forms Inside Modal --- */
+        .control-group {
+            margin-bottom: 16px;
+        }
+
+        .control-group label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        .control-group input[type="text"],
+        .control-group input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-family: var(--font-sans);
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+
+        .control-group input:focus {
+            outline: none;
+            border-color: var(--accent-plum);
+            box-shadow: 0 0 0 3px rgba(93, 43, 93, 0.1);
+        }
+
+        .btn-primary {
+            padding: 12px 24px;
+            background: var(--accent-plum);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-primary:hover {
+            background: #4a1d4a;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(93, 43, 93, 0.3);
+        }
+
+        /* --- Settings Provider Tabs --- */
+        .provider-tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding-bottom: 2px;
+        }
+
+        .provider-tab {
+            padding: 10px 16px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-weight: 700;
+            color: var(--text-secondary);
+            cursor: pointer;
+            white-space: nowrap;
+            margin-bottom: -2px;
+            /* overlap border */
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .provider-tab:hover {
+            color: var(--accent-plum);
+        }
+
+        .provider-tab.active {
+            color: var(--accent-plum);
+            border-bottom-color: var(--accent-plum);
+        }
+
+        .provider-panel {
+            display: none;
+        }
+
+        .provider-panel.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        .provider-models {
+            margin-top: 16px;
+            font-size: 0.85rem;
+        }
+
+        .provider-model-label {
+            color: var(--text-tertiary);
+            font-weight: 600;
+        }
+
+        .provider-model-tag {
+            display: inline-block;
+            background: var(--bg-secondary);
+            padding: 4px 12px;
+            border-radius: 12px;
+            color: var(--accent-plum);
+            margin-right: 6px;
+            margin-bottom: 6px;
+            border: 1px solid var(--border-color);
+            font-weight: 500;
+        }
+
+        /* Settings Icon (Header) */
+        .settings-icon-btn {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: var(--text-tertiary);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .settings-icon-btn:hover {
+            color: var(--accent-plum);
+            background: var(--bg-secondary);
+            transform: rotate(45deg);
+        }
+
+        /* Logout Header Button */
+        .logout-btn-header {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-left: 8px;
+            display: none;
+            /* Hidden by default, toggled via JS */
+        }
+
+        .logout-btn-header:hover {
+            background: var(--bg-secondary);
+            color: #e74c3c;
+            border-color: #e74c3c;
+        }
+
+        /* Auth Tabs */
+        .auth-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 10px 16px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-weight: 700;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+            margin-bottom: -2px;
+        }
+
+        .auth-tab:hover {
+            color: var(--accent-plum);
+        }
+
+        .auth-tab.active {
+            color: var(--accent-plum);
+            border-bottom-color: var(--accent-plum);
+        }
+
+        .auth-error {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            background: #fef2f2;
+            border-radius: var(--radius-sm);
+            border: 1px solid #fecaca;
+            display: none;
+        }
+
+        .auth-success {
+            color: #16a34a;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            background: #f0fdf4;
+            border-radius: var(--radius-sm);
+            border: 1px solid #bbf7d0;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header id="app-header">
+        <div class="header-inner">
+            <h1 class="logo">
+                <span class="logo-icon" id="sidebar-toggle"
+                    style="cursor: pointer; padding: 4px 8px; margin-right: 4px;">☰</span>
+                <span class="logo-text">梅花义理</span>
+                <span class="logo-version">v3.3</span>
+            </h1>
+            <p class="subtitle">数智决策系统</p>
+            <div class="header-right" style="display: flex; align-items: center; gap: 16px;">
+                <div class="user-profile-mini" id="user-trigger">
+                    <div class="avatar-circle" id="user-avatar">?</div>
+                    <span class="user-name" id="user-name-label">未登录</span>
+                </div>
+                <!-- 真正的退出按钮 -->
+                <button type="button" id="btn-logout-header" class="logout-btn-header">退出登录</button>
+
+            </div>
+        </div>
+    </header>
+
+    <div class="app-wrapper">
+        <!-- Sidebar: History & Library -->
+        <aside id="app-sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h3>卦例馆</h3>
+                <button class="btn-icon" id="btn-sync-history" title="同步记录">🔄</button>
+            </div>
+            <div class="sidebar-action">
+                <button id="btn-new-case" class="btn-new-case">
+                    <span>✨</span> 新起一卦
+                </button>
+            </div>
+            <div class="history-section">
+                <div class="history-title">往昔记录</div>
+                <div class="history-list" id="history-list">
+                    <div class="history-empty">暂无回响，请先起卦</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main id="app-main">
+            <!-- 第一阶段：心中所惑 (Large Question Input) -->
+            <section id="question-hero" class="glass-panel question-hero">
+                <div class="hero-header">
+                    <h1 class="hero-title">梅花义理 · 心诚则灵</h1>
+                    <div class="current-time-mini" id="current-time">--</div>
+                </div>
+                <div class="input-container-large">
+                    <textarea id="input-chat" placeholder="请在此输入您想占问之事...（如：今日面试顺遂否？）" rows="2"></textarea>
+                    <div class="hero-actions">
+                        <button id="btn-quick-parse" class="btn-quick-parse hidden">✨ 识别到已有卦象：一键断卦</button>
+                    </div>
+                    <div class="input-hint" id="hero-hint">💡 请在此输入问题起卦，或直接输入历史卦象（如：山火贲 五爻动）。</div>
+                </div>
+            </section>
+
+            <!-- 第二阶段：起卦媒介 (Casting Methods) -->
+            <section id="divination-console" class="casting-section">
+                <div class="casting-grid">
+                    <!-- 时间起卦 -->
+                    <div class="cast-card">
+                        <div class="cast-card-header">
+                            <span class="cast-icon">🕐</span>
+                            <span>时间起卦</span>
+                        </div>
+                        <div class="cast-card-body">
+                            <div class="time-row">
+                                <input type="time" id="cast-time-picker">
+                                <span id="cast-shichen-label" class="shichen-label">--时</span>
+                            </div>
+                            <button id="btn-time-now" class="btn-text">归位</button>
+                        </div>
+                        <button id="btn-cast-time" class="btn-cast-action">点击起卦</button>
+                    </div>
+
+                    <!-- 报数起卦 -->
+                    <div class="cast-card">
+                        <div class="cast-card-header">
+                            <span class="cast-icon">🔢</span>
+                            <span>报数起卦</span>
+                        </div>
+                        <div class="cast-card-body">
+                            <div class="number-inputs">
+                                <input type="number" id="input-num1" placeholder="数一">
+                                <input type="number" id="input-num2" placeholder="数二">
+                                <input type="number" id="input-num3" placeholder="数三(选)">
+                            </div>
+                        </div>
+                        <button id="btn-cast-number" class="btn-cast-action">点击起卦</button>
+                    </div>
+
+                    <!-- 手动选卦 -->
+                    <div class="cast-card">
+                        <div class="cast-card-header">
+                            <span class="cast-icon">✋</span>
+                            <span>手动选卦</span>
+                        </div>
+                        <div class="cast-card-body">
+                            <div class="manual-inputs">
+                                <select id="select-upper">
+                                    <option value="">上卦</option>
+                                </select>
+                                <select id="select-lower">
+                                    <option value="">下卦</option>
+                                </select>
+                                <select id="select-yao">
+                                    <option value="">动爻</option>
+                                    <option value="1">1爻</option>
+                                    <option value="2">2爻</option>
+                                    <option value="3">3爻</option>
+                                    <option value="4">4爻</option>
+                                    <option value="5">5爻</option>
+                                    <option value="6">6爻</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button id="btn-cast-manual" class="btn-cast-action">确定卦象</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Hexagram Display -->
+            <section id="hexagram-display" class="glass-panel hidden">
+                <div class="hex-header">
+                    <h2>卦象联动</h2>
+                    <div class="energy-badge" id="monthly-energy">
+                        <span class="energy-label">月令</span>
+                        <span class="energy-value" id="month-info-label">--</span>
+                    </div>
+                </div>
+
+                <div class="hex-trio">
+                    <!-- 本卦 -->
+                    <!-- 本卦 -->
+                    <div class="hex-card" id="hex-original-card">
+                        <div class="hex-card-header">
+                            <span class="hex-card-title">本卦</span>
+                        </div>
+                        <!-- Content will be injected by renderHexCard -->
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="hex-arrow">
+                        <span>动爻变</span>
+                        <span class="arrow-icon">→</span>
+                    </div>
+
+                    <!-- 变卦 -->
+                    <div class="hex-card" id="hex-changed-card">
+                        <div class="hex-card-header">
+                            <span class="hex-card-title">变卦</span>
+                        </div>
+                        <!-- Content will be injected by renderHexCard -->
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="hex-arrow">
+                        <span>全反转</span>
+                        <span class="arrow-icon">→</span>
+                    </div>
+
+                    <!-- 对卦 -->
+                    <div class="hex-card" id="hex-opposite-card">
+                        <div class="hex-card-header">
+                            <span class="hex-card-title">错卦</span>
+                        </div>
+                        <!-- Content will be injected by renderHexCard -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI Chat Section -->
+            <section id="ai-chat" class="glass-panel">
+                <div class="chat-header">
+                    <h2>AI 断卦</h2>
+                    <div class="chat-header-right">
+                        <div class="model-switcher" id="model-switcher">
+                            <select id="model-select"
+                                style="padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border-color); font-weight: 600; color: var(--accent-plum);">
+                                <option value="deepseek-r1">DeepSeek R1</option>
+                                <option value="qwen3-thinking">Qwen3 Thinking</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div class="chat-status" id="chat-status">就绪</div>
+                            <button id="btn-stop-generate" class="hidden"
+                                style="padding: 2px 8px; font-size: 0.8rem; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer;">⏹
+                                暂停</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chat-messages">
+                    <div class="chat-welcome">
+                        <p>🌸 欢迎使用梅花义理·数智决策系统</p>
+                        <p class="chat-hint">请先起卦，然后输入您的问题进行断卦分析。</p>
+                        <p class="chat-hint">💡 您也可以直接输入卦名，如"山泽损，四爻动"，系统将自动解析。</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Floating Action: Divine (Now at Document Root for Max Reliability) -->
+    <button class="btn-divine-glow hidden" id="btn-divine" onclick="window.handleDivine()">
+        <span class="btn-icon">🔮</span>
+        断卦解析
+    </button>
+
+    <!-- Auth Modal -->
+    <div class="modal-overlay hidden" id="modal-auth">
+        <div class="modal modal-slim glass-panel">
+            <div class="modal-header">
+                <h3 id="auth-title">书院门户</h3>
+                <button class="modal-close" id="btn-close-auth">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" id="tab-login" data-mode="login">登录</button>
+                    <button class="auth-tab" id="tab-register" data-mode="register">注册</button>
+                </div>
+                <div id="auth-msg-error" class="auth-error"></div>
+                <div id="auth-msg-success" class="auth-success"></div>
+                <div class="control-group">
+                    <label for="auth-username">用户名</label>
+                    <input type="text" id="auth-username" placeholder="请输入用户名" autocomplete="username">
+                </div>
+                <div class="control-group">
+                    <label for="auth-password">密码</label>
+                    <input type="password" id="auth-password" placeholder="请输入密码" autocomplete="current-password">
+                </div>
+                <div class="control-group hidden" id="confirm-password-group">
+                    <label for="auth-confirm-password">确认密码</label>
+                    <input type="password" id="auth-confirm-password" placeholder="请再次输入密码" autocomplete="new-password">
+                </div>
+                <button class="btn-primary" style="width: 100%;" id="btn-auth-submit">登录</button>
+            </div>
+            <div class="modal-footer" style="text-align: center; font-size: 0.8rem; color: var(--text-tertiary);">
+                欢迎来到梅花义理数智系统
+            </div>
+        </div>
+    </div>
+
+    <script src="ganzhi-calendar.js?v=3.3.7"></script>
+    <script src="bagua-data.js?v=3.3.7"></script>
+    <script src="divination-engine.js?v=3.3.7"></script>
+    <script src="app-core.js?v=3.3.7"></script>
+</body>
+
+</html>
