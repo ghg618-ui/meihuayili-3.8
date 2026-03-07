@@ -413,6 +413,14 @@ function renderHistory() {
 }
 
 function loadHistoryRecord(id) {
+    // Abort any in-flight stream before wiping the DOM
+    state.currentAbortController?.abort();
+    state.stopCurrentThinkingProgress?.();
+    state.interruptedCtx = null;
+    state.lastAnalysisCtx = null;
+    state.pendingModeComparison = false;
+    state.pendingModelComparison = false;
+
     const record = state.history.find(r => String(r.id) === String(id));
     if (record) {
         state.lastRecordId = record.id;
@@ -465,6 +473,14 @@ function handleDeleteRecord(id) {
 }
 
 function startNewCase() {
+    // Abort any in-flight stream
+    state.currentAbortController?.abort();
+    state.stopCurrentThinkingProgress?.();
+    state.interruptedCtx = null;
+    state.lastAnalysisCtx = null;
+    state.pendingModeComparison = false;
+    state.pendingModelComparison = false;
+
     state.lastRecordId = null;
     state.currentResult = null;
     state.modelAnalyses = [];
@@ -534,8 +550,26 @@ async function handleDivineMain() {
         return;
     }
     $('#ai-chat').classList.remove('hidden');
-    $('#chat-input-area').classList.add('hidden'); // Analysis in progress: hide follow-up
+    $('#chat-input-area').classList.add('hidden');
     $('#btn-divine').classList.add('hidden');
+
+    // If existing analyses were done in a different mode, trigger comparison directly
+    const lastAnalysis = state.modelAnalyses.length > 0 ? state.modelAnalyses[state.modelAnalyses.length - 1] : null;
+    if (lastAnalysis?.mode && lastAnalysis.mode !== state.selectedMode && !state.interruptedCtx) {
+        const msgs = Array.from($('#chat-messages').querySelectorAll('.chat-message.assistant:not(.dual-analysis)'));
+        const lastMsgEl = msgs[msgs.length - 1];
+        if (lastMsgEl) {
+            state.lastAnalysisCtx = {
+                msgEl: lastMsgEl,
+                mode: lastAnalysis.mode,
+                modelKey: lastAnalysis.modelKey || state.selectedModelKey,
+                question
+            };
+            await performComparisonAnalysis(renderHistory);
+            return;
+        }
+    }
+
     await performAIAnalysis(question, renderHistory);
 }
 

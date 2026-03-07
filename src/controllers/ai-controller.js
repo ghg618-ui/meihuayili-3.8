@@ -51,7 +51,10 @@ export async function performAIAnalysis(question, renderHistory) {
         const startModelKey = state.selectedModelKey;
         const startMode = state.selectedMode;
 
-        state.lastAnalysisCtx = null; // Clear previous comparison context
+        // Only clear lastAnalysisCtx if no pending comparison is waiting for it
+        if (!state.pendingModeComparison && !state.pendingModelComparison) {
+            state.lastAnalysisCtx = null;
+        }
 
         const msgEl = addMessage($('#chat-messages'), {
             role: 'assistant',
@@ -62,6 +65,7 @@ export async function performAIAnalysis(question, renderHistory) {
 
         await _runStream({
             config, modelInfo, messages, targetEl, question, renderHistory,
+            analysisMode: startMode,
             onComplete: () => {
                 state.lastAnalysisCtx = { msgEl, mode: startMode, modelKey: startModelKey, question };
             }
@@ -122,7 +126,7 @@ export async function performComparisonAnalysis(renderHistory) {
     state.lastAnalysisCtx = null; // Consumed — no further comparison
 
     try {
-        await _runStream({ config, modelInfo, messages, targetEl, question: ctx.question, renderHistory });
+        await _runStream({ config, modelInfo, messages, targetEl, question: ctx.question, renderHistory, analysisMode: newMode });
     } catch (err) {
         log.error('performComparisonAnalysis failed:', err);
         showToast(`对比分析失败: ${err.message}`, 'error');
@@ -161,7 +165,8 @@ export async function continueAIAnalysis() {
             question: ctx.question,
             renderHistory: ctx.renderHistory,
             prefixContent: ctx.partialContent || '',
-            prefixReasoning: ctx.partialReasoning || ''
+            prefixReasoning: ctx.partialReasoning || '',
+            analysisMode: ctx.mode
         });
     } catch (err) {
         log.error('continueAIAnalysis failed:', err);
@@ -169,7 +174,7 @@ export async function continueAIAnalysis() {
     }
 }
 
-async function _runStream({ config, modelInfo, messages, targetEl, question, renderHistory, prefixContent = '', prefixReasoning = '', onComplete }) {
+async function _runStream({ config, modelInfo, messages, targetEl, question, renderHistory, prefixContent = '', prefixReasoning = '', analysisMode = null, onComplete }) {
     // Stop any lingering thinking-progress timer from a previously aborted stream
     state.stopCurrentThinkingProgress?.();
 
@@ -187,8 +192,7 @@ async function _runStream({ config, modelInfo, messages, targetEl, question, ren
     }
 
     // Save context for potential continuation
-    state.interruptedCtx = { targetEl, messages, partialContent: prefixContent, partialReasoning: prefixReasoning, question, renderHistory };
-
+    state.interruptedCtx = { targetEl, messages, mode: analysisMode, partialContent: prefixContent, partialReasoning: prefixReasoning, question, renderHistory };
         let thinkingPhase = true;
         let thinkingTimer = null;
         let thinkingProgress = 0;
@@ -312,6 +316,7 @@ async function _runStream({ config, modelInfo, messages, targetEl, question, ren
             const analysis = {
                 modelKey: state.selectedModelKey,
                 modelLabel: modelInfo.label,
+                mode: analysisMode,
                 content: totalContent,
                 reasoning: totalReasoning,
                 timestamp: new Date().toISOString()
