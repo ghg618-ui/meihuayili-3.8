@@ -244,11 +244,14 @@ window.handleDivine = window.startDivination = function () {
             }
 
             // Close sidebar when clicking main content on mobile
-            $('app-main').addEventListener('click', () => {
-                if (window.innerWidth < 900) {
-                    sidebar.classList.add('collapsed');
-                }
-            });
+            const appMain = $('app-main');
+            if (appMain) {
+                appMain.addEventListener('click', () => {
+                    if (window.innerWidth < 900) {
+                        sidebar.classList.add('collapsed');
+                    }
+                });
+            }
             console.log('System: Initialization Complete');
         } catch (criticalErr) {
             alert('系统初始化致命错误: ' + criticalErr.message);
@@ -271,7 +274,8 @@ window.handleDivine = window.startDivination = function () {
             lastRecordId = null;
             inputChat.value = '';
             modelAnalyses = [];
-            $('divination-console').classList.remove('hidden');
+            const consoleEl = $('divination-console');
+            if (consoleEl) consoleEl.classList.remove('hidden');
             hexDisplay.classList.add('hidden');
             btnDivine.classList.add('hidden');
             chatMessages.innerHTML = '';
@@ -326,17 +330,22 @@ window.handleDivine = window.startDivination = function () {
         }
 
         // Cast buttons
-        $('btn-cast-time').addEventListener('click', castByTime);
-        $('btn-cast-number').addEventListener('click', castByNumber);
-        $('btn-cast-manual').addEventListener('click', castByManual);
+        const btnCastTime = $('btn-cast-time');
+        const btnCastNumber = $('btn-cast-number');
+        const btnCastManual = $('btn-cast-manual');
+        if (btnCastTime) btnCastTime.addEventListener('click', castByTime);
+        if (btnCastNumber) btnCastNumber.addEventListener('click', castByNumber);
+        if (btnCastManual) btnCastManual.addEventListener('click', castByManual);
 
         // Model switcher
-        modelSelect.addEventListener('change', () => {
-            selectedModelKey = modelSelect.value;
-            localStorage.setItem('selected_model', selectedModelKey);
-            const reg = MODEL_REGISTRY[selectedModelKey];
-            showToast(`已切换至 ${reg.label}`, 'success');
-        });
+        if (modelSelect) {
+            modelSelect.addEventListener('change', () => {
+                selectedModelKey = modelSelect.value;
+                localStorage.setItem('selected_model', selectedModelKey);
+                const reg = MODEL_REGISTRY[selectedModelKey];
+                showToast(`已切换至 ${reg.label}`, 'success');
+            });
+        }
 
         // Chat & Case Recognition
         inputChat.addEventListener('input', () => {
@@ -346,7 +355,8 @@ window.handleDivine = window.startDivination = function () {
 
             // Show console again if user clears the input (new investigation)
             if (!text) {
-                $('divination-console').classList.remove('hidden');
+                const consoleEl = $('divination-console');
+                if (consoleEl) consoleEl.classList.remove('hidden');
             }
 
             if (text.length > 3) {
@@ -357,34 +367,44 @@ window.handleDivine = window.startDivination = function () {
                     return;
                 }
             }
-            btnQuick.classList.add('hidden');
-            hint.textContent = `💡 请在此输入问题起卦，或直接输入历史卦象（如：山火贲 五爻动）。`;
+            const btnQuickHide = $('btn-quick-parse');
+            if (btnQuickHide) btnQuickHide.classList.add('hidden');
+            const hintHide = $('hero-hint');
+            if (hintHide) hintHide.textContent = `💡 请在此输入问题起卦，或直接输入历史卦象（如：山火贲 五爻动）。`;
         });
 
-        inputChat.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                window.startDivination();
-            }
-        });
+        if (inputChat) {
+            inputChat.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    window.startDivination();
+                }
+            });
+        }
 
         // Atomic bindings
         const btnQuick = $('btn-quick-parse');
         if (btnQuick) btnQuick.onclick = window.startDivination;
 
         // Auth & Settings
-        $('user-trigger').addEventListener('click', () => {
-            if (!currentUser) {
-                switchAuthMode('login');
-                // Clear fields
-                $('auth-username').value = '';
-                $('auth-password').value = '';
-                const confirmPwd = $('auth-confirm-password');
-                if (confirmPwd) confirmPwd.value = '';
-                clearAuthMsg();
-                $('modal-auth').classList.remove('hidden');
-            }
-        });
+        const userTrigger = $('user-trigger');
+        if (userTrigger) {
+            userTrigger.addEventListener('click', () => {
+                if (!currentUser) {
+                    switchAuthMode('login');
+                    // Clear fields
+                    const authUsername = $('auth-username');
+                    if (authUsername) authUsername.value = '';
+                    const authPassword = $('auth-password');
+                    if (authPassword) authPassword.value = '';
+                    const confirmPwd = $('auth-confirm-password');
+                    if (confirmPwd) confirmPwd.value = '';
+                    clearAuthMsg();
+                    const modalAuth = $('modal-auth');
+                    if (modalAuth) modalAuth.classList.remove('hidden');
+                }
+            });
+        }
 
         const btnLogout = $('btn-logout-header');
         if (btnLogout) {
@@ -394,7 +414,13 @@ window.handleDivine = window.startDivination = function () {
             });
         }
 
-        $('btn-close-auth').addEventListener('click', () => $('modal-auth').classList.add('hidden'));
+        const btnCloseAuth = $('btn-close-auth');
+        if (btnCloseAuth) {
+            btnCloseAuth.addEventListener('click', () => {
+                const modalAuth = $('modal-auth');
+                if (modalAuth) modalAuth.classList.add('hidden');
+            });
+        }
 
         // Auth tabs switching
         const tabLogin = $('tab-login');
@@ -403,13 +429,16 @@ window.handleDivine = window.startDivination = function () {
         if (tabRegister) tabRegister.addEventListener('click', () => switchAuthMode('register'));
 
         // Auth submit handler (delegates to login or register)
-        $('btn-auth-submit').addEventListener('click', () => {
-            if (authMode === 'register') {
-                register();
-            } else {
-                login();
-            }
-        });
+        const btnAuthSubmit = $('btn-auth-submit');
+        if (btnAuthSubmit) {
+            btnAuthSubmit.addEventListener('click', () => {
+                if (authMode === 'register') {
+                    register();
+                } else {
+                    login();
+                }
+            });
+        }
 
         // Allow Enter key to submit auth form
         ['auth-username', 'auth-password', 'auth-confirm-password'].forEach(id => {
@@ -426,13 +455,15 @@ window.handleDivine = window.startDivination = function () {
 
 
 
-        [$('modal-auth')].forEach(m => {
-            if (m) m.addEventListener('click', (e) => {
-                if (e.target === m) m.classList.add('hidden');
+        const modalAuthEl = $('modal-auth');
+        if (modalAuthEl) {
+            modalAuthEl.addEventListener('click', (e) => {
+                if (e.target === modalAuthEl) modalAuthEl.classList.add('hidden');
             });
-        });
+        }
 
-        $('btn-sync-history').addEventListener('click', loadHistory);
+        const btnSyncHistory = $('btn-sync-history');
+        if (btnSyncHistory) btnSyncHistory.addEventListener('click', loadHistory);
 
         // Chat events are handled inline when chat input area is created
 
@@ -628,10 +659,10 @@ window.handleDivine = window.startDivination = function () {
         historyListEl.innerHTML = divinationHistory.map(item => `
             <div class="history-item ${lastRecordId === item.id ? 'active' : ''}" data-id="${item.id}">
                 <div class="history-item-top">
-                    <span class="history-item-name">${item.result.original.name}</span>
-                    <span class="history-item-time" style="font-size: 0.75rem; color: var(--text-tertiary); font-weight: normal;">${item.timestamp.split(' ')[0]}</span>
+                    <span class="history-item-name">${escapeHtml(item.result.original.name)}</span>
+                    <span class="history-item-time" style="font-size: 0.75rem; color: var(--text-tertiary); font-weight: normal;">${escapeHtml(item.timestamp.split(' ')[0])}</span>
                 </div>
-                <div class="history-item-desc">${item.question || '未设问'}</div>
+                <div class="history-item-desc">${escapeHtml(item.question || '未设问')}</div>
                 <div class="history-delete-btn" title="删除记录">🗑️</div>
             </div>
         `).join('');
@@ -1141,7 +1172,8 @@ window.handleDivine = window.startDivination = function () {
         }
 
         const question = text || '请对此卦象进行全方位的断卦分析。';
-        const payload = DivinationEngine.buildPayload(currentResult, question);
+        const mode = document.getElementById('mode-select')?.value || 'pro';
+        const payload = DivinationEngine.buildPayload(currentResult, question, mode);
         const isComparison = modelAnalyses.length > 0;
 
         if (!isComparison) {
@@ -1173,7 +1205,11 @@ window.handleDivine = window.startDivination = function () {
 
         // Build follow-up message with context
         const contextInfo = buildFollowUpContext();
-        const followUpContent = `【/context】\n${contextInfo}\n\n【用户追问】\n${text}`;
+        const followUpContent = `【/context】
+${contextInfo}
+
+【用户追问】
+${text}`;
 
         // Use regular chat prompt for follow-up questions
         sendToAI(followUpContent, buildChatPrompt(), false, MODEL_REGISTRY[selectedModelKey]?.label || selectedModelKey, selectedModelKey);
@@ -1351,7 +1387,8 @@ window.handleDivine = window.startDivination = function () {
 
         if (!modelConfig.key) {
             showToast(`请先在设置中配置 ${modelConfig.label} 的 API Key`, 'error');
-            modalSettings.classList.remove('hidden');
+            const modalSettingsEl = document.getElementById('modal-settings');
+            if (modalSettingsEl) modalSettingsEl.classList.remove('hidden');
             return;
         }
 
@@ -1360,6 +1397,10 @@ window.handleDivine = window.startDivination = function () {
         // Determine where to render the output
         let targetEl = null;
         let comparisonPanel = null;
+        let assistantContent = '';
+        let reasoningContent = '';
+        let hasReasoning = false;
+        let buffer = '';
 
         if (isComparison) {
             // Comparison mode: find or create the comparison panel
@@ -1455,10 +1496,6 @@ window.handleDivine = window.startDivination = function () {
             // Stream response
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
-            let assistantContent = '';
-            let reasoningContent = '';
-            let hasReasoning = false;
-            let buffer = '';
 
             // Create or use target element
             if (!isComparison) {
@@ -1467,7 +1504,7 @@ window.handleDivine = window.startDivination = function () {
                 chatMessages.insertAdjacentHTML('beforeend', msgHtml);
                 targetEl = document.getElementById(msgId);
             }
-
+            // eslint-disable-next-line no-constant-condition
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
@@ -1603,7 +1640,7 @@ window.handleDivine = window.startDivination = function () {
     }
 
     // ===================== Build Chat Messages (for resume) =====================
-    function buildChatMessages(systemPrompt, content, assistantContent = '', analyses = []) {
+    function buildChatMessages(systemPrompt, content, assistantContent = '') {
         const messages = [];
         if (systemPrompt) {
             messages.push({ role: 'system', content: systemPrompt });
@@ -1644,6 +1681,7 @@ window.handleDivine = window.startDivination = function () {
         const resumeUserContent = currentChatMessages[1]?.content || '';
         const resumeAssistantContent = currentChatMessages[2]?.content || '';
 
+        let targetEl; // Hoisted for catch block
         try {
             const response = await fetch(currentModelConfig.endpoint, {
                 method: 'POST',
@@ -1675,7 +1713,7 @@ window.handleDivine = window.startDivination = function () {
             const msgId = 'resume-msg-' + Date.now();
             const msgHtml = `<div class="chat-message assistant" id="${msgId}"></div>`;
             chatMessages.insertAdjacentHTML('beforeend', msgHtml);
-            const targetEl = document.getElementById(msgId);
+            targetEl = document.getElementById(msgId);
 
             // Stream response
             const reader = response.body.getReader();
@@ -1685,6 +1723,7 @@ window.handleDivine = window.startDivination = function () {
             let hasReasoning = false;
             let buffer = '';
 
+            // eslint-disable-next-line no-constant-condition
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;

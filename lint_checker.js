@@ -1,6 +1,14 @@
 const fs = require('fs');
+const path = require('path');
 
-const file = fs.readFileSync('/Users/gong-ai/梅花易数起卦/app-core.js', 'utf8');
+const filePath = process.argv[2] || path.join(__dirname, 'legacy', 'app-core.js');
+
+if (!fs.existsSync(filePath)) {
+    console.error(`File not found: ${filePath}`);
+    process.exit(1);
+}
+
+const file = fs.readFileSync(filePath, 'utf8');
 
 // VERY basic syntax check
 try {
