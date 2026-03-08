@@ -195,7 +195,7 @@ async function _runStream({ config, modelInfo, messages, targetEl, question, ren
     }
 
     // Save context for potential continuation
-    state.interruptedCtx = { targetEl, messages, mode: analysisMode, partialContent: prefixContent, partialReasoning: prefixReasoning, question, renderHistory };
+    state.interruptedCtx = { targetEl, messages, mode: state.selectedMode, partialContent: prefixContent, partialReasoning: prefixReasoning, question, renderHistory };
         let thinkingPhase = true;
         let thinkingTimer = null;
         let thinkingProgress = 0;
