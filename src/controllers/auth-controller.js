@@ -25,15 +25,19 @@ export function updateUIForAuth() {
     const userLabel = $('#user-name-label');
     const userAvatar = $('#user-avatar');
     const logoutBtn = $('#btn-logout-header');
+    const logoutSidebar = $('#btn-logout-sidebar');
+    const sidebarFooter = $('#sidebar-mobile-footer');
 
     if (state.currentUser) {
         if (userLabel) userLabel.textContent = state.currentUser.name;
         if (userAvatar) userAvatar.textContent = state.currentUser.name.charAt(0);
         if (logoutBtn) logoutBtn.style.display = 'block';
+        if (sidebarFooter) sidebarFooter.style.display = 'flex';
     } else {
         if (userLabel) userLabel.textContent = '未登录';
         if (userAvatar) userAvatar.textContent = '?';
         if (logoutBtn) logoutBtn.style.display = 'none';
+        if (sidebarFooter) sidebarFooter.style.display = 'none';
     }
 }
 

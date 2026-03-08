@@ -98,17 +98,6 @@ function init() {
     const modelSelect = $('#model-select');
     if (modelSelect) modelSelect.value = state.selectedModelKey;
 
-    // First-time: prompt user to configure API key
-    if (!hasAnyApiKey()) {
-        setTimeout(() => {
-            loadSettingsToModal();
-            const warning = document.getElementById('settings-key-warning');
-            if (warning) warning.style.display = 'block';
-            openModal('modal-settings');
-            showToast('首次使用请先配置 API Key', 'info');
-        }, 600);
-    }
-
     log.info('Ready.');
 }
 
@@ -161,6 +150,7 @@ function bindEvents() {
     $('#tab-register')?.addEventListener('click', switchToRegisterMode);
     $('#btn-auth-submit')?.addEventListener('click', () => handleAuthSubmit(renderHistory));
     $('#btn-logout-header')?.addEventListener('click', () => handleLogout(renderHistory, startNewCase));
+    $('#btn-logout-sidebar')?.addEventListener('click', () => handleLogout(renderHistory, startNewCase));
     $('#btn-close-auth')?.addEventListener('click', () => closeModal('modal-auth'));
 
     // Time picker

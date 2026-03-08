@@ -1485,35 +1485,52 @@ body {
   }
 
   .header-inner {
-    gap: 10px;
-    padding: 0 20px;
+    gap: 8px;
+    padding: 0 14px;
   }
 
   .logo {
     font-size: 1rem;
     white-space: nowrap;
+    gap: 4px;
   }
 
   .logo .subtitle,
-  .logo .brand-sep {
+  .logo .brand-sep,
+  .logo-version {
     display: none;
   }
 
+  /* 用户名文字在手机上省略，只保留头像 */
   .user-profile-mini {
-    padding: 6px 12px;
-    gap: 8px;
+    padding: 5px 10px;
+    gap: 6px;
     font-size: 0.85rem;
   }
 
-  .avatar-circle {
-    width: 26px;
-    height: 26px;
-    font-size: 0.8rem;
+  .user-name {
+    display: none;
   }
 
+  .avatar-circle {
+    width: 28px;
+    height: 28px;
+    font-size: 0.85rem;
+  }
+
+  /* 头部退出按钮在手机上隐藏，改放到侧边栏 */
   .logout-btn-header {
-    font-size: 0.8rem;
-    padding: 4px 10px;
+    display: none !important;
+  }
+
+  /* 主题按钮只保留图标，隐藏文字 */
+  .theme-label {
+    display: none;
+  }
+
+  .theme-toggle-btn {
+    padding: 5px 8px;
+    min-width: unset;
   }
 
   /* --- Layout --- */
@@ -1541,8 +1558,44 @@ body {
 
   #app-sidebar.active,
   #app-sidebar:not(.collapsed) {
-    max-height: 400px;
+    max-height: 500px;
     overflow-y: auto;
+  }
+
+  /* 侧边栏底部退出按钮区（手机专属） */
+  .sidebar-mobile-footer {
+    display: none; /* JS 控制登录后变 flex */
+    padding: 12px 20px 16px;
+    border-top: 1px solid var(--border-color);
+    margin-top: 8px;
+  }
+
+  .btn-logout-sidebar {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .btn-logout-sidebar:hover,
+  .btn-logout-sidebar:active {
+    background: #fff5f5;
+    color: #FF3B30;
+    border-color: #FF3B30;
+  }
+
+  /* 设置悬浮按钮（左下角圆圈）在手机上缩小并贴边 */
+  .settings-fab {
+    bottom: 16px;
+    left: 16px;
+    width: 40px;
+    height: 40px;
   }
 
   #app-main {
@@ -2318,6 +2371,11 @@ input[type=number] {
   padding: 24px;
   display: flex;
   justify-content: center;
+}
+
+/* 侧边栏底部退出区 — 桌面端完全不显示，只在手机端通过 JS 控制 */
+.sidebar-mobile-footer {
+  display: none;
 }
 
 .sidebar-section-label {
