@@ -13,19 +13,19 @@ export const MODEL_REGISTRY = {
     'deepseek-combined': {
         provider: 'deepseek',
         model: 'deepseek-reasoner',
-        label: 'DeepSeek R1 (官方)',
+        label: '推演引擎 · 主线',
         supportsReasoning: true,
     },
     'sf-deepseek-r1': {
         provider: 'siliconflow',
         model: 'deepseek-ai/DeepSeek-R1',
-        label: 'DeepSeek R1 (硅基流动)',
+        label: '推演引擎 · 备线',
         supportsReasoning: true,
     },
     'sf-qwen3-5': {
         provider: 'siliconflow',
         model: 'Qwen/Qwen3.5-397B-A17B',
-        label: 'Qwen 3.5 397B (硅基流动)',
+        label: '推演引擎 · 增强',
         supportsReasoning: true,
     }
 };

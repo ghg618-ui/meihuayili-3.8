@@ -25,11 +25,11 @@ export function handleSaveSettings() {
     };
 
     if (dsEndpoint && !isValidEndpoint(dsEndpoint)) {
-        showToast('DeepSeek Endpoint 必须是有效的 HTTPS 地址', 'error');
+        showToast('主线路服务地址必须是有效的 HTTPS 地址', 'error');
         return;
     }
     if (sfEndpoint && !isValidEndpoint(sfEndpoint)) {
-        showToast('SiliconFlow Endpoint 必须是有效的 HTTPS 地址', 'error');
+        showToast('备用线路服务地址必须是有效的 HTTPS 地址', 'error');
         return;
     }
 
