@@ -219,25 +219,7 @@ function bindEvents() {
             performComparisonAnalysis(renderHistory);
         }
     });
-    $('#mode-select')?.addEventListener('change', (e) => {
-        state.selectedMode = e.target.value;
-        showToast(`已切换至${state.selectedMode === 'pro' ? '专业模式' : '简化模式'}`, 'info');
-        // 根据模式切换排盘模块显隐
-        if (state.currentResult) {
-            if (state.selectedMode === 'simple') {
-                $('#hexagram-display').classList.add('hidden');
-            } else {
-                $('#hexagram-display').classList.remove('hidden');
-            }
-        }
-        // If a completed analysis exists in the other mode, trigger side-by-side comparison
-        if (state.interruptedCtx) {
-            // Stream in progress — defer comparison until it finishes
-            state.pendingModeComparison = true;
-        } else if (state.lastAnalysisCtx && state.lastAnalysisCtx.mode !== state.selectedMode) {
-            performComparisonAnalysis(renderHistory);
-        }
-    });
+
 
     // Main divine button (the floating one)
     window.handleDivine = handleDivineMain;
@@ -569,22 +551,7 @@ async function handleDivineMain() {
     $('#chat-input-area').classList.add('hidden');
     $('#btn-divine').classList.add('hidden');
 
-    // If existing analyses were done in a different mode, trigger comparison directly
-    const lastAnalysis = state.modelAnalyses.length > 0 ? state.modelAnalyses[state.modelAnalyses.length - 1] : null;
-    if (lastAnalysis?.mode && lastAnalysis.mode !== state.selectedMode && !state.interruptedCtx) {
-        const msgs = Array.from($('#chat-messages').querySelectorAll('.chat-message.assistant:not(.dual-analysis)'));
-        const lastMsgEl = msgs[msgs.length - 1];
-        if (lastMsgEl) {
-            state.lastAnalysisCtx = {
-                msgEl: lastMsgEl,
-                mode: lastAnalysis.mode,
-                modelKey: lastAnalysis.modelKey || state.selectedModelKey,
-                question
-            };
-            await performComparisonAnalysis(renderHistory);
-            return;
-        }
-    }
+
 
     await performAIAnalysis(question, renderHistory);
 }
@@ -608,10 +575,7 @@ function renderResult(result, isNew = true) {
         $('#chat-messages').innerHTML = '';
     }
     renderResultView($('#hexagram-display'), result, isNew);
-    // 简化版隐藏排盘模块
-    if (state.selectedMode === 'simple') {
-        $('#hexagram-display').classList.add('hidden');
-    }
+    $('#hexagram-display').classList.remove('hidden');
     $('#btn-divine').classList.remove('hidden');
     $('#divination-console').classList.add('hidden');
 }

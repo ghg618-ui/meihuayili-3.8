@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^cd \"/Users/gonghg/Downloads/ai project/梅花义理 v3\\.8\" && git add index\\.html src/index\\.css src/main\\.js src/storage/settings\\.js src/controllers/state\\.js && git commit -m \"feat: 抽屉尺寸优化、推演日志箭头标识、隐藏模型选择和设置FAB、内置密钥框架\" && git push origin master:main$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

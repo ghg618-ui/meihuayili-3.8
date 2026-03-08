@@ -294,7 +294,7 @@ const DivinationEngine = {
         return { valid: inputName === correctName, correctName, message: inputName === correctName ? '' : `变卦应为"${correctName}"，而非"${inputName}"` };
     },
 
-    buildPayload(result, question, mode = 'pro') {
+    buildPayload(result, question) {
         const tiPos = result.tiYong.ti.position;
         return {
             '起卦逻辑': {
