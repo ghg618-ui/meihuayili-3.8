@@ -72,15 +72,11 @@ export function hasProAccess() {
     const userData = users[user.name];
     if (!userData) return false;
     
-    // 管理员白名单（可在这里添加管理员账号）
-    const adminList = ['admin', 'gonghg'];  // 示例：管理员账号
+    // 管理员白名单（当前阶段仅管理员显示专业功能，避免普通用户被误判）
+    const adminList = ['admin', 'gonghg'];
     if (adminList.includes(user.name)) return true;
-    
-    // 检查是否是付费用户（未来扩展：检查订阅状态、到期时间等）
-    if (userData.isPro || userData.subscription) {
-        // 这里可以进一步检查订阅是否过期
-        return true;
-    }
-    
+
+    // 付费体系未正式上线：先全部按普通用户处理
+    // 后续接入订阅时，再改为严格字段校验（如 status==='active' 且未过期）。
     return false;
 }

@@ -200,6 +200,20 @@ async function _runStream({ config, modelInfo, messages, targetEl, question, ren
         let thinkingTimer = null;
         let thinkingProgress = 0;
         const thinkingStartTime = Date.now();
+        let hasReceivedAnyChunk = false;
+        let stalledHintTimer = null;
+
+        // Render progress UI immediately so users can see the request is running,
+        // even before the first model chunk arrives.
+        targetEl.innerHTML = `
+            <div class="thinking-status">
+                <span class="thinking-indicator"></span>
+                <span class="thinking-text">正在深度参悟卦象中<span class="thinking-dots"></span></span>
+                <span class="thinking-pct">0%</span>
+            </div>
+            <div class="thinking-progress-bar">
+                <div class="thinking-progress-fill"></div>
+            </div>`;
 
         // Simulated progress: fast at start, slows down approaching 90%, never reaches 100% until content arrives
         function startThinkingProgress() {
@@ -228,6 +242,18 @@ async function _runStream({ config, modelInfo, messages, targetEl, question, ren
         // Expose so the stop button can kill the timer even on user-abort (silent path)
         state.stopCurrentThinkingProgress = stopThinkingProgress;
 
+        // If backend has no first chunk for a while, show an explicit hint.
+        stalledHintTimer = setTimeout(() => {
+            if (!hasReceivedAnyChunk) {
+                const note = targetEl.querySelector('.thinking-text');
+                if (note) {
+                    note.innerHTML = '服务器响应较慢，正在重试通道<span class="thinking-dots"></span>';
+                }
+            }
+        }, 12000);
+
+        startThinkingProgress();
+
         // Route to proxy if available, else direct
         const apiEndpoint = isProxyMode ? PROXY_ENDPOINT : config.endpoint;
         const apiKey = isProxyMode ? '' : config.key;
@@ -239,6 +265,11 @@ async function _runStream({ config, modelInfo, messages, targetEl, question, ren
         messages,
         signal: state.currentAbortController.signal,
         onChunk: ({ type, fullContent, fullReasoning }) => {
+            hasReceivedAnyChunk = true;
+            if (stalledHintTimer) {
+                clearTimeout(stalledHintTimer);
+                stalledHintTimer = null;
+            }
             const totalContent = prefixContent + fullContent;
             const totalReasoning = prefixReasoning + fullReasoning;
 
@@ -250,6 +281,7 @@ async function _runStream({ config, modelInfo, messages, targetEl, question, ren
 
             if (totalReasoning && !totalContent) {
                 // Thinking phase: preserve DOM to keep animations alive
+                // Keep the already-rendered thinking UI alive until content starts.
                 if (thinkingPhase) {
                     const existing = targetEl.querySelector('.thinking-status');
                     if (!existing) {
@@ -292,6 +324,11 @@ async function _runStream({ config, modelInfo, messages, targetEl, question, ren
             scrollChat($('#chat-messages'));
         },
         onFinish: ({ content, reasoning }) => {
+            if (stalledHintTimer) {
+                clearTimeout(stalledHintTimer);
+                stalledHintTimer = null;
+            }
+            stopThinkingProgress();
             const totalContent = prefixContent + content;
             const totalReasoning = prefixReasoning + reasoning;
 
@@ -405,6 +442,10 @@ async function _runStream({ config, modelInfo, messages, targetEl, question, ren
             }
         },
         onError: (err) => {
+            if (stalledHintTimer) {
+                clearTimeout(stalledHintTimer);
+                stalledHintTimer = null;
+            }
             stopThinkingProgress();
             $('#chat-status').textContent = '错误';
             $('#btn-stop-generate')?.classList.add('hidden');
