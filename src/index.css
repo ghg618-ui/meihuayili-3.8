@@ -92,6 +92,29 @@
   border-color: var(--border-color);
 }
 
+/* --- Mobile Sidebar Drawer Overlay --- */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 199;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  animation: overlayFadeIn 0.25s ease;
+}
+.sidebar-overlay.active {
+  display: block;
+}
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+/* 防止抽屉打开时背景滚动 */
+body.drawer-lock {
+  overflow: hidden;
+}
+
 /* Theme toggle button */
 .theme-toggle-btn {
   background: transparent;
@@ -1538,36 +1561,53 @@ body {
     flex-direction: column;
     margin: 0;
     box-shadow: none;
-    padding: 16px;
-    gap: 20px;
+    padding: 12px 16px 24px;
+    gap: 0;
     border-radius: 0;
   }
 
+  /* ======== 手机侧边栏：固定抽屉，默认隐藏在左侧屏幕外 ======== */
   #app-sidebar {
-    width: 100%;
-    height: auto;
-    border-right: none;
-    border-bottom: 1px solid var(--border-color);
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-    box-shadow: none;
-    background: var(--bg-primary);
-    border-radius: var(--radius-md);
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 82%;
+    max-width: 300px;
+    height: 100%;
+    max-height: none !important;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 200;
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    border-right: 1px solid var(--border-color);
+    border-bottom: none;
+    box-shadow: 8px 0 32px rgba(0, 0, 0, 0.22);
+    background: var(--bg-secondary);
+    transition: left 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 20px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
 
+  /* 抽屉打开状态 */
+  #app-sidebar.drawer-open {
+    left: 0;
+  }
+
+  /* 消除旧的 :not(.collapsed) 展开逻辑在手机上的干扰 */
   #app-sidebar.active,
   #app-sidebar:not(.collapsed) {
-    max-height: 500px;
-    overflow-y: auto;
+    max-height: none;
   }
 
-  /* 侧边栏底部退出按钮区（手机专属） */
+  /* 侧边栏底部退出按钮区（手机专属）——抽屉内始终撑到底部 */
   .sidebar-mobile-footer {
-    display: none; /* JS 控制登录后变 flex */
-    padding: 12px 20px 16px;
+    display: flex;
+    flex-direction: column;
+    padding: 12px 0 8px;
     border-top: 1px solid var(--border-color);
-    margin-top: 8px;
+    margin-top: auto;
   }
 
   .btn-logout-sidebar {

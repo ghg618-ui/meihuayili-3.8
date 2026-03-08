@@ -74,6 +74,19 @@ function applyTheme(theme) {
     }
 }
 
+// ===================== Mobile Drawer =====================
+function openMobileDrawer() {
+    $('#app-sidebar')?.classList.add('drawer-open');
+    $('#sidebar-overlay')?.classList.add('active');
+    document.body.classList.add('drawer-lock');
+}
+
+function closeMobileDrawer() {
+    $('#app-sidebar')?.classList.remove('drawer-open');
+    $('#sidebar-overlay')?.classList.remove('active');
+    document.body.classList.remove('drawer-lock');
+}
+
 // ===================== Initialization =====================
 function init() {
     log.info('Initializing...');
@@ -164,8 +177,15 @@ function bindEvents() {
 
     // Sidebar
     $('#sidebar-toggle')?.addEventListener('click', () => {
-        $('#app-sidebar').classList.toggle('collapsed');
+        if (window.innerWidth <= 900) {
+            openMobileDrawer();
+        } else {
+            $('#app-sidebar').classList.toggle('collapsed');
+        }
     });
+
+    // Close mobile drawer when overlay is tapped
+    $('#sidebar-overlay')?.addEventListener('click', closeMobileDrawer);
 
     // New Case
     $('#btn-new-case')?.addEventListener('click', startNewCase);
@@ -452,6 +472,8 @@ function loadHistoryRecord(id) {
 
         renderHistory();
         scrollChat($('#chat-messages'), true);
+        // 手机端：加载记录后自动收起抽屉
+        if (window.innerWidth <= 900) closeMobileDrawer();
     }
 }
 
@@ -484,6 +506,8 @@ function startNewCase() {
     $('#btn-quick-parse')?.classList.add('hidden');
     $('#input-chat').value = '';
     renderHistory();
+    // 手机端：新起一卦后自动收起抽屉
+    if (window.innerWidth <= 900) closeMobileDrawer();
 }
 
 function handleCastByTime() {
