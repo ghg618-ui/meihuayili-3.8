@@ -5,3 +5,7 @@ dist/
 .jest_cache/
 *.log
 npm-debug.log*
+
+# 密钥文件——绝对不能上传到 GitHub
+server/.env
+.env

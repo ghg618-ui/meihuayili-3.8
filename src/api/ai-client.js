@@ -1,10 +1,22 @@
 /**
  * AI API Client with Streaming Support
  * Features: timeout, auto-retry, streaming SSE parsing
+ *
+ * 代理模式：将 PROXY_BASE_URL 设为你的 Mac Mini 地址后，
+ * 密钥不再经过浏览器，全程由服务器中转。
  */
 import makeLogger from '../utils/logger.js';
 
 const log = makeLogger('AIClient');
+
+// ====== 代理服务器配置 ======
+// 填入 Mac Mini 的 Cloudflare Tunnel 地址，例如：
+//   'https://api.meihuayili.com'
+// 留空 '' 则继续直连模式（密钥从浏览器发出）
+const PROXY_BASE_URL = '';
+// ============================
+
+const PROXY_ENDPOINT = PROXY_BASE_URL ? `${PROXY_BASE_URL.replace(/\/$/, '')}/api/chat` : null;
 
 const DEFAULT_TIMEOUT_MS = 180000; // 180s — enough for deep reasoning models
 const MAX_RETRIES = 2;
