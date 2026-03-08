@@ -148,8 +148,15 @@ function populateModelSelect() {
     const modelSelect = $('#model-select');
     if (!modelSelect) return;
     modelSelect.innerHTML = '';
-    for (const [key, model] of Object.entries(MODEL_REGISTRY)) {
-        modelSelect.add(new Option(model.label, key));
+    if (hasProAccess()) {
+        for (const [key, model] of Object.entries(MODEL_REGISTRY)) {
+            modelSelect.add(new Option(model.label, key));
+        }
+    } else {
+        const mainModel = MODEL_REGISTRY['deepseek-combined'];
+        modelSelect.add(new Option(mainModel.label, 'deepseek-combined'));
+        state.selectedModelKey = 'deepseek-combined';
+        setSelectedModel(state.selectedModelKey);
     }
 }
 

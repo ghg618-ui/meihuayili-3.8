@@ -3,6 +3,7 @@
  */
 import { $, showToast } from '../utils/dom.js';
 import { loginUser, registerUser, logoutUser, hasProAccess } from '../storage/auth.js';
+import { MODEL_REGISTRY } from '../storage/settings.js';
 import { loadHistory } from '../storage/history.js';
 import { closeModal } from '../ui/modals.js';
 import state from './state.js';
@@ -30,17 +31,25 @@ export function updateUIForAuth() {
     const modelSelect = $('#model-select');
 
     if (state.currentUser) {
+        const isPro = hasProAccess();
         if (userLabel) userLabel.textContent = state.currentUser.name;
         if (userAvatar) userAvatar.textContent = state.currentUser.name.charAt(0);
-        if (logoutBtn) logoutBtn.style.display = 'block';
-        if (sidebarFooter) sidebarFooter.style.display = 'flex';
+        if (logoutBtn) logoutBtn.style.display = isPro ? 'block' : 'none';
+        if (sidebarFooter) sidebarFooter.style.display = isPro ? 'flex' : 'none';
+        if (logoutSidebar) logoutSidebar.style.display = isPro ? 'inline-block' : 'none';
         
         // 权限检测：只有管理员/付费用户才显示模型选择器
         if (modelSelect) {
-            if (hasProAccess()) {
+            modelSelect.innerHTML = '';
+            if (isPro) {
+                for (const [key, model] of Object.entries(MODEL_REGISTRY)) {
+                    modelSelect.add(new Option(model.label, key));
+                }
                 modelSelect.classList.add('show-for-pro');
                 modelSelect.style.display = ''; // 清除内联样式，让CSS类生效
             } else {
+                modelSelect.add(new Option(MODEL_REGISTRY['deepseek-combined'].label, 'deepseek-combined'));
+                state.selectedModelKey = 'deepseek-combined';
                 modelSelect.classList.remove('show-for-pro');
                 modelSelect.style.display = 'none'; // 强制隐藏
             }
@@ -50,7 +59,13 @@ export function updateUIForAuth() {
         if (userAvatar) userAvatar.textContent = '?';
         if (logoutBtn) logoutBtn.style.display = 'none';
         if (sidebarFooter) sidebarFooter.style.display = 'none';
-        if (modelSelect) modelSelect.classList.remove('show-for-pro');  // 未登录用户隐藏模型选择器
+        if (logoutSidebar) logoutSidebar.style.display = 'none';
+        if (modelSelect) {
+            modelSelect.innerHTML = '';
+            modelSelect.add(new Option(MODEL_REGISTRY['deepseek-combined'].label, 'deepseek-combined'));
+            modelSelect.classList.remove('show-for-pro');  // 未登录用户隐藏模型选择器
+            modelSelect.style.display = 'none';
+        }
     }
 }
 
