@@ -13,7 +13,7 @@ const log = makeLogger('AIClient');
 // 填入 Mac Mini 的 Cloudflare Tunnel 地址，例如：
 //   'https://api.meihuayili.com'
 // 留空 '' 则继续直连模式（密钥从浏览器发出）
-const PROXY_BASE_URL = '';
+const PROXY_BASE_URL = 'https://api.meihuayili.com';
 // ============================
 
 const PROXY_ENDPOINT = PROXY_BASE_URL ? `${PROXY_BASE_URL.replace(/\/$/, '')}/api/chat` : null;
