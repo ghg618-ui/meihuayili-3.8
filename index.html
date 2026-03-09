@@ -311,8 +311,8 @@
             display: none;
         }
     </style>
-  <script type="module" crossorigin src="/assets/index-DSDJpmHt.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-7Pl-6EVY.css">
+  <script type="module" crossorigin src="/assets/index-DugEqQZw.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-Be-WYgqS.css">
 </head>
 
 <body>
@@ -322,7 +322,7 @@
             <div class="brand-group">
                 <h1 class="logo">
                     <span class="logo-icon" id="sidebar-toggle"
-                        style="cursor: pointer; padding: 4px 8px; margin-right: 4px; position: relative;"><i data-lucide="menu" class="icon-md"></i><span class="sidebar-badge" id="sidebar-badge"></span></span>
+                        style="cursor: pointer; padding: 4px 8px; margin-right: 4px;"><i data-lucide="menu" class="icon-md"></i></span>
                     <span class="logo-text">梅花义理</span>
                     <span class="brand-sep">·</span>
                     <span class="subtitle">数智决策系统</span>
@@ -659,7 +659,19 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').catch(() => {});
+                navigator.serviceWorker.register('/sw.js').then(reg => {
+                    // 每次加载页面都检查更新
+                    reg.update();
+                    // 新SW安装好后立即接管+刷新
+                    reg.addEventListener('updatefound', () => {
+                        const newSW = reg.installing;
+                        newSW.addEventListener('statechange', () => {
+                            if (newSW.state === 'activated') {
+                                window.location.reload();
+                            }
+                        });
+                    });
+                }).catch(() => {});
             });
         }
     </script>

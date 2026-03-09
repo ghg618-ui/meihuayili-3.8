@@ -1,4 +1,4 @@
-const CACHE_NAME = 'meihua-v3.8.15';
+const CACHE_NAME = 'meihua-v3.8.16';
 const SHELL_ASSETS = [
     '/',
     '/index.html'
@@ -28,18 +28,17 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // Cache-first for app shell and static assets
+    // Network-first: always try to get the latest version
     event.respondWith(
-        caches.match(request).then(cached => {
-            if (cached) return cached;
-            return fetch(request).then(response => {
-                if (!response || response.status !== 200 || response.type !== 'basic') {
+        fetch(request)
+            .then(response => {
+                if (!response || response.status !== 200) {
                     return response;
                 }
                 const clone = response.clone();
                 caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
                 return response;
-            });
-        })
+            })
+            .catch(() => caches.match(request))
     );
 });
