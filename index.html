@@ -627,14 +627,12 @@
     <div class="modal-overlay hidden" id="modal-feedback">
         <div class="modal modal-wide glass-panel">
             <div class="modal-header">
-                <h3>📋 卦例反馈 · 算法自迭代</h3>
+                <h3>📋 卦例反馈</h3>
                 <button class="modal-close"
                     onclick="document.getElementById('modal-feedback').classList.add('hidden')">✕</button>
             </div>
             <div class="modal-body">
-                <p class="modal-desc" style="text-align: left; margin-bottom: 16px; font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;">
-                    您的真实反馈是"梅花义理"进化的养料。系统会将您的案例纳入学习库，在后续推演中自动校准偏差、强化准确方向。</p>
-                <label class="feedback-field-label">推演准确度</label>
+                <label class="feedback-field-label" style="margin-top:0">本次推演准确度</label>
                 <div class="feedback-rating">
                     <button class="rating-btn" data-value="accurate" onclick="window.selectRating(this)">🎯 神准</button>
                     <button class="rating-btn" data-value="partial" onclick="window.selectRating(this)">⚖️ 基本准确</button>
@@ -642,16 +640,16 @@
                     <button class="rating-btn" data-value="off" onclick="window.selectRating(this)">❌ 偏离现实</button>
                 </div>
 
-                <label class="feedback-field-label">事后实际发生了什么？</label>
-                <textarea id="feedback-outcome" placeholder="描述事情的真实走向和结果，例如：'最终项目未通过审批，原因是资金链断裂'..." rows="3"
+                <label class="feedback-field-label">实际结果 <span style="font-weight:400;color:var(--text-tertiary);font-size:0.8rem">（选填）</span></label>
+                <textarea id="feedback-outcome" placeholder="简述真实走向…" rows="2"
                     class="feedback-textarea"></textarea>
 
-                <label class="feedback-field-label">哪些断语有偏差？如何改进？</label>
-                <textarea id="feedback-text" placeholder="例如：'系统判断事业顺利，但实际遇到阻力；建议加强对冲克关系的判定权重'..." rows="3"
+                <label class="feedback-field-label">改进建议 <span style="font-weight:400;color:var(--text-tertiary);font-size:0.8rem">（选填）</span></label>
+                <textarea id="feedback-text" placeholder="哪里断得不准？" rows="2"
                     class="feedback-textarea"></textarea>
 
                 <button class="btn-primary" style="width: 100%; margin-top: 16px;"
-                    onclick="window.submitFeedback()">提交反馈 · 纳入学习库</button>
+                    onclick="window.submitFeedback()">提交反馈</button>
             </div>
         </div>
     </div>
