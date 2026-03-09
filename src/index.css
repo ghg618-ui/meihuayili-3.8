@@ -1585,7 +1585,7 @@ body {
     border-right: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
     box-shadow: 8px 0 32px rgba(0, 0, 0, 0.22);
-    background: var(--bg-secondary);
+    background: var(--bg-primary);
     transition: left 0.32s cubic-bezier(0.4, 0, 0.2, 1);
     padding: 20px 16px 16px;
     display: flex;
