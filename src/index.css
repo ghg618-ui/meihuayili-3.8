@@ -1514,23 +1514,19 @@ body {
     padding: 0 14px;
   }
 
-  /* 汉堡菜单按钮更醒目 */
+  /* 汉堡菜单 — 保持简洁图标，不加多余边框 */
   #sidebar-toggle {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    padding: 6px;
     color: var(--text-primary);
-    border-radius: 8px;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
+    border-radius: 6px;
     transition: background 0.15s;
   }
 
   #sidebar-toggle:active {
-    background: color-mix(in srgb, var(--accent-plum) 15%, var(--bg-secondary));
-    border-color: var(--accent-plum);
+    background: color-mix(in srgb, var(--accent-plum) 12%, transparent);
   }
 
   .logo {
@@ -3167,8 +3163,8 @@ input[type=number] {
   #app-sidebar {
     top: 56px;
     left: -110%;
-    width: min(86vw, 340px);
-    max-width: 340px;
+    width: min(72vw, 280px);
+    max-width: 280px;
     height: calc(100dvh - 68px);
     max-height: none;
     z-index: 1200;
@@ -3187,24 +3183,7 @@ input[type=number] {
   }
 
   .sidebar-top {
-    padding: 8px 6px 2px;
-  }
-
-  .btn-new-case {
-    width: 100%;
-    padding: 12px 14px;
-    border-radius: 12px;
-    letter-spacing: 0.04em;
-    font-weight: 600;
-    font-size: 0.95rem;
-    background: var(--accent-plum);
-    color: white;
-    border-color: var(--accent-plum);
-  }
-
-  .btn-new-case:hover,
-  .btn-new-case:active {
-    background: color-mix(in srgb, var(--accent-plum) 85%, black);
+    display: none;
   }
 
   .sidebar-section-label {
