@@ -34,7 +34,7 @@ try {
 
 // ===== 配置区 =====
 const PORT = process.env.PORT || 3210;
-const UPSTREAM_TIMEOUT_MS = Number(process.env.UPSTREAM_TIMEOUT_MS || 35000);
+const UPSTREAM_TIMEOUT_MS = Number(process.env.UPSTREAM_TIMEOUT_MS || 120000);
 
 // 多条线路，自动按顺序备用
 const ROUTES = [
