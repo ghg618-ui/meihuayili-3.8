@@ -34,6 +34,7 @@ try {
 
 // ===== 配置区 =====
 const PORT = process.env.PORT || 3210;
+const UPSTREAM_TIMEOUT_MS = Number(process.env.UPSTREAM_TIMEOUT_MS || 35000);
 
 // 多条线路，自动按顺序备用
 const ROUTES = [
@@ -92,9 +93,9 @@ app.post('/api/chat', async (req, res) => {
         return res.status(400).json({ error: '缺少 messages 字段' });
     }
 
-    // 找到第一条可用线路
-    const route = ROUTES.find(r => r.key && r.key.trim());
-    if (!route) {
+    // 找到所有可用线路（按顺序自动降级）
+    const availableRoutes = ROUTES.filter(r => r.key && r.key.trim());
+    if (availableRoutes.length === 0) {
         return res.status(503).json({ error: '服务器未配置 API 密钥，请联系管理员' });
     }
 
@@ -104,42 +105,97 @@ app.post('/api/chat', async (req, res) => {
     res.setHeader('X-Accel-Buffering', 'no'); // 关闭 nginx 缓冲
     res.flushHeaders();
 
-    const controller = new AbortController();
-    req.on('close', () => controller.abort()); // 用户断开时终止上游请求
+    const clientAbort = new AbortController();
+    req.on('close', () => clientAbort.abort()); // 用户断开时终止上游请求
+
+    const fetchWithTimeout = async (route) => {
+        let timeoutId = null;
+        let fetchAborted = false;
+
+        const timeoutAbort = new AbortController();
+        
+        timeoutId = setTimeout(() => {
+            fetchAborted = true;
+            timeoutAbort.abort();
+        }, UPSTREAM_TIMEOUT_MS);
+
+        try {
+            // 监听用户断开，也中止 fetch
+            if (clientAbort.signal.aborted) {
+                fetchAborted = true;
+                timeoutAbort.abort();
+            }
+
+            const upstream = await fetch(route.endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${route.key}`,
+                },
+                body: JSON.stringify({
+                    model: route.model,
+                    messages,
+                    stream: true,
+                    max_tokens: 8192,
+                }),
+                signal: timeoutAbort.signal,
+            });
+            
+            if (timeoutId) clearTimeout(timeoutId);
+            return upstream;
+        } catch (err) {
+            if (timeoutId) clearTimeout(timeoutId);
+            throw err;
+        }
+    };
 
     try {
-        const upstream = await fetch(route.endpoint, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${route.key}`,
-            },
-            body: JSON.stringify({
-                model: route.model,
-                messages,
-                stream: true,
-                max_tokens: 8192,
-            }),
-            signal: controller.signal,
-        });
+        let lastErrMsg = '';
 
-        if (!upstream.ok) {
-            const errText = await upstream.text().catch(() => '');
-            res.write(`data: ${JSON.stringify({ error: `上游错误 ${upstream.status}: ${errText.slice(0, 200)}` })}\n\n`);
-            return res.end();
+        for (let i = 0; i < availableRoutes.length; i++) {
+            const route = availableRoutes[i];
+            const hasNext = i < availableRoutes.length - 1;
+
+            try {
+                const upstream = await fetchWithTimeout(route);
+
+                if (!upstream.ok) {
+                    const errText = await upstream.text().catch(() => '');
+                    lastErrMsg = `${route.name} 返回 ${upstream.status}: ${errText.slice(0, 200)}`;
+                    if (hasNext) continue;
+                    res.write(`data: ${JSON.stringify({ error: `上游错误 ${lastErrMsg}` })}\n\n`);
+                    return res.end();
+                }
+
+                // 透明转发 SSE 数据流
+                const reader = upstream.body.getReader();
+                const decoder = new TextDecoder();
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    const chunk = decoder.decode(value, { stream: true });
+                    res.write(chunk);
+                }
+
+                return res.end();
+            } catch (err) {
+                if (err.name === 'AbortError' && clientAbort.signal.aborted) {
+                    return;
+                }
+
+                const isTimeout = err?.name === 'AbortError';
+                lastErrMsg = isTimeout
+                    ? `${route.name} 连接超时（>${UPSTREAM_TIMEOUT_MS}ms）`
+                    : `${route.name} 请求失败: ${err.message}`;
+
+                if (hasNext) continue;
+                res.write(`data: ${JSON.stringify({ error: lastErrMsg })}\n\n`);
+                return res.end();
+            }
         }
 
-        // 透明转发 SSE 数据流
-        const reader = upstream.body.getReader();
-        const decoder = new TextDecoder();
-
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            const chunk = decoder.decode(value, { stream: true });
-            res.write(chunk);
-        }
-
+        res.write(`data: ${JSON.stringify({ error: lastErrMsg || '所有上游线路均不可用' })}\n\n`);
         res.end();
     } catch (err) {
         if (err.name !== 'AbortError') {
