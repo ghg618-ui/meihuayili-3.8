@@ -131,11 +131,14 @@ app.post('/api/login', (req, res) => {
 
     const users = loadUsers();
     const u = users[name];
-    if (u && (u.passwordHash === passwordHash || u.password === passwordHash)) {
+    if (!u) {
+        return res.status(404).json({ error: '用户尚未注册', code: 'USER_NOT_FOUND' });
+    }
+    if (u.passwordHash === passwordHash || u.password === passwordHash) {
         console.log(`[auth] 用户登录: ${name}`);
         res.json({ success: true, user: { name } });
     } else {
-        res.status(401).json({ error: '用户名或密码错误' });
+        res.status(401).json({ error: '密码错误', code: 'WRONG_PASSWORD' });
     }
 });
 

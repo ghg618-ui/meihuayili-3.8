@@ -124,6 +124,14 @@ export async function handleAuthSubmit(renderHistory) {
         user = await registerUser(username, password);
     } else {
         user = await loginUser(username, password);
+        // 如果用户不存在，自动切换到注册模式，让用户确认密码后完成注册
+        if (user?.code === 'USER_NOT_FOUND') {
+            switchToRegisterMode();
+            $('#auth-confirm-password').value = '';
+            $('#auth-confirm-password').focus();
+            showToast('该用户尚未注册，请再次输入密码以确认注册', 'info');
+            return;
+        }
     }
 
     if (user && !user.error) {

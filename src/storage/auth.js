@@ -44,7 +44,7 @@ export async function loginUser(name, password) {
             localStorage.setItem('meihua_current_user', JSON.stringify(currentUser));
             return currentUser;
         }
-        return { error: data.error || '用户名或密码错误' };
+        return { error: data.error || '用户名或密码错误', code: data.code };
     } catch (e) {
         log.warn('服务器登录失败，使用本地验证', e);
     }
@@ -52,12 +52,15 @@ export async function loginUser(name, password) {
     // 服务器不可用时回退到 localStorage
     const users = getRegisteredUsers();
     const user = users[name];
-    if (user && (user.password === hp || user.passwordHash === hp)) {
+    if (!user) {
+        return { error: '用户尚未注册', code: 'USER_NOT_FOUND' };
+    }
+    if (user.password === hp || user.passwordHash === hp) {
         const currentUser = { name };
         localStorage.setItem('meihua_current_user', JSON.stringify(currentUser));
         return currentUser;
     }
-    return { error: '用户名或密码错误' };
+    return { error: '密码错误', code: 'WRONG_PASSWORD' };
 }
 
 export async function registerUser(name, password) {
