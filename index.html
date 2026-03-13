@@ -320,7 +320,7 @@
             display: none;
         }
     </style>
-  <script type="module" crossorigin src="/assets/index-D65fbNyc.js"></script>
+  <script type="module" crossorigin src="/assets/index-DCywrP7P.js"></script>
   <link rel="stylesheet" crossorigin href="/assets/index-BTpVsyLB.css">
 </head>
 
@@ -335,7 +335,7 @@
                     <span class="logo-text">梅花义理</span>
                     <span class="brand-sep">·</span>
                     <span class="subtitle">AI 断卦</span>
-                    <!-- <span class="logo-version">V3.8</span> -->
+                    <span class="beta-tag" style="font-size:0.55rem;background:var(--accent-plum);color:#fff;padding:1px 5px;border-radius:4px;margin-left:4px;vertical-align:super;font-weight:600;letter-spacing:0.5px;">beta</span>
                 </h1>
             </div>
             <div class="header-right" style="display: flex; align-items: center; gap: 16px;">
@@ -639,22 +639,34 @@
 
                 <!-- 个人面板（登录后点击头像显示） -->
                 <div id="auth-form-profile" class="hidden">
-                    <div style="text-align:center; margin-bottom:16px;">
-                        <div id="profile-avatar" style="width:48px;height:48px;border-radius:50%;background:var(--accent-plum);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:600;margin-bottom:8px;"></div>
-                        <div id="profile-name" style="font-size:1rem;font-weight:600;color:var(--text-primary);"></div>
+                    <div style="text-align:center; margin-bottom:20px; padding-top:8px;">
+                        <div id="profile-avatar" style="width:52px;height:52px;border-radius:50%;background:var(--accent-plum);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:600;margin-bottom:10px;"></div>
+                        <div id="profile-name" style="font-size:1.05rem;font-weight:600;color:var(--text-primary);"></div>
                     </div>
                     <!-- 绑定邮箱区 -->
-                    <div id="profile-bind-email-section">
-                        <p id="profile-email-status" style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:10px;text-align:center;"></p>
-                        <div id="profile-bind-input-group" class="control-group" style="margin-bottom:8px;">
-                            <input type="email" id="profile-email-input" placeholder="输入邮箱地址" autocomplete="email" style="width:100%;">
+                    <div id="profile-bind-email-section" style="padding:0 4px;">
+                        <p id="profile-email-status" style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:14px;text-align:center;"></p>
+                        <div id="profile-bind-input-group" style="display:flex;gap:10px;align-items:center;margin-bottom:6px;">
+                            <input type="email" id="profile-email-input" placeholder="输入邮箱地址" autocomplete="email" style="flex:1;height:38px;font-size:0.88rem;padding:0 12px;border:1px solid var(--border-color);border-radius:8px;background:var(--bg-primary);color:var(--text-primary);outline:none;">
+                            <button class="btn-primary" id="btn-bind-email" style="padding:8px 18px;font-size:0.82rem;white-space:nowrap;border-radius:8px;flex-shrink:0;">绑定</button>
                         </div>
-                        <button class="btn-primary" style="width:100%;margin-bottom:12px;" id="btn-bind-email">绑定邮箱</button>
                     </div>
                     <!-- 管理员统计区 -->
                     <div id="profile-admin-section" class="hidden" style="border-top:1px dashed var(--border-color);padding-top:14px;margin-top:8px;">
                         <p style="font-size:0.82rem;color:var(--text-tertiary);margin-bottom:6px;">📊 管理员面板</p>
-                        <p id="admin-user-count" style="font-size:0.9rem;color:var(--text-primary);"></p>
+                        <p id="admin-user-count" style="font-size:0.9rem;color:var(--text-primary);margin-bottom:10px;"></p>
+                        <div id="admin-user-list" style="max-height:200px;overflow-y:auto;font-size:0.78rem;margin-bottom:12px;"></div>
+                        <!-- 管理员重置密码 -->
+                        <div style="border-top:1px dashed var(--border-color);padding-top:10px;margin-top:8px;">
+                            <p style="font-size:0.78rem;color:var(--text-tertiary);margin-bottom:6px;">🔑 帮用户重置密码</p>
+                            <div class="control-group" style="margin-bottom:6px;">
+                                <input type="text" id="admin-reset-target" placeholder="输入用户名" style="font-size:0.82rem;">
+                            </div>
+                            <div class="control-group" style="margin-bottom:6px;">
+                                <input type="text" id="admin-reset-newpwd" placeholder="输入新密码" style="font-size:0.82rem;">
+                            </div>
+                            <button class="btn-primary" id="btn-admin-reset" style="width:100%;font-size:0.82rem;padding:6px 0;">重置该用户密码</button>
+                        </div>
                     </div>
                 </div>
             </div>
