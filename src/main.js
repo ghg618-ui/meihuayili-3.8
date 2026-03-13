@@ -792,6 +792,8 @@ document.addEventListener('DOMContentLoaded', init);
 (function() {
     // 已经以 standalone 模式运行（已安装），不显示
     if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) return;
+    // 电脑端不显示，仅手机/平板
+    if (!/Mobi|Android|iPad|iPhone|iPod/.test(navigator.userAgent)) return;
     // 用户之前关闭过，本次会话不再打扰
     if (sessionStorage.getItem('pwa_dismissed')) return;
 
