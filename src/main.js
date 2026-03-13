@@ -792,8 +792,8 @@ document.addEventListener('DOMContentLoaded', init);
 (function() {
     // 已经以 standalone 模式运行（已安装），不显示
     if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) return;
-    // 用户之前关闭过，不再打扰
-    if (localStorage.getItem('pwa_dismissed')) return;
+    // 用户之前关闭过，本次会话不再打扰
+    if (sessionStorage.getItem('pwa_dismissed')) return;
 
     const banner = document.getElementById('pwa-install-banner');
     const btnInstall = document.getElementById('btn-pwa-install');
@@ -833,7 +833,7 @@ document.addEventListener('DOMContentLoaded', init);
 
     btnDismiss?.addEventListener('click', () => {
         banner.classList.add('hidden');
-        localStorage.setItem('pwa_dismissed', '1');
+        sessionStorage.setItem('pwa_dismissed', '1');
     });
 
     btnIosClose?.addEventListener('click', () => {
