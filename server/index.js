@@ -177,7 +177,7 @@ app.post('/api/login', (req, res) => {
     }
     if (u.passwordHash === passwordHash || u.password === passwordHash) {
         console.log(`[auth] 用户登录: ${name}`);
-        res.json({ success: true, user: { name } });
+        res.json({ success: true, user: { name, hasEmail: !!u.email } });
     } else {
         res.status(401).json({ error: '密码错误', code: 'WRONG_PASSWORD' });
     }
@@ -191,8 +191,27 @@ app.get('/api/admin/stats', (req, res) => {
         return res.status(403).json({ error: '无权限' });
     }
     const users = loadUsers();
-    const userList = Object.values(users).map(u => ({ name: u.name, created: u.created }));
+    const userList = Object.values(users).map(u => ({ name: u.name, email: u.email || '', created: u.created }));
     res.json({ totalUsers: userList.length, users: userList });
+});
+
+// ===== 绑定邮箱 =====
+app.post('/api/bind-email', (req, res) => {
+    const { name, email } = req.body;
+    if (!name || !email) return res.status(400).json({ error: '缺少用户名或邮箱' });
+
+    const cleanEmail = email.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+        return res.status(400).json({ error: '邮箱格式不正确' });
+    }
+
+    const users = loadUsers();
+    if (!users[name]) return res.status(404).json({ error: '用户不存在' });
+
+    users[name].email = cleanEmail;
+    saveUsers(users);
+    console.log(`[auth] 用户绑定邮箱: ${name} -> ${cleanEmail}`);
+    res.json({ success: true });
 });
 
 // ===== 管理员重置密码 =====

@@ -634,6 +634,27 @@
                         <button class="btn-primary" id="btn-redeem-vip" style="padding: 6px 14px; font-size: 0.8rem; white-space: nowrap;">兑换</button>
                     </div>
                 </div>
+
+                <!-- 个人面板（登录后点击头像显示） -->
+                <div id="auth-form-profile" class="hidden">
+                    <div style="text-align:center; margin-bottom:16px;">
+                        <div id="profile-avatar" style="width:48px;height:48px;border-radius:50%;background:var(--accent-plum);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:600;margin-bottom:8px;"></div>
+                        <div id="profile-name" style="font-size:1rem;font-weight:600;color:var(--text-primary);"></div>
+                    </div>
+                    <!-- 绑定邮箱区 -->
+                    <div id="profile-bind-email-section">
+                        <p id="profile-email-status" style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:10px;text-align:center;"></p>
+                        <div id="profile-bind-input-group" class="control-group" style="margin-bottom:8px;">
+                            <input type="email" id="profile-email-input" placeholder="输入邮箱地址" autocomplete="email" style="width:100%;">
+                        </div>
+                        <button class="btn-primary" style="width:100%;margin-bottom:12px;" id="btn-bind-email">绑定邮箱</button>
+                    </div>
+                    <!-- 管理员统计区 -->
+                    <div id="profile-admin-section" class="hidden" style="border-top:1px dashed var(--border-color);padding-top:14px;margin-top:8px;">
+                        <p style="font-size:0.82rem;color:var(--text-tertiary);margin-bottom:6px;">📊 管理员面板</p>
+                        <p id="admin-user-count" style="font-size:0.9rem;color:var(--text-primary);"></p>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer" style="text-align: center; font-size: 0.8rem; color: var(--text-tertiary);">
                 梅花义理 · AI 断卦

@@ -40,7 +40,7 @@ export async function loginUser(name, password) {
                 users[name] = { name, password: hp, created: new Date().toISOString() };
                 saveRegisteredUsers(users);
             }
-            const currentUser = { name };
+            const currentUser = { name, hasEmail: !!data.user?.hasEmail };
             localStorage.setItem('meihua_current_user', JSON.stringify(currentUser));
             return currentUser;
         }
@@ -115,6 +115,20 @@ export async function resetPassword(name, code, newPassword) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, code, newPasswordHash: hp }),
     });
+    return resp.json();
+}
+
+export async function bindEmail(name, email) {
+    const resp = await fetch(`${API_BASE}/api/bind-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email }),
+    });
+    return resp.json();
+}
+
+export async function getAdminStats(adminName) {
+    const resp = await fetch(`${API_BASE}/api/admin/stats?admin=${encodeURIComponent(adminName)}`);
     return resp.json();
 }
 

@@ -31,7 +31,10 @@ import {
     showForgotPassword,
     hideForgotPassword,
     handleSendCode,
-    handleResetSubmit
+    handleResetSubmit,
+    showProfilePanel,
+    hideProfilePanel,
+    handleBindEmail
 } from './controllers/auth-controller.js';
 import { hasProAccess } from './storage/auth.js';
 import { handleSaveSettings, loadSettingsToModal } from './controllers/settings-controller.js';
@@ -196,7 +199,14 @@ function updateShichenLabel() {
 
 function bindEvents() {
     // Auth
-    $('#user-trigger')?.addEventListener('click', () => openModal('modal-auth'));
+    $('#user-trigger')?.addEventListener('click', () => {
+        openModal('modal-auth');
+        if (state.currentUser) {
+            showProfilePanel();
+        } else {
+            hideProfilePanel();
+        }
+    });
     $('#btn-register-header')?.addEventListener('click', () => {
         openModal('modal-auth');
         switchToRegisterMode();
@@ -209,9 +219,10 @@ function bindEvents() {
     $('#back-to-login')?.addEventListener('click', hideForgotPassword);
     $('#btn-send-code')?.addEventListener('click', handleSendCode);
     $('#btn-reset-submit')?.addEventListener('click', handleResetSubmit);
+    $('#btn-bind-email')?.addEventListener('click', handleBindEmail);
     $('#btn-logout-header')?.addEventListener('click', () => handleLogout(renderHistory, startNewCase));
     $('#btn-logout-sidebar')?.addEventListener('click', () => handleLogout(renderHistory, startNewCase));
-    $('#btn-close-auth')?.addEventListener('click', () => closeModal('modal-auth'));
+    $('#btn-close-auth')?.addEventListener('click', () => { hideProfilePanel(); closeModal('modal-auth'); });
 
     // Time picker
     $('#cast-time-picker')?.addEventListener('input', updateShichenLabel);

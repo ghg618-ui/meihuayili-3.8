@@ -2,7 +2,7 @@
  * Auth Controller - Login/Register/Logout UI logic
  */
 import { $, showToast } from '../utils/dom.js';
-import { loginUser, registerUser, logoutUser, hasProAccess, getUserQuota, redeemVipCode, isVipUser, getGuestQuota, sendResetCode, resetPassword } from '../storage/auth.js';
+import { loginUser, registerUser, logoutUser, hasProAccess, getUserQuota, redeemVipCode, isVipUser, getGuestQuota, sendResetCode, resetPassword, bindEmail, getAdminStats, getCurrentUser } from '../storage/auth.js';
 import { MODEL_REGISTRY } from '../storage/settings.js';
 import { loadHistory, mergeCloudHistory } from '../storage/history.js';
 import { closeModal } from '../ui/modals.js';
@@ -280,5 +280,95 @@ export async function handleResetSubmit() {
         }
     } catch (e) {
         showToast('网络错误，请稍后再试', 'error');
+    }
+}
+
+// ===== 个人面板 =====
+const ADMIN_LIST = ['admin', 'gonghg'];
+
+export async function showProfilePanel() {
+    const user = getCurrentUser();
+    if (!user) return;
+
+    // 隐藏登录/注册/重置表单，显示个人面板
+    $('#auth-form-main')?.classList.add('hidden');
+    $('#auth-form-reset')?.classList.add('hidden');
+    $('#auth-form-profile')?.classList.remove('hidden');
+    $('.auth-tabs')?.classList.add('hidden');
+    $('#auth-title').textContent = '我的账户';
+
+    // 头像和名字
+    $('#profile-avatar').textContent = user.name.charAt(0);
+    $('#profile-name').textContent = user.name;
+
+    // 邮箱绑定状态
+    const emailStatus = $('#profile-email-status');
+    const inputGroup = $('#profile-bind-input-group');
+    const bindBtn = $('#btn-bind-email');
+
+    if (user.hasEmail) {
+        emailStatus.textContent = '✅ 已绑定邮箱（可自助找回密码）';
+        emailStatus.style.color = 'var(--status-success)';
+        inputGroup?.classList.add('hidden');
+        bindBtn?.classList.add('hidden');
+    } else {
+        emailStatus.textContent = '⚠️ 尚未绑定邮箱，绑定后可自助找回密码';
+        emailStatus.style.color = 'var(--status-warning, #e6a23c)';
+        inputGroup?.classList.remove('hidden');
+        bindBtn?.classList.remove('hidden');
+    }
+
+    // 管理员面板
+    const adminSection = $('#profile-admin-section');
+    if (ADMIN_LIST.includes(user.name)) {
+        adminSection?.classList.remove('hidden');
+        $('#admin-user-count').textContent = '加载中...';
+        try {
+            const stats = await getAdminStats(user.name);
+            $('#admin-user-count').textContent = `注册会员总数：${stats.totalUsers} 人`;
+        } catch {
+            $('#admin-user-count').textContent = '获取失败';
+        }
+    } else {
+        adminSection?.classList.add('hidden');
+    }
+}
+
+export function hideProfilePanel() {
+    $('#auth-form-profile')?.classList.add('hidden');
+    $('.auth-tabs')?.classList.remove('hidden');
+    $('#auth-title').textContent = '登录 / 注册';
+    switchToLoginMode();
+}
+
+export async function handleBindEmail() {
+    const user = getCurrentUser();
+    if (!user) return;
+
+    const email = $('#profile-email-input')?.value?.trim();
+    if (!email) { showToast('请输入邮箱地址', 'error'); return; }
+
+    const btn = $('#btn-bind-email');
+    btn.disabled = true;
+    btn.textContent = '绑定中...';
+
+    try {
+        const data = await bindEmail(user.name, email);
+        if (data.success) {
+            // 更新本地用户信息
+            user.hasEmail = true;
+            localStorage.setItem('meihua_current_user', JSON.stringify(user));
+            state.currentUser = user;
+            showToast('邮箱绑定成功！', 'success');
+            // 刷新面板
+            showProfilePanel();
+        } else {
+            showToast(data.error || '绑定失败', 'error');
+        }
+    } catch {
+        showToast('网络错误，请稍后再试', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = '绑定邮箱';
     }
 }
