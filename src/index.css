@@ -1585,9 +1585,10 @@ body {
     font-size: 0.78rem;
   }
 
-  /* 头部退出按钮在手机上隐藏，改放到侧边栏 */
+  /* 头部退出按钮在手机上也显示，紧凑样式 */
   .logout-btn-header {
-    display: none !important;
+    font-size: 0.75rem;
+    padding: 4px 10px;
   }
 
   /* 主题按钮只保留图标，隐藏文字 */
@@ -1724,6 +1725,7 @@ body {
 
   .hero-actions {
     flex-direction: column;
+    align-items: center;
     gap: 10px;
   }
 

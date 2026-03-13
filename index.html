@@ -343,7 +343,7 @@
                     <span class="user-quota" id="user-quota-label" style="display: inline-block; font-size: 0.85rem; color: var(--accent-plum); cursor: pointer; font-weight: 500;">登录 / 注册</span>
                 </div>
                 <!-- 真正的退出按钮 -->
-                <button type="button" id="btn-logout-header" class="logout-btn-header">退出登录</button>
+                <button type="button" id="btn-logout-header" class="logout-btn-header">退出</button>
                 <button type="button" id="btn-theme-toggle" class="theme-toggle-btn" title="切换主题"><span class="theme-icon">🌙</span><span class="theme-label">深色</span></button>
             </div>
         </div>
@@ -562,7 +562,7 @@
                     <input type="password" id="auth-confirm-password" placeholder="请再次输入密码" autocomplete="new-password">
                 </div>
                 <button class="btn-primary" style="width: 100%;" id="btn-auth-submit">登录</button>
-                <div class="vip-redeem-section" style="margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--border-color);">
+                <div class="vip-redeem-section hidden" id="vip-redeem-section" style="margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--border-color);">
                     <label style="font-size: 0.8rem; color: var(--text-tertiary);">有兑换码？</label>
                     <div style="display: flex; gap: 8px; margin-top: 6px;">
                         <input type="text" id="vip-code-input" placeholder="输入VIP兑换码" style="flex:1; font-size: 0.85rem;">
