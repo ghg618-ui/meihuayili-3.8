@@ -41,8 +41,17 @@
             align-items: center;
             justify-content: center;
             z-index: 200000;
-            -webkit-overflow-scrolling: touch;
             animation: fadeIn 0.3s ease;
+        }
+
+        /* iOS WeChat 键盘修复：手机端 modal 改为顶部对齐+可滚动 */
+        @media (max-width: 900px) {
+            .modal-overlay {
+                align-items: flex-start;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                padding: 12vh 0 20vh;
+            }
         }
 
         .modal {
@@ -322,8 +331,8 @@
             display: none;
         }
     </style>
-  <script type="module" src="/assets/index-DPEkAMKm.js"></script>
-  <link rel="stylesheet" href="/assets/index-CzfEtWaL.css">
+  <script type="module" src="/assets/index-ce_KvkOp.js"></script>
+  <link rel="stylesheet" href="/assets/index-B0RE93qj.css">
 </head>
 
 <body>
