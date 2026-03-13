@@ -2,7 +2,7 @@
  * Auth Controller - Login/Register/Logout UI logic
  */
 import { $, showToast } from '../utils/dom.js';
-import { loginUser, registerUser, logoutUser, hasProAccess, getUserQuota, redeemVipCode, isVipUser, getGuestQuota, sendResetCode, resetPassword, bindEmail, getAdminStats, getCurrentUser } from '../storage/auth.js';
+import { loginUser, registerUser, logoutUser, hasProAccess, getUserQuota, redeemVipCode, isVipUser, getGuestQuota, sendResetCode, resetPassword, bindEmail, getAdminStats, getCurrentUser, adminResetPassword } from '../storage/auth.js';
 import { MODEL_REGISTRY } from '../storage/settings.js';
 import { loadHistory, mergeCloudHistory } from '../storage/history.js';
 import { closeModal } from '../ui/modals.js';
@@ -304,18 +304,15 @@ export async function showProfilePanel() {
     // 邮箱绑定状态
     const emailStatus = $('#profile-email-status');
     const inputGroup = $('#profile-bind-input-group');
-    const bindBtn = $('#btn-bind-email');
 
     if (user.hasEmail) {
         emailStatus.textContent = '✅ 已绑定邮箱（可自助找回密码）';
         emailStatus.style.color = 'var(--status-success)';
         inputGroup?.classList.add('hidden');
-        bindBtn?.classList.add('hidden');
     } else {
         emailStatus.textContent = '⚠️ 尚未绑定邮箱，绑定后可自助找回密码';
         emailStatus.style.color = 'var(--status-warning, #e6a23c)';
         inputGroup?.classList.remove('hidden');
-        bindBtn?.classList.remove('hidden');
     }
 
     // 管理员面板
@@ -323,9 +320,23 @@ export async function showProfilePanel() {
     if (ADMIN_LIST.includes(user.name)) {
         adminSection?.classList.remove('hidden');
         $('#admin-user-count').textContent = '加载中...';
+        $('#admin-user-list').innerHTML = '';
         try {
             const stats = await getAdminStats(user.name);
             $('#admin-user-count').textContent = `注册会员总数：${stats.totalUsers} 人`;
+            // 渲染用户列表
+            const listEl = $('#admin-user-list');
+            if (stats.users && stats.users.length > 0) {
+                const rows = stats.users.map((u, i) => {
+                    const emailTag = u.email ? `<span style="color:var(--status-success);">✉</span>` : `<span style="color:#ccc;">—</span>`;
+                    const date = u.created ? u.created.split('T')[0] : '';
+                    return `<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border-color);">
+                        <span>${i + 1}. ${u.name}</span>
+                        <span>${emailTag} ${date}</span>
+                    </div>`;
+                });
+                listEl.innerHTML = rows.join('');
+            }
         } catch {
             $('#admin-user-count').textContent = '获取失败';
         }
@@ -369,6 +380,37 @@ export async function handleBindEmail() {
         showToast('网络错误，请稍后再试', 'error');
     } finally {
         btn.disabled = false;
-        btn.textContent = '绑定邮箱';
+        btn.textContent = '绑定';
+    }
+}
+
+// ===== 管理员帮用户重置密码 =====
+export async function handleAdminResetPassword() {
+    const user = getCurrentUser();
+    if (!user || !ADMIN_LIST.includes(user.name)) return;
+
+    const target = $('#admin-reset-target')?.value?.trim();
+    const newPwd = $('#admin-reset-newpwd')?.value?.trim();
+    if (!target || !newPwd) { showToast('请填写用户名和新密码', 'error'); return; }
+    if (newPwd.length < 4) { showToast('密码至少4个字符', 'error'); return; }
+
+    const btn = $('#btn-admin-reset');
+    btn.disabled = true;
+    btn.textContent = '重置中...';
+
+    try {
+        const data = await adminResetPassword(user.name, target, newPwd);
+        if (data.success) {
+            showToast(`已重置 ${target} 的密码`, 'success');
+            $('#admin-reset-target').value = '';
+            $('#admin-reset-newpwd').value = '';
+        } else {
+            showToast(data.error || '重置失败', 'error');
+        }
+    } catch {
+        showToast('网络错误', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = '重置该用户密码';
     }
 }
