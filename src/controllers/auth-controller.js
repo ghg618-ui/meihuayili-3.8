@@ -34,8 +34,8 @@ export function updateUIForAuth() {
     if (state.currentUser) {
         const isPro = hasProAccess();
         const vip = isVipUser();
-        if (userLabel) userLabel.textContent = state.currentUser.name;
-        if (userAvatar) userAvatar.textContent = state.currentUser.name.charAt(0);
+        if (userLabel) { userLabel.textContent = state.currentUser.name; userLabel.style.display = ''; }
+        if (userAvatar) { userAvatar.textContent = state.currentUser.name.charAt(0); userAvatar.style.display = ''; }
         
         if (userQuota) {
             userQuota.style.cursor = '';
@@ -80,8 +80,8 @@ export function updateUIForAuth() {
             }
         }
     } else {
-        if (userLabel) userLabel.textContent = '';
-        if (userAvatar) userAvatar.textContent = '';
+        if (userLabel) { userLabel.textContent = ''; userLabel.style.display = 'none'; }
+        if (userAvatar) { userAvatar.textContent = ''; userAvatar.style.display = 'none'; }
         if (userQuota) {
             userQuota.innerHTML = '登录 / 注册';
             userQuota.style.display = 'inline-block';
