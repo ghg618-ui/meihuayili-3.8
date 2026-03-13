@@ -266,6 +266,11 @@ function bindEvents() {
     // 新起一卦（AI 回复底部按钮回调）
     window.startNewCaseFromChat = startNewCase;
 
+    // 显示易泓录二维码弹窗
+    window.showQRCode = function () {
+        $('#modal-qrcode')?.classList.remove('hidden');
+    };
+
     // 导出断卦结果
     window.exportDivinationResult = function () {
         const question = $('#input-chat')?.value?.trim() || '未记录问题';
@@ -301,7 +306,7 @@ function bindEvents() {
 
         const hexName = state.currentResult?.original?.name || '';
         const now = new Date().toLocaleString();
-        const exportText = `═══ 梅花义理 · 断卦记录 ═══\n\n【时间】${now}\n【卦名】${hexName}\n【问题】${question}\n\n─── AI 分析 ───\n\n${cleanText.trim()}\n\n— 梅花义理 meihuayili.com`;
+        const exportText = `═══ 梅花义理 · 断卦记录 ═══\n\n【时间】${now}\n【卦名】${hexName}\n【问题】${question}\n\n─── AI 分析 ───\n\n${cleanText.trim()}\n\n— 梅花义理 meihuayili.com\n📱 微信搜索「易泓录」关注获取更多易学智慧`;
 
         // 优先用系统分享（手机可分享到微信/备忘录），降级为复制到剪贴板
         if (navigator.share) {

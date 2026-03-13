@@ -395,6 +395,9 @@ async function _runStream({ config, modelInfo, messages, targetEl, question, ren
                 <div class="msg-bottom-actions">
                     <button class="btn-new-case-inline" onclick="window.startNewCaseFromChat()">🔄 新起一卦</button>
                     <button class="btn-export-inline" onclick="window.exportDivinationResult()">📤 导出结果</button>
+                </div>
+                <div class="wechat-promo" onclick="window.showQRCode()">
+                    📱 关注微信服务号「易泓录」获取更多易学智慧
                 </div>`;
                 targetEl.insertAdjacentHTML('beforeend', fbHtml);
             }

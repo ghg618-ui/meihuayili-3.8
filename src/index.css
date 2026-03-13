@@ -2979,6 +2979,57 @@ input[type=number] {
   background: rgba(93, 43, 93, 0.04);
 }
 
+/* WeChat promo line */
+.wechat-promo {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  margin-top: 10px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.wechat-promo:hover {
+  opacity: 1;
+  color: var(--accent-plum);
+}
+
+/* QR Code modal */
+#modal-qrcode {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.qrcode-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px 28px 24px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  max-width: 280px;
+  animation: qr-pop 0.3s ease;
+}
+@keyframes qr-pop {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+.qrcode-img {
+  width: 200px;
+  height: 200px;
+  border-radius: 12px;
+}
+.qrcode-label {
+  margin-top: 16px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+}
+.qrcode-sub {
+  margin-top: 4px;
+  font-size: 0.78rem;
+  color: #999;
+}
+
 .icon-btn.btn-feedback {
   background: none;
   border: none;
@@ -3296,6 +3347,19 @@ input[type=number] {
   border-color: #4a9eff;
   background: #2a2d2e;
 }
+
+[data-theme="dark"] .wechat-promo {
+  color: #888;
+}
+[data-theme="dark"] .wechat-promo:hover {
+  color: #4a9eff;
+}
+[data-theme="dark"] .qrcode-card {
+  background: #2a2d2e;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+[data-theme="dark"] .qrcode-label { color: #e0e0e0; }
+[data-theme="dark"] .qrcode-sub { color: #888; }
 
 [data-theme="dark"] #hexagram-display,
 [data-theme="dark"] #ai-chat,
