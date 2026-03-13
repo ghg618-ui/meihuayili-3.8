@@ -320,7 +320,7 @@
             display: none;
         }
     </style>
-  <script type="module" crossorigin src="/assets/index-DCywrP7P.js"></script>
+  <script type="module" crossorigin src="/assets/index-nksZ3f4b.js"></script>
   <link rel="stylesheet" crossorigin href="/assets/index-BTpVsyLB.css">
 </head>
 
@@ -335,7 +335,7 @@
                     <span class="logo-text">梅花义理</span>
                     <span class="brand-sep">·</span>
                     <span class="subtitle">AI 断卦</span>
-                    <span class="beta-tag" style="font-size:0.55rem;background:var(--accent-plum);color:#fff;padding:1px 5px;border-radius:4px;margin-left:4px;vertical-align:super;font-weight:600;letter-spacing:0.5px;">beta</span>
+                    <span class="beta-tag" style="font-size:0.6rem;color:var(--text-tertiary);margin-left:4px;vertical-align:super;font-weight:400;">beta</span>
                 </h1>
             </div>
             <div class="header-right" style="display: flex; align-items: center; gap: 16px;">
@@ -650,6 +650,17 @@
                             <input type="email" id="profile-email-input" placeholder="输入邮箱地址" autocomplete="email" style="flex:1;height:38px;font-size:0.88rem;padding:0 12px;border:1px solid var(--border-color);border-radius:8px;background:var(--bg-primary);color:var(--text-primary);outline:none;">
                             <button class="btn-primary" id="btn-bind-email" style="padding:8px 18px;font-size:0.82rem;white-space:nowrap;border-radius:8px;flex-shrink:0;">绑定</button>
                         </div>
+                    </div>
+                    <!-- 修改密码区 -->
+                    <div id="profile-change-pwd-section" style="padding:0 4px;margin-top:14px;border-top:1px dashed var(--border-color);padding-top:14px;">
+                        <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:10px;">修改密码</p>
+                        <div class="control-group" style="margin-bottom:8px;">
+                            <input type="password" id="profile-old-pwd" placeholder="当前密码" autocomplete="current-password" style="width:100%;">
+                        </div>
+                        <div class="control-group" style="margin-bottom:8px;">
+                            <input type="password" id="profile-new-pwd" placeholder="新密码（至少4位）" autocomplete="new-password" style="width:100%;">
+                        </div>
+                        <button class="btn-primary" id="btn-change-pwd" style="width:100%;font-size:0.85rem;">确认修改</button>
                     </div>
                     <!-- 管理员统计区 -->
                     <div id="profile-admin-section" class="hidden" style="border-top:1px dashed var(--border-color);padding-top:14px;margin-top:8px;">
