@@ -38,18 +38,21 @@ export function updateUIForAuth() {
         if (userAvatar) userAvatar.textContent = state.currentUser.name.charAt(0);
         
         if (userQuota) {
+            userQuota.style.cursor = '';
+            userQuota.style.fontWeight = '';
+            userQuota.style.fontSize = '0.75rem';
             if (isPro) {
-                userQuota.textContent = 'Pro: 无限制';
+                userQuota.textContent = 'Pro';
                 userQuota.style.display = 'inline-block';
                 userQuota.style.color = 'var(--status-success)';
             } else if (vip) {
                 const q = getUserQuota();
-                userQuota.textContent = `VIP · 今日剩余${q}次`;
+                userQuota.textContent = `VIP · 剩${q}次`;
                 userQuota.style.display = 'inline-block';
                 userQuota.style.color = 'var(--accent-plum)';
             } else {
                 const q = getUserQuota();
-                userQuota.textContent = `今日剩余${q}次`;
+                userQuota.textContent = `剩${q}次`;
                 userQuota.style.display = 'inline-block';
                 userQuota.style.color = '';
             }
@@ -77,13 +80,15 @@ export function updateUIForAuth() {
             }
         }
     } else {
-        if (userLabel) userLabel.textContent = '游客';
-        if (userAvatar) userAvatar.textContent = '客';
+        if (userLabel) userLabel.textContent = '';
+        if (userAvatar) userAvatar.textContent = '';
         if (userQuota) {
-            const gq = getGuestQuota();
-            userQuota.textContent = `体验${gq}次`;
+            userQuota.innerHTML = '登录 / 注册';
             userQuota.style.display = 'inline-block';
-            userQuota.style.color = '';
+            userQuota.style.color = 'var(--accent-plum)';
+            userQuota.style.cursor = 'pointer';
+            userQuota.style.fontWeight = '500';
+            userQuota.style.fontSize = '0.85rem';
         }
         if (logoutBtn) logoutBtn.style.display = 'none';
         if (sidebarFooter) sidebarFooter.style.display = 'none';
