@@ -115,6 +115,18 @@ function init() {
     updateUIForAuth();  // 这里会设置模型选择器的显示/隐藏
     renderHistory();
 
+    // 手机端：日志默认展开（手机私密，无需锁定）
+    if (window.innerWidth <= 900) {
+        const hList = $('#history-list');
+        const hHint = $('#history-hint');
+        const hToggle = $('#history-toggle');
+        if (hList) {
+            hList.classList.remove('collapsed');
+            if (hHint) hHint.classList.add('hidden');
+            if (hToggle) hToggle.classList.add('expanded');
+        }
+    }
+
     // Set initial model
     const modelSelect = $('#model-select');
     if (modelSelect) {
@@ -214,6 +226,7 @@ function bindEvents() {
 
     // New Case
     $('#btn-new-case')?.addEventListener('click', startNewCase);
+    $('#btn-new-case-mobile')?.addEventListener('click', startNewCase);
 
     // History toggle (collapsed by default for privacy)
     $('#history-toggle')?.addEventListener('click', (e) => {
@@ -252,6 +265,69 @@ function bindEvents() {
 
     // 新起一卦（AI 回复底部按钮回调）
     window.startNewCaseFromChat = startNewCase;
+
+    // 导出断卦结果
+    window.exportDivinationResult = function () {
+        const question = $('#input-chat')?.value?.trim() || '未记录问题';
+
+        // 优先从 state 中取原始 markdown 文本（保留段落格式）
+        let analysisText = '';
+        if (state.modelAnalyses && state.modelAnalyses.length > 0) {
+            analysisText = state.modelAnalyses.map(a => a.content || '').filter(Boolean).join('\n\n');
+        }
+
+        // 降级：如果 state 里没有，从 DOM 提取
+        if (!analysisText.trim()) {
+            const chatEl = $('#chat-messages');
+            if (!chatEl) return showToast('暂无可导出的内容', 'error');
+            const assistantMsgs = chatEl.querySelectorAll('.chat-message.assistant .msg-content');
+            assistantMsgs.forEach(el => {
+                const clone = el.cloneNode(true);
+                clone.querySelectorAll('.thinking-block, .msg-feedback-actions, .msg-bottom-actions').forEach(n => n.remove());
+                const text = clone.innerText.trim();
+                if (text) analysisText += text + '\n\n';
+            });
+        }
+
+        if (!analysisText.trim()) return showToast('暂无可导出的分析内容', 'error');
+
+        // 清理 markdown 标记，保留纯文本排版
+        let cleanText = analysisText
+            .replace(/^#{1,3}\s*/gm, '')           // 去掉 # ## ### 标题符号
+            .replace(/\*\*(.+?)\*\*/g, '$1')       // 去掉加粗 **xx**
+            .replace(/\*(.+?)\*/g, '$1')            // 去掉斜体 *xx*
+            .replace(/^- /gm, '• ')                 // 列表横线换成圆点
+            .replace(/\n{3,}/g, '\n\n');            // 压缩多余空行
+
+        const hexName = state.currentResult?.original?.name || '';
+        const now = new Date().toLocaleString();
+        const exportText = `═══ 梅花义理 · 断卦记录 ═══\n\n【时间】${now}\n【卦名】${hexName}\n【问题】${question}\n\n─── AI 分析 ───\n\n${cleanText.trim()}\n\n— 梅花义理 meihuayili.com`;
+
+        // 优先用系统分享（手机可分享到微信/备忘录），降级为复制到剪贴板
+        if (navigator.share) {
+            navigator.share({ title: `梅花义理 - ${hexName}`, text: exportText }).catch(() => {
+                _copyToClipboard(exportText);
+            });
+        } else {
+            _copyToClipboard(exportText);
+        }
+    };
+
+    function _copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('断卦结果已复制到剪贴板，可粘贴分享', 'success');
+        }).catch(() => {
+            // 最终降级：创建临时textarea复制
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.cssText = 'position:fixed;left:-9999px';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            showToast('断卦结果已复制到剪贴板', 'success');
+        });
+    }
 
     $('#input-chat')?.addEventListener('input', handleTextInputChange);
     $('#btn-time-divine')?.addEventListener('click', handleTimeDivineAuto);
@@ -293,10 +369,13 @@ function handleTextInputChange() {
     const hintText = $('#hero-hint');
     const btnTime = $('#btn-time-divine');
     const btnQuick = $('#btn-quick-parse');
+    const ritual = $('#ritual-guide');
 
     if (!text) {
         btnQuick?.classList.add('hidden');
         btnTime?.classList.remove('hidden');
+        btnTime?.classList.remove('breathing');
+        ritual?.classList.add('hidden');
         if (hintText) hintText.style.display = 'block';
         return;
     }
@@ -304,10 +383,15 @@ function handleTextInputChange() {
     if (parsed) {
         btnQuick?.classList.remove('hidden');
         btnTime?.classList.add('hidden');
+        btnTime?.classList.remove('breathing');
+        ritual?.classList.add('hidden');
         if (hintText) hintText.style.display = 'none';
     } else {
         btnQuick?.classList.add('hidden');
         btnTime?.classList.remove('hidden');
+        // 显示净心引导 + 按钮呼吸光晕
+        ritual?.classList.remove('hidden');
+        btnTime?.classList.add('breathing');
         if (hintText) hintText.style.display = 'block';
     }
 }
@@ -340,6 +424,9 @@ function handleQuickParse() {
     renderResult(finalResult);
     $('#btn-quick-parse')?.classList.add('hidden');
     $('#btn-time-divine')?.classList.add('hidden');
+    if (window.innerWidth <= 900) {
+        $('#btn-new-case-mobile')?.classList.remove('hidden');
+    }
     handleDivineMain();
 }
 
@@ -395,6 +482,10 @@ async function handleTimeDivineAuto() {
         return;
     }
 
+    // 隐藏净心引导
+    $('#ritual-guide')?.classList.add('hidden');
+    $('#btn-time-divine')?.classList.remove('breathing');
+
     // Always use current system time for automatic 'minimalist' cast
     const now = new Date();
     state.currentResult = DivinationEngine.castByTime(now.getHours(), now.getMinutes());
@@ -403,6 +494,11 @@ async function handleTimeDivineAuto() {
     // Hide buttons
     $('#btn-time-divine')?.classList.add('hidden');
     $('#btn-quick-parse')?.classList.add('hidden');
+
+    // 手机端：显示顶部新起一卦按钮
+    if (window.innerWidth <= 900) {
+        $('#btn-new-case-mobile')?.classList.remove('hidden');
+    }
 
     // Start analysis
     await handleDivineMain();
@@ -482,8 +578,11 @@ function loadHistoryRecord(id) {
 
         renderHistory();
         scrollChat($('#chat-messages'), true);
-        // 手机端：加载记录后自动收起抽屉
-        if (window.innerWidth <= 900) closeMobileDrawer();
+        // 手机端：加载记录后自动收起抽屉 + 显示新起一卦
+        if (window.innerWidth <= 900) {
+            closeMobileDrawer();
+            $('#btn-new-case-mobile')?.classList.remove('hidden');
+        }
     }
 }
 
@@ -515,7 +614,8 @@ function startNewCase() {
     $('#btn-quick-parse')?.classList.add('hidden');
     $('#input-chat').value = '';
     renderHistory();
-    // 手机端：新起一卦后自动收起抽屉
+    // 手机端：隐藏顶部新起一卦按钮 + 收起抽屉
+    $('#btn-new-case-mobile')?.classList.add('hidden');
     if (window.innerWidth <= 900) closeMobileDrawer();
 }
 

@@ -336,7 +336,7 @@
                 <!-- 真正的退出按钮 -->
                 <button type="button" id="btn-logout-header" class="logout-btn-header">退出登录</button>
                 <button type="button" id="btn-theme-toggle" class="theme-toggle-btn" title="切换主题"><span class="theme-icon">🌙</span><span class="theme-label">深色</span></button>
-
+                <button type="button" id="btn-new-case-mobile" class="btn-new-case-mobile hidden">新起一卦</button>
             </div>
         </div>
     </header>
@@ -377,6 +377,11 @@
                         <textarea id="input-chat" placeholder="例如：今日面试能否顺利？" rows="2"></textarea>
                         <div class="current-time-mini" id="current-time">--</div>
                     </div>
+                <!-- 净心凝神 · 引导区 -->
+                <div class="ritual-guide hidden" id="ritual-guide">
+                    <div class="ritual-breath-ring"></div>
+                    <p class="ritual-text">🙏 请平心静气，深呼吸三次<br>心中默念所问之事，待心绪安定后再点击起卦</p>
+                </div>
                 <div class="hero-actions">
                     <button id="btn-time-divine" class="btn-time-divine">缘起此刻：一键起卦并分析</button>
                     <button id="btn-quick-parse" class="btn-quick-parse hidden"><i data-lucide="wand-2" class="icon-sm"></i> 识别到已有卦象：一键断卦</button>

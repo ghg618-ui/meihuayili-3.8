@@ -142,8 +142,6 @@ export async function handleAuthSubmit(renderHistory) {
         renderHistory();
         closeModal('modal-auth');
         showToast(`已以此身份进入：${user.name}`, 'success');
-    } else if (user?.code === 'WRONG_PASSWORD') {
-        showToast('密码错误。如忘记密码，请联系管理员重置', 'error');
     } else {
         showToast(user?.error || '认证失败，请检查用户名密码', 'error');
     }

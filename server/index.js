@@ -110,74 +110,34 @@ function safeFileName(name) {
 }
 
 // ===== 用户注册 =====
-// 注册频率限制：同一 IP 每小时最多注册 3 个账号
-const registerAttempts = new Map(); // IP -> [timestamps]
-const REGISTER_LIMIT = 3;
-const REGISTER_WINDOW_MS = 60 * 60 * 1000; // 1 小时
-
-function checkRegisterRate(ip) {
-    const now = Date.now();
-    const attempts = registerAttempts.get(ip) || [];
-    const recent = attempts.filter(t => now - t < REGISTER_WINDOW_MS);
-    registerAttempts.set(ip, recent);
-    if (recent.length >= REGISTER_LIMIT) return false;
-    recent.push(now);
-    registerAttempts.set(ip, recent);
-    return true;
-}
-
 app.post('/api/register', (req, res) => {
     const { name, passwordHash } = req.body;
     if (!name || !passwordHash) return res.status(400).json({ error: '缺少用户名或密码' });
     if (!SAFE_NAME_RE.test(name)) return res.status(400).json({ error: '用户名格式不合法' });
-
-    // IP 频率限制
-    const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket.remoteAddress;
-    if (!checkRegisterRate(clientIp)) {
-        console.log(`[auth] 注册频率过高，已拦截 IP: ${clientIp}`);
-        return res.status(429).json({ error: '注册过于频繁，请稍后再试' });
-    }
 
     const users = loadUsers();
     if (users[name]) return res.status(409).json({ error: '用户已存在' });
 
     users[name] = { name, passwordHash, created: new Date().toISOString() };
     saveUsers(users);
-    console.log(`[auth] 新用户注册: ${name} (IP: ${clientIp})`);
+    console.log(`[auth] 新用户注册: ${name}`);
     res.json({ success: true, user: { name } });
 });
 
 // ===== 用户登录 =====
-// 登录失败频率限制：同一 IP 每 15 分钟最多 10 次失败尝试
-const loginFailures = new Map(); // IP -> [timestamps]
-const LOGIN_FAIL_LIMIT = 10;
-const LOGIN_FAIL_WINDOW_MS = 15 * 60 * 1000;
-
 app.post('/api/login', (req, res) => {
     const { name, passwordHash } = req.body;
     if (!name || !passwordHash) return res.status(400).json({ error: '缺少用户名或密码' });
 
-    const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket.remoteAddress;
-    const now = Date.now();
-    const failures = (loginFailures.get(clientIp) || []).filter(t => now - t < LOGIN_FAIL_WINDOW_MS);
-    if (failures.length >= LOGIN_FAIL_LIMIT) {
-        return res.status(429).json({ error: '登录尝试过于频繁，请15分钟后再试' });
-    }
-
     const users = loadUsers();
     const u = users[name];
     if (!u) {
-        failures.push(now);
-        loginFailures.set(clientIp, failures);
         return res.status(404).json({ error: '用户尚未注册', code: 'USER_NOT_FOUND' });
     }
     if (u.passwordHash === passwordHash || u.password === passwordHash) {
-        loginFailures.delete(clientIp); // 登录成功，清除失败记录
         console.log(`[auth] 用户登录: ${name}`);
         res.json({ success: true, user: { name } });
     } else {
-        failures.push(now);
-        loginFailures.set(clientIp, failures);
         res.status(401).json({ error: '密码错误', code: 'WRONG_PASSWORD' });
     }
 });
@@ -192,48 +152,6 @@ app.get('/api/admin/stats', (req, res) => {
     const users = loadUsers();
     const userList = Object.values(users).map(u => ({ name: u.name, created: u.created }));
     res.json({ totalUsers: userList.length, users: userList });
-});
-
-// ===== 管理员重置用户密码 =====
-app.post('/api/admin/reset-password', (req, res) => {
-    const { admin, targetUser, newPasswordHash } = req.body;
-    if (!admin || !ADMIN_LIST.includes(admin)) {
-        return res.status(403).json({ error: '无权限' });
-    }
-    if (!targetUser || !newPasswordHash) {
-        return res.status(400).json({ error: '缺少目标用户名或新密码' });
-    }
-    const users = loadUsers();
-    if (!users[targetUser]) {
-        return res.status(404).json({ error: '用户不存在' });
-    }
-    users[targetUser].passwordHash = newPasswordHash;
-    delete users[targetUser].password; // 清理旧字段
-    saveUsers(users);
-    console.log(`[admin] 管理员 ${admin} 重置了用户 ${targetUser} 的密码`);
-    res.json({ success: true, message: `用户 ${targetUser} 的密码已重置` });
-});
-
-// ===== 管理员删除用户（处理恶意账号）=====
-app.post('/api/admin/delete-user', (req, res) => {
-    const { admin, targetUser } = req.body;
-    if (!admin || !ADMIN_LIST.includes(admin)) {
-        return res.status(403).json({ error: '无权限' });
-    }
-    if (!targetUser) {
-        return res.status(400).json({ error: '缺少目标用户名' });
-    }
-    if (ADMIN_LIST.includes(targetUser)) {
-        return res.status(400).json({ error: '不能删除管理员账号' });
-    }
-    const users = loadUsers();
-    if (!users[targetUser]) {
-        return res.status(404).json({ error: '用户不存在' });
-    }
-    delete users[targetUser];
-    saveUsers(users);
-    console.log(`[admin] 管理员 ${admin} 删除了用户 ${targetUser}`);
-    res.json({ success: true, message: `用户 ${targetUser} 已删除` });
 });
 
 // ===== 历史记录保存 =====

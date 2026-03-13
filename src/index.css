@@ -1155,10 +1155,12 @@ body {
 .chat-message.assistant {
   background: var(--bg-secondary);
   padding: 20px 24px;
-  border-radius: var(--radius-lg);
+  margin-left: -24px;
+  margin-right: -24px;
+  border-radius: 0;
   border-left: 3px solid var(--accent-plum);
   line-height: 1.7;
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
 }
 
 .chat-message.assistant.dual-analysis {
@@ -1588,6 +1590,27 @@ body {
     display: none !important;
   }
 
+  /* 手机端顶部新起一卦按钮 */
+  .btn-new-case-mobile:not(.hidden) {
+    display: inline-block;
+    padding: 5px 14px;
+    background: var(--accent-plum);
+    color: white;
+    border: none;
+    border-radius: 100px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: var(--transition-smooth);
+    letter-spacing: 0.04em;
+  }
+
+  .btn-new-case-mobile:active {
+    transform: scale(0.95);
+    opacity: 0.85;
+  }
+
   /* 主题按钮只保留图标，隐藏文字 */
   .theme-label {
     display: none;
@@ -1902,8 +1925,10 @@ body {
 
   .chat-message.assistant {
     padding: 16px 18px;
+    margin-left: -16px;
+    margin-right: -16px;
     font-size: 0.9rem;
-    border-radius: var(--radius-md);
+    border-radius: 0;
   }
 
   .chat-message.user {
@@ -2110,8 +2135,11 @@ body {
 .chat-message {
   margin-bottom: 25px;
   line-height: 1.6;
-  max-width: 90%;
   animation: message-in 0.4s ease-out;
+}
+
+.chat-message.user {
+  max-width: 90%;
 }
 
 @keyframes message-in {
@@ -2197,6 +2225,11 @@ body {
 /* Utilities */
 .hidden {
   display: none !important;
+}
+
+/* 桌面端隐藏手机专属按钮 */
+.btn-new-case-mobile {
+  display: none;
 }
 
 @keyframes fadeIn {
@@ -2886,6 +2919,7 @@ input[type=number] {
 .msg-bottom-actions {
   display: flex;
   justify-content: center;
+  gap: 12px;
   margin-top: 12px;
 }
 
@@ -2901,6 +2935,23 @@ input[type=number] {
 }
 
 .btn-new-case-inline:hover {
+  color: var(--accent-plum);
+  border-color: var(--accent-plum);
+  background: rgba(93, 43, 93, 0.04);
+}
+
+.btn-export-inline {
+  padding: 8px 24px;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.btn-export-inline:hover {
   color: var(--accent-plum);
   border-color: var(--accent-plum);
   background: rgba(93, 43, 93, 0.04);
@@ -3213,6 +3264,17 @@ input[type=number] {
   background: #2a2d2e;
 }
 
+[data-theme="dark"] .btn-export-inline {
+  color: #b0b0b0;
+  border-color: #444;
+}
+
+[data-theme="dark"] .btn-export-inline:hover {
+  color: #4a9eff;
+  border-color: #4a9eff;
+  background: #2a2d2e;
+}
+
 [data-theme="dark"] #hexagram-display,
 [data-theme="dark"] #ai-chat,
 [data-theme="dark"] .hex-card,
@@ -3398,4 +3460,71 @@ input[type=number] {
     border: 1px dashed color-mix(in srgb, var(--accent-plum) 28%, var(--border-color));
     opacity: 0.92;
   }
+}
+
+/* ==============================
+   净心凝神 · 起卦前引导
+   ============================== */
+.ritual-guide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 16px 10px;
+  animation: ritual-fade-in 0.8s ease forwards;
+}
+.ritual-guide.hidden {
+  display: none;
+}
+
+@keyframes ritual-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 呼吸光环 */
+.ritual-breath-ring {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid rgba(139, 92, 246, 0.3);
+  box-shadow: 0 0 24px rgba(139, 92, 246, 0.12), inset 0 0 16px rgba(139, 92, 246, 0.06);
+  animation: ritual-breathe 4s ease-in-out infinite;
+}
+
+@keyframes ritual-breathe {
+  0%, 100% { transform: scale(0.8); opacity: 0.35; }
+  50%      { transform: scale(1.15); opacity: 0.9; }
+}
+
+[data-theme="dark"] .ritual-breath-ring {
+  border-color: rgba(180, 140, 255, 0.35);
+  box-shadow: 0 0 30px rgba(180, 140, 255, 0.18), inset 0 0 20px rgba(180, 140, 255, 0.08);
+}
+
+.ritual-text {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.7;
+  letter-spacing: 0.03em;
+}
+
+/* 起卦按钮 · 呼吸脉动光晕 */
+.btn-time-divine.breathing {
+  animation: btn-breathe-glow 3s ease-in-out infinite;
+}
+
+@keyframes btn-breathe-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+  50%      { box-shadow: 0 0 20px 4px rgba(139, 92, 246, 0.25); }
+}
+
+[data-theme="dark"] .btn-time-divine.breathing {
+  animation: btn-breathe-glow-dark 3s ease-in-out infinite;
+}
+
+@keyframes btn-breathe-glow-dark {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(180, 140, 255, 0); }
+  50%      { box-shadow: 0 0 24px 6px rgba(180, 140, 255, 0.3); }
 }
