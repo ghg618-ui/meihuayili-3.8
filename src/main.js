@@ -27,7 +27,11 @@ import {
     updateUIForAuth,
     handleAuthSubmit,
     handleLogout,
-    handleRedeemVip
+    handleRedeemVip,
+    showForgotPassword,
+    hideForgotPassword,
+    handleSendCode,
+    handleResetSubmit
 } from './controllers/auth-controller.js';
 import { hasProAccess } from './storage/auth.js';
 import { handleSaveSettings, loadSettingsToModal } from './controllers/settings-controller.js';
@@ -201,6 +205,10 @@ function bindEvents() {
     $('#tab-register')?.addEventListener('click', switchToRegisterMode);
     $('#btn-auth-submit')?.addEventListener('click', () => handleAuthSubmit(renderHistory));
     $('#btn-redeem-vip')?.addEventListener('click', handleRedeemVip);
+    $('#forgot-password-link')?.addEventListener('click', showForgotPassword);
+    $('#back-to-login')?.addEventListener('click', hideForgotPassword);
+    $('#btn-send-code')?.addEventListener('click', handleSendCode);
+    $('#btn-reset-submit')?.addEventListener('click', handleResetSubmit);
     $('#btn-logout-header')?.addEventListener('click', () => handleLogout(renderHistory, startNewCase));
     $('#btn-logout-sidebar')?.addEventListener('click', () => handleLogout(renderHistory, startNewCase));
     $('#btn-close-auth')?.addEventListener('click', () => closeModal('modal-auth'));

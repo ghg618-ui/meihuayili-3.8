@@ -578,22 +578,55 @@
                 </div>
                 <div id="auth-msg-error" class="auth-error"></div>
                 <div id="auth-msg-success" class="auth-success"></div>
-                <div class="control-group">
-                    <label for="auth-username">用户名</label>
-                    <input type="text" id="auth-username" placeholder="请输入用户名" autocomplete="username">
+
+                <!-- 登录/注册表单 -->
+                <div id="auth-form-main">
+                    <div class="control-group">
+                        <label for="auth-username">用户名</label>
+                        <input type="text" id="auth-username" placeholder="请输入用户名" autocomplete="username">
+                    </div>
+                    <div class="control-group">
+                        <label for="auth-password">密码</label>
+                        <input type="password" id="auth-password" placeholder="请输入密码" autocomplete="current-password">
+                    </div>
+                    <div class="control-group hidden" id="confirm-password-group">
+                        <label for="auth-confirm-password">确认密码</label>
+                        <input type="password" id="auth-confirm-password" placeholder="请再次输入密码" autocomplete="new-password">
+                    </div>
+                    <div class="control-group hidden" id="email-group">
+                        <label for="auth-email">邮箱 <span style="font-size:0.75rem; color:var(--text-tertiary)">（用于找回密码）</span></label>
+                        <input type="email" id="auth-email" placeholder="选填，建议绑定" autocomplete="email">
+                    </div>
+                    <button class="btn-primary" style="width: 100%;" id="btn-auth-submit">登录</button>
+                    <p id="forgot-password-link" style="text-align: center; margin-top: 10px; font-size: 0.78rem; color: var(--accent-plum); cursor: pointer;">
+                        忘记密码？
+                    </p>
                 </div>
-                <div class="control-group">
-                    <label for="auth-password">密码</label>
-                    <input type="password" id="auth-password" placeholder="请输入密码" autocomplete="current-password">
+
+                <!-- 忘记密码表单 -->
+                <div id="auth-form-reset" class="hidden">
+                    <div class="control-group">
+                        <label for="reset-username">用户名</label>
+                        <input type="text" id="reset-username" placeholder="请输入你注册时的用户名">
+                    </div>
+                    <button class="btn-primary" style="width: 100%;" id="btn-send-code">发送验证码到邮箱</button>
+                    <div id="reset-code-section" class="hidden" style="margin-top: 14px;">
+                        <p id="reset-email-hint" style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 10px;"></p>
+                        <div class="control-group">
+                            <label for="reset-code">验证码</label>
+                            <input type="text" id="reset-code" placeholder="输入6位验证码" maxlength="6" inputmode="numeric">
+                        </div>
+                        <div class="control-group">
+                            <label for="reset-new-password">新密码</label>
+                            <input type="password" id="reset-new-password" placeholder="输入新密码（至少4位）">
+                        </div>
+                        <button class="btn-primary" style="width: 100%;" id="btn-reset-submit">重置密码</button>
+                    </div>
+                    <p id="back-to-login" style="text-align: center; margin-top: 12px; font-size: 0.8rem; color: var(--accent-plum); cursor: pointer;">
+                        ← 返回登录
+                    </p>
                 </div>
-                <div class="control-group hidden" id="confirm-password-group">
-                    <label for="auth-confirm-password">确认密码</label>
-                    <input type="password" id="auth-confirm-password" placeholder="请再次输入密码" autocomplete="new-password">
-                </div>
-                <button class="btn-primary" style="width: 100%;" id="btn-auth-submit">登录</button>
-                <p style="text-align: center; margin-top: 10px; font-size: 0.78rem; color: var(--text-tertiary);">
-                    忘记密码？请联系微信公众号 <strong>易泓录</strong> 重置
-                </p>
+
                 <div class="vip-redeem-section hidden" id="vip-redeem-section" style="margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--border-color);">
                     <label style="font-size: 0.8rem; color: var(--text-tertiary);">有兑换码？</label>
                     <div style="display: flex; gap: 8px; margin-top: 6px;">

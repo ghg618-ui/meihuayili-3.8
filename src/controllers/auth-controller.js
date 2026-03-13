@@ -2,7 +2,7 @@
  * Auth Controller - Login/Register/Logout UI logic
  */
 import { $, showToast } from '../utils/dom.js';
-import { loginUser, registerUser, logoutUser, hasProAccess, getUserQuota, redeemVipCode, isVipUser, getGuestQuota } from '../storage/auth.js';
+import { loginUser, registerUser, logoutUser, hasProAccess, getUserQuota, redeemVipCode, isVipUser, getGuestQuota, sendResetCode, resetPassword } from '../storage/auth.js';
 import { MODEL_REGISTRY } from '../storage/settings.js';
 import { loadHistory, mergeCloudHistory } from '../storage/history.js';
 import { closeModal } from '../ui/modals.js';
@@ -12,14 +12,21 @@ export function switchToLoginMode() {
     $('#tab-login').classList.add('active');
     $('#tab-register').classList.remove('active');
     $('#confirm-password-group').classList.add('hidden');
+    $('#email-group')?.classList.add('hidden');
     $('#btn-auth-submit').textContent = '登录';
+    // 确保显示登录表单，隐藏重置表单
+    $('#auth-form-main')?.classList.remove('hidden');
+    $('#auth-form-reset')?.classList.add('hidden');
 }
 
 export function switchToRegisterMode() {
     $('#tab-login').classList.remove('active');
     $('#tab-register').classList.add('active');
     $('#confirm-password-group').classList.remove('hidden');
+    $('#email-group')?.classList.remove('hidden');
     $('#btn-auth-submit').textContent = '注册并进入';
+    $('#auth-form-main')?.classList.remove('hidden');
+    $('#auth-form-reset')?.classList.add('hidden');
 }
 
 export function updateUIForAuth() {
@@ -138,7 +145,8 @@ export async function handleAuthSubmit(renderHistory) {
             showToast('两次密码输入不一致', 'error');
             return;
         }
-        user = await registerUser(username, password);
+        const email = $('#auth-email')?.value?.trim() || '';
+        user = await registerUser(username, password, email);
     } else {
         user = await loginUser(username, password);
         // 如果用户不存在，自动切换到注册模式，让用户确认密码后完成注册
@@ -187,5 +195,90 @@ export function handleRedeemVip() {
         updateUIForAuth();
     } else {
         showToast(result.error, 'error');
+    }
+}
+
+// ===== 忘记密码流程 =====
+export function showForgotPassword() {
+    $('#auth-form-main')?.classList.add('hidden');
+    $('#auth-form-reset')?.classList.remove('hidden');
+    $('#reset-code-section')?.classList.add('hidden');
+    $('#reset-username').value = '';
+    $('#reset-code')&& ($('#reset-code').value = '');
+    $('#reset-new-password') && ($('#reset-new-password').value = '');
+}
+
+export function hideForgotPassword() {
+    $('#auth-form-reset')?.classList.add('hidden');
+    $('#auth-form-main')?.classList.remove('hidden');
+    switchToLoginMode();
+}
+
+export async function handleSendCode() {
+    const name = $('#reset-username')?.value?.trim();
+    if (!name) { showToast('请输入用户名', 'error'); return; }
+
+    const btn = $('#btn-send-code');
+    btn.disabled = true;
+    btn.textContent = '发送中...';
+
+    try {
+        const data = await sendResetCode(name);
+        if (data.success) {
+            $('#reset-code-section')?.classList.remove('hidden');
+            $('#reset-email-hint').textContent = `验证码已发送到 ${data.maskedEmail}，10分钟内有效`;
+            showToast('验证码已发送，请查收邮件', 'success');
+            // 60秒倒计时
+            let sec = 60;
+            btn.textContent = `${sec}s 后可重发`;
+            const timer = setInterval(() => {
+                sec--;
+                if (sec <= 0) {
+                    clearInterval(timer);
+                    btn.disabled = false;
+                    btn.textContent = '重新发送验证码';
+                } else {
+                    btn.textContent = `${sec}s 后可重发`;
+                }
+            }, 1000);
+        } else {
+            showToast(data.error || '发送失败', 'error');
+            btn.disabled = false;
+            btn.textContent = '发送验证码到邮箱';
+        }
+    } catch (e) {
+        showToast('网络错误，请稍后再试', 'error');
+        btn.disabled = false;
+        btn.textContent = '发送验证码到邮箱';
+    }
+}
+
+export async function handleResetSubmit() {
+    const name = $('#reset-username')?.value?.trim();
+    const code = $('#reset-code')?.value?.trim();
+    const newPwd = $('#reset-new-password')?.value;
+
+    if (!name || !code || !newPwd) {
+        showToast('请填写所有字段', 'error');
+        return;
+    }
+    if (newPwd.length < 4) {
+        showToast('新密码至少需要4个字符', 'error');
+        return;
+    }
+
+    try {
+        const data = await resetPassword(name, code, newPwd);
+        if (data.success) {
+            showToast('密码重置成功！请用新密码登录', 'success');
+            hideForgotPassword();
+            $('#auth-username').value = name;
+            $('#auth-password').value = '';
+            $('#auth-password').focus();
+        } else {
+            showToast(data.error || '重置失败', 'error');
+        }
+    } catch (e) {
+        showToast('网络错误，请稍后再试', 'error');
     }
 }

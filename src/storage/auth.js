@@ -63,15 +63,16 @@ export async function loginUser(name, password) {
     return { error: '密码错误', code: 'WRONG_PASSWORD' };
 }
 
-export async function registerUser(name, password) {
+export async function registerUser(name, password, email) {
     const hp = hashPassword(password);
+    const cleanEmail = (email || '').trim().toLowerCase();
 
     // 优先在服务器注册
     try {
         const resp = await fetch(`${API_BASE}/api/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, passwordHash: hp }),
+            body: JSON.stringify({ name, passwordHash: hp, email: cleanEmail }),
         });
         const data = await resp.json();
         if (resp.ok && data.success) {
@@ -96,6 +97,25 @@ export async function registerUser(name, password) {
     const currentUser = { name };
     localStorage.setItem('meihua_current_user', JSON.stringify(currentUser));
     return currentUser;
+}
+
+export async function sendResetCode(name) {
+    const resp = await fetch(`${API_BASE}/api/send-code`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name }),
+    });
+    return resp.json();
+}
+
+export async function resetPassword(name, code, newPassword) {
+    const hp = hashPassword(newPassword);
+    const resp = await fetch(`${API_BASE}/api/reset-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, code, newPasswordHash: hp }),
+    });
+    return resp.json();
 }
 
 export function getCurrentUser() {

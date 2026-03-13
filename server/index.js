@@ -14,6 +14,7 @@ import cors from 'cors';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { createTransport } from 'nodemailer';
 
 // 加载 .env 文件（密钥就放这里）
 try {
@@ -94,6 +95,40 @@ const HISTORY_DIR = join(DATA_DIR, 'history');
 if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
 if (!existsSync(HISTORY_DIR)) mkdirSync(HISTORY_DIR, { recursive: true });
 
+// ===== 邮件发送 =====
+const mailTransporter = createTransport({
+    host: 'smtp.qq.com',
+    port: 465,
+    secure: true,
+    auth: {
+        user: process.env.SMTP_USER || '1742249@qq.com',
+        pass: process.env.SMTP_PASS || 'tgdnhnterrzmbhbi',
+    },
+});
+
+// 验证码内存存储 { email: { code, expires, attempts } }
+const verifyCodeStore = new Map();
+
+function generateCode() {
+    return String(Math.floor(100000 + Math.random() * 900000));
+}
+
+async function sendVerifyEmail(toEmail, code) {
+    await mailTransporter.sendMail({
+        from: '"梅花义理" <1742249@qq.com>',
+        to: toEmail,
+        subject: '梅花义理 - 验证码',
+        html: `
+            <div style="font-family: sans-serif; max-width: 400px; margin: 0 auto; padding: 24px; border: 1px solid #e0d0e0; border-radius: 12px;">
+                <h2 style="color: #5d2b5d; text-align: center;">梅花义理 · AI 断卦</h2>
+                <p style="font-size: 14px; color: #555;">您的验证码为：</p>
+                <p style="font-size: 28px; font-weight: bold; text-align: center; color: #5d2b5d; letter-spacing: 6px; margin: 20px 0;">${code}</p>
+                <p style="font-size: 13px; color: #999;">验证码 10 分钟内有效，请勿泄露给他人。</p>
+            </div>
+        `,
+    });
+}
+
 function loadUsers() {
     try { return JSON.parse(readFileSync(USERS_FILE, 'utf8')); }
     catch { return {}; }
@@ -111,16 +146,22 @@ function safeFileName(name) {
 
 // ===== 用户注册 =====
 app.post('/api/register', (req, res) => {
-    const { name, passwordHash } = req.body;
+    const { name, passwordHash, email } = req.body;
     if (!name || !passwordHash) return res.status(400).json({ error: '缺少用户名或密码' });
     if (!SAFE_NAME_RE.test(name)) return res.status(400).json({ error: '用户名格式不合法' });
 
     const users = loadUsers();
     if (users[name]) return res.status(409).json({ error: '用户已存在' });
 
-    users[name] = { name, passwordHash, created: new Date().toISOString() };
+    // 如果提供了邮箱，检查格式
+    const cleanEmail = (email || '').trim().toLowerCase();
+    if (cleanEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+        return res.status(400).json({ error: '邮箱格式不正确' });
+    }
+
+    users[name] = { name, passwordHash, email: cleanEmail || '', created: new Date().toISOString() };
     saveUsers(users);
-    console.log(`[auth] 新用户注册: ${name}`);
+    console.log(`[auth] 新用户注册: ${name}${cleanEmail ? ' (' + cleanEmail + ')' : ''}`);
     res.json({ success: true, user: { name } });
 });
 
@@ -171,6 +212,72 @@ app.post('/api/admin/reset-password', (req, res) => {
     saveUsers(users);
     console.log(`[admin] 密码重置: ${targetUser} (by ${admin})`);
     res.json({ success: true, message: `已重置 ${targetUser} 的密码` });
+});
+
+// ===== 发送验证码（忘记密码） =====
+app.post('/api/send-code', async (req, res) => {
+    const { name } = req.body;
+    if (!name) return res.status(400).json({ error: '请输入用户名' });
+
+    const users = loadUsers();
+    const u = users[name];
+    if (!u) return res.status(404).json({ error: '用户不存在' });
+    if (!u.email) return res.status(400).json({ error: '该账号未绑定邮箱，请联系微信公众号 易泓录 重置密码' });
+
+    // 防刷：同一邮箱60秒内只能发一次
+    const existing = verifyCodeStore.get(u.email);
+    if (existing && existing.expires > Date.now() && (existing.expires - Date.now()) > 9 * 60 * 1000) {
+        return res.status(429).json({ error: '验证码已发送，请稍后再试' });
+    }
+
+    const code = generateCode();
+    verifyCodeStore.set(u.email, { code, expires: Date.now() + 10 * 60 * 1000, attempts: 0 });
+
+    try {
+        await sendVerifyEmail(u.email, code);
+        // 对邮箱脱敏显示
+        const masked = u.email.replace(/^(.{2})(.*)(@.*)$/, (_, a, b, c) => a + '*'.repeat(Math.min(b.length, 4)) + c);
+        console.log(`[mail] 验证码已发送: ${name} -> ${u.email}`);
+        res.json({ success: true, maskedEmail: masked });
+    } catch (e) {
+        console.error('[mail] 发送失败:', e.message);
+        res.status(500).json({ error: '验证码发送失败，请稍后再试' });
+    }
+});
+
+// ===== 验证码重置密码 =====
+app.post('/api/reset-password', (req, res) => {
+    const { name, code, newPasswordHash } = req.body;
+    if (!name || !code || !newPasswordHash) {
+        return res.status(400).json({ error: '缺少必要信息' });
+    }
+
+    const users = loadUsers();
+    const u = users[name];
+    if (!u || !u.email) return res.status(400).json({ error: '用户不存在或未绑定邮箱' });
+
+    const stored = verifyCodeStore.get(u.email);
+    if (!stored || stored.expires < Date.now()) {
+        return res.status(400).json({ error: '验证码已过期，请重新发送' });
+    }
+
+    // 防暴力：最多尝试5次
+    if (stored.attempts >= 5) {
+        verifyCodeStore.delete(u.email);
+        return res.status(429).json({ error: '验证码错误次数过多，请重新发送' });
+    }
+
+    if (stored.code !== code.trim()) {
+        stored.attempts++;
+        return res.status(400).json({ error: '验证码错误' });
+    }
+
+    // 验证通过，重置密码
+    users[name].passwordHash = newPasswordHash;
+    saveUsers(users);
+    verifyCodeStore.delete(u.email);
+    console.log(`[auth] 用户自助重置密码: ${name}`);
+    res.json({ success: true });
 });
 
 // ===== 历史记录保存 =====
