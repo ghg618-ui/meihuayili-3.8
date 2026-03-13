@@ -793,7 +793,7 @@ document.addEventListener('DOMContentLoaded', init);
     // 已经以 standalone 模式运行（已安装），不显示
     if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) return;
     // 电脑端不显示，仅手机/平板
-    if (!/Mobi|Android|iPad|iPhone|iPod/.test(navigator.userAgent)) return;
+    if (!/Mobi|Android|iPad|iPhone|iPod|MicroMessenger/.test(navigator.userAgent)) return;
     // 用户之前关闭过，本次会话不再打扰
     if (sessionStorage.getItem('pwa_dismissed')) return;
 
@@ -802,10 +802,14 @@ document.addEventListener('DOMContentLoaded', init);
     const btnDismiss = document.getElementById('btn-pwa-dismiss');
     const iosGuide = document.getElementById('pwa-ios-guide');
     const btnIosClose = document.getElementById('btn-pwa-ios-close');
+    const wechatGuide = document.getElementById('pwa-wechat-guide');
+    const btnWechatClose = document.getElementById('btn-pwa-wechat-close');
     if (!banner) return;
 
     let deferredPrompt = null;
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const ua = navigator.userAgent;
+    const isWeChat = /MicroMessenger/i.test(ua);
+    const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
 
     // Android Chrome: 捕获系统安装事件
     window.addEventListener('beforeinstallprompt', (e) => {
@@ -814,8 +818,8 @@ document.addEventListener('DOMContentLoaded', init);
         banner.classList.remove('hidden');
     });
 
-    // iOS Safari: 直接显示引导横幅
-    if (isIOS && 'serviceWorker' in navigator) {
+    // iOS Safari 或微信内: 直接显示引导横幅
+    if (isIOS || isWeChat) {
         banner.classList.remove('hidden');
     }
 
@@ -827,8 +831,11 @@ document.addEventListener('DOMContentLoaded', init);
                 deferredPrompt = null;
                 banner.classList.add('hidden');
             });
+        } else if (isWeChat) {
+            // 微信内: 引导用户用浏览器打开
+            wechatGuide?.classList.remove('hidden');
         } else if (isIOS) {
-            // iOS: 显示手动引导
+            // iOS Safari: 显示手动引导
             iosGuide?.classList.remove('hidden');
         }
     });
@@ -840,5 +847,9 @@ document.addEventListener('DOMContentLoaded', init);
 
     btnIosClose?.addEventListener('click', () => {
         iosGuide?.classList.add('hidden');
+    });
+
+    btnWechatClose?.addEventListener('click', () => {
+        wechatGuide?.classList.add('hidden');
     });
 })();

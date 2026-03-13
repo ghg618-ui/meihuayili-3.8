@@ -154,6 +154,25 @@ app.get('/api/admin/stats', (req, res) => {
     res.json({ totalUsers: userList.length, users: userList });
 });
 
+// ===== 管理员重置密码 =====
+app.post('/api/admin/reset-password', (req, res) => {
+    const { admin, targetUser, newPasswordHash } = req.body;
+    if (!admin || !ADMIN_LIST.includes(admin)) {
+        return res.status(403).json({ error: '无权限' });
+    }
+    if (!targetUser || !newPasswordHash) {
+        return res.status(400).json({ error: '缺少目标用户名或新密码' });
+    }
+    const users = loadUsers();
+    if (!users[targetUser]) {
+        return res.status(404).json({ error: '用户不存在' });
+    }
+    users[targetUser].passwordHash = newPasswordHash;
+    saveUsers(users);
+    console.log(`[admin] 密码重置: ${targetUser} (by ${admin})`);
+    res.json({ success: true, message: `已重置 ${targetUser} 的密码` });
+});
+
 // ===== 历史记录保存 =====
 app.post('/api/history/save', (req, res) => {
     const { username, records } = req.body;

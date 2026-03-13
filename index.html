@@ -404,14 +404,25 @@
                 <button id="btn-pwa-dismiss" class="btn-pwa-dismiss">✕</button>
             </div>
 
-            <!-- iOS 引导弹窗 -->
+            <!-- iOS Safari 引导弹窗 -->
             <div id="pwa-ios-guide" class="pwa-ios-guide hidden">
                 <div class="pwa-ios-guide-content">
                     <p class="pwa-ios-title">添加到主屏幕</p>
                     <p class="pwa-ios-step">1. 点击右下角的 <strong>···</strong> 按钮</p>
-                    <p class="pwa-ios-step">2. 点击 <strong>"共享"</strong> <span style="font-size:1.1em">⬆</span></p>
-                    <p class="pwa-ios-step">3. 向下滑动，点击 <strong>"添加到主屏幕"</strong></p>
+                    <p class="pwa-ios-step">2. 点击 <strong>“共享”</strong> <span style="font-size:1.1em">⬆</span></p>
+                    <p class="pwa-ios-step">3. 向下滑动，点击 <strong>“添加到主屏幕”</strong></p>
                     <button id="btn-pwa-ios-close" class="btn-pwa-install" style="margin-top: 12px; width: 100%;">我知道了</button>
+                </div>
+            </div>
+
+            <!-- 微信内引导弹窗 -->
+            <div id="pwa-wechat-guide" class="pwa-ios-guide hidden">
+                <div class="pwa-ios-guide-content">
+                    <p class="pwa-ios-title">添加到主屏幕</p>
+                    <p class="pwa-ios-step">1. 点击右上角的 <strong>···</strong> 按钮</p>
+                    <p class="pwa-ios-step">2. 选择 <strong>“在浏览器中打开”</strong></p>
+                    <p class="pwa-ios-step">3. 然后在浏览器中点 <strong>··· → 共享 → 添加到主屏幕</strong></p>
+                    <button id="btn-pwa-wechat-close" class="btn-pwa-install" style="margin-top: 12px; width: 100%;">我知道了</button>
                 </div>
             </div>
 
@@ -580,6 +591,9 @@
                     <input type="password" id="auth-confirm-password" placeholder="请再次输入密码" autocomplete="new-password">
                 </div>
                 <button class="btn-primary" style="width: 100%;" id="btn-auth-submit">登录</button>
+                <p style="text-align: center; margin-top: 10px; font-size: 0.78rem; color: var(--text-tertiary);">
+                    忘记密码？请联系微信公众号 <strong>易泓录</strong> 重置
+                </p>
                 <div class="vip-redeem-section hidden" id="vip-redeem-section" style="margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--border-color);">
                     <label style="font-size: 0.8rem; color: var(--text-tertiary);">有兑换码？</label>
                     <div style="display: flex; gap: 8px; margin-top: 6px;">
