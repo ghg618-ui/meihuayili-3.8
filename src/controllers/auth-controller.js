@@ -161,11 +161,13 @@ export async function handleAuthSubmit(renderHistory) {
 
     if (user && !user.error) {
         state.currentUser = user;
-        // 从云端合并历史记录
-        state.history = await mergeCloudHistory(user.name);
         updateUIForAuth();
-        renderHistory();
         closeModal('modal-auth');
+        // 历史记录在后台加载，不阻塞登录流程
+        mergeCloudHistory(user.name).then(h => {
+            state.history = h;
+            renderHistory();
+        });
     } else {
         showToast(user?.error || '认证失败，请检查用户名密码', 'error');
     }
