@@ -3633,3 +3633,88 @@ input[type=number] {
   0%, 100% { box-shadow: 0 0 0 0 rgba(180, 140, 255, 0); }
   50%      { box-shadow: 0 0 24px 6px rgba(180, 140, 255, 0.3); }
 }
+
+/* --- PWA Install Banner --- */
+.pwa-install-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  margin-bottom: 20px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--accent-plum);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+.pwa-install-banner.hidden { display: none; }
+.pwa-install-text {
+  flex: 1;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+}
+.btn-pwa-install {
+  padding: 6px 16px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: white;
+  background: var(--accent-plum);
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition-smooth);
+}
+.btn-pwa-install:hover { opacity: 0.85; }
+.btn-pwa-dismiss {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+.btn-pwa-dismiss:hover { color: var(--text-primary); }
+
+/* iOS guide popup */
+.pwa-ios-guide {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0,0,0,0.45);
+  padding-bottom: 24px;
+}
+.pwa-ios-guide.hidden { display: none; }
+.pwa-ios-guide-content {
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  padding: 24px 28px;
+  max-width: 340px;
+  width: 90%;
+  box-shadow: var(--shadow-lg);
+  text-align: left;
+}
+.pwa-ios-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 14px;
+  color: var(--text-primary);
+}
+.pwa-ios-step {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+[data-theme="dark"] .pwa-install-banner {
+  background: var(--bg-secondary);
+  border-color: var(--accent-plum-light);
+}
+[data-theme="dark"] .btn-pwa-install {
+  background: var(--accent-plum-light);
+  color: #1A111A;
+}

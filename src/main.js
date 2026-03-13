@@ -787,3 +787,56 @@ window.submitFeedback = function () {
 
 // Bootstrap
 document.addEventListener('DOMContentLoaded', init);
+
+// ---- PWA Install Banner ----
+(function() {
+    // 已经以 standalone 模式运行（已安装），不显示
+    if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) return;
+    // 用户之前关闭过，不再打扰
+    if (localStorage.getItem('pwa_dismissed')) return;
+
+    const banner = document.getElementById('pwa-install-banner');
+    const btnInstall = document.getElementById('btn-pwa-install');
+    const btnDismiss = document.getElementById('btn-pwa-dismiss');
+    const iosGuide = document.getElementById('pwa-ios-guide');
+    const btnIosClose = document.getElementById('btn-pwa-ios-close');
+    if (!banner) return;
+
+    let deferredPrompt = null;
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+    // Android Chrome: 捕获系统安装事件
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        banner.classList.remove('hidden');
+    });
+
+    // iOS Safari: 直接显示引导横幅
+    if (isIOS && 'serviceWorker' in navigator) {
+        banner.classList.remove('hidden');
+    }
+
+    btnInstall?.addEventListener('click', () => {
+        if (deferredPrompt) {
+            // Android: 触发系统安装弹窗
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(() => {
+                deferredPrompt = null;
+                banner.classList.add('hidden');
+            });
+        } else if (isIOS) {
+            // iOS: 显示手动引导
+            iosGuide?.classList.remove('hidden');
+        }
+    });
+
+    btnDismiss?.addEventListener('click', () => {
+        banner.classList.add('hidden');
+        localStorage.setItem('pwa_dismissed', '1');
+    });
+
+    btnIosClose?.addEventListener('click', () => {
+        iosGuide?.classList.add('hidden');
+    });
+})();

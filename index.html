@@ -397,6 +397,24 @@
                 </div>
             </section>
 
+            <!-- PWA 安装引导 -->
+            <div id="pwa-install-banner" class="pwa-install-banner hidden">
+                <span class="pwa-install-text">📲 添加到手机桌面，下次打开更方便</span>
+                <button id="btn-pwa-install" class="btn-pwa-install">立即添加</button>
+                <button id="btn-pwa-dismiss" class="btn-pwa-dismiss">✕</button>
+            </div>
+
+            <!-- iOS 引导弹窗 -->
+            <div id="pwa-ios-guide" class="pwa-ios-guide hidden">
+                <div class="pwa-ios-guide-content">
+                    <p class="pwa-ios-title">添加到主屏幕</p>
+                    <p class="pwa-ios-step">1. 点击底部的 <strong>分享按钮</strong> <span style="font-size:1.2em">⬆</span></p>
+                    <p class="pwa-ios-step">2. 向下滑动，点击 <strong>"添加到主屏幕"</strong></p>
+                    <p class="pwa-ios-step">3. 点击右上角 <strong>"添加"</strong></p>
+                    <button id="btn-pwa-ios-close" class="btn-pwa-install" style="margin-top: 12px; width: 100%;">我知道了</button>
+                </div>
+            </div>
+
             <!-- 第二阶段：起卦媒介 (Casting Methods) - HIDDEN for minimalist UI -->
             <section id="divination-console" class="casting-section hidden" style="display: none;">
                 <div class="casting-grid">
