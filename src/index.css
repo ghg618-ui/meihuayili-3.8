@@ -2680,6 +2680,16 @@ input[type=number] {
   animation: fadeIn 0.3s ease;
 }
 
+/* iOS WeChat 键盘修复：手机端 modal 改为顶部对齐+可滚动 */
+@media (max-width: 900px) {
+  .modal-overlay {
+    align-items: flex-start;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 12vh 0 20vh;
+  }
+}
+
 .modal {
   background: white;
   border-radius: var(--radius-lg);
