@@ -18,6 +18,7 @@ import GanzhiCalendar from './core/ganzhi-calendar.js';
 import { renderHistoryList } from './ui/history-view.js';
 import { addMessage, addSystemMessage, scrollChat } from './ui/chat-view.js';
 import { renderResultView } from './ui/hex-view.js';
+import { normalizeAnalysisText } from './utils/formatter.js';
 
 // Controllers
 import state from './controllers/state.js';
@@ -341,6 +342,8 @@ function bindEvents() {
                 if (text) analysisText += text + '\n\n';
             });
         }
+
+        analysisText = normalizeAnalysisText(analysisText);
 
         if (!analysisText.trim()) return showToast('暂无可导出的分析内容', 'error');
 
