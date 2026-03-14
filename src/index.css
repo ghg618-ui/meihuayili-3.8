@@ -1763,12 +1763,12 @@ body {
   }
 
   #modal-auth .modal {
-    width: min(86vw, 340px);
-    border-radius: 24px;
+    width: min(82vw, 316px);
+    border-radius: 22px;
   }
 
   #modal-auth .modal-body {
-    padding: 20px 16px 24px;
+    padding: 16px 14px 20px;
   }
 
   #modal-auth #auth-form-main,
@@ -1778,14 +1778,35 @@ body {
   #modal-auth #auth-msg-error,
   #modal-auth #auth-msg-success,
   #modal-auth .vip-redeem-section {
-    max-width: 288px;
+    max-width: 268px;
   }
 
   #modal-auth .control-group input[type="text"],
   #modal-auth .control-group input[type="password"],
   #modal-auth .control-group input[type="email"] {
-    border-radius: 18px;
-    padding: 14px 16px;
+    border-radius: 16px;
+    padding: 12px 14px;
+    font-size: 1rem;
+  }
+
+  #modal-auth .modal-header {
+    padding: 18px 18px 12px;
+  }
+
+  #modal-auth .modal-header h3 {
+    font-size: 1.02rem;
+  }
+
+  #modal-auth .auth-tab {
+    font-size: 1rem;
+  }
+
+  #modal-auth .control-group label {
+    font-size: 0.94rem;
+  }
+
+  #modal-auth .btn-primary {
+    font-size: 0.98rem;
   }
 
   /* --- Casting Cards: compact stack --- */
@@ -3494,18 +3515,23 @@ input[type=number] {
 }
 
 #modal-auth .modal {
-  width: 408px;
-  border-radius: 28px;
+  width: 392px;
+  border-radius: 24px;
   border: 1px solid rgba(181, 122, 52, 0.14);
-  box-shadow: 0 18px 50px rgba(181, 122, 52, 0.12);
+  box-shadow: 0 16px 40px rgba(181, 122, 52, 0.11);
 }
 
 #modal-auth .modal-header {
-  padding: 24px 28px 18px;
+  padding: 20px 22px 14px;
+}
+
+#modal-auth .modal-header h3 {
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
 }
 
 #modal-auth .modal-body {
-  padding: 26px 24px 28px;
+  padding: 18px 18px 22px;
 }
 
 #modal-auth #auth-form-main,
@@ -3515,38 +3541,38 @@ input[type=number] {
 #modal-auth #auth-msg-error,
 #modal-auth #auth-msg-success,
 #modal-auth .vip-redeem-section {
-  max-width: 320px;
+  max-width: 296px;
   margin-left: auto;
   margin-right: auto;
 }
 
 #modal-auth .auth-tabs {
-  margin-bottom: 26px;
+  margin-bottom: 18px;
   border-bottom: 1px solid rgba(181, 122, 52, 0.14);
 }
 
 #modal-auth .auth-tab {
-  padding: 12px 16px 14px;
-  font-size: 1rem;
+  padding: 10px 16px 12px;
+  font-size: 1.08rem;
 }
 
 #modal-auth .control-group {
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
 #modal-auth .control-group label {
-  font-size: 0.88rem;
-  margin-bottom: 10px;
+  font-size: 0.98rem;
+  margin-bottom: 8px;
 }
 
 #modal-auth .control-group input[type="text"],
 #modal-auth .control-group input[type="password"],
 #modal-auth .control-group input[type="email"] {
-  padding: 15px 18px;
+  padding: 13px 16px;
   border: 1.5px solid rgba(181, 122, 52, 0.18);
-  border-radius: 20px;
+  border-radius: 18px;
   background: rgba(255, 255, 255, 0.96);
-  font-size: 1rem;
+  font-size: 1.06rem;
 }
 
 #modal-auth .control-group input[type="text"]:focus,
@@ -3557,13 +3583,14 @@ input[type=number] {
 }
 
 #modal-auth .btn-primary {
-  padding: 14px 22px;
+  padding: 13px 20px;
   background: transparent;
   color: var(--accent-plum);
   border: 1.5px solid var(--accent-plum);
   border-radius: 999px;
   font-weight: 700;
   letter-spacing: 0.04em;
+  font-size: 1rem;
 }
 
 #modal-auth .btn-primary:hover,
@@ -3578,8 +3605,12 @@ input[type=number] {
 
 #modal-auth #forgot-password-link,
 #modal-auth #back-to-login {
-  margin-top: 14px !important;
-  font-size: 0.82rem !important;
+  margin-top: 12px !important;
+  font-size: 0.9rem !important;
+}
+
+#modal-auth .modal-footer {
+  display: none;
 }
 
 /* ============================================
