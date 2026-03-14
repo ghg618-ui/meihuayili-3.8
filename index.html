@@ -388,8 +388,8 @@
             display: none;
         }
     </style>
-  <script type="module" src="/assets/index-jGYYMwPQ.js"></script>
-  <link rel="stylesheet" href="/assets/index-BnTFeCoZ.css">
+  <script type="module" src="/assets/index-plRXfDbT.js"></script>
+  <link rel="stylesheet" href="/assets/index-CICHEPgu.css">
 </head>
 
 <body>
@@ -428,9 +428,9 @@
                 <button id="btn-new-case" class="btn-new-case">新起一卦</button>
             </div>
             <div class="sidebar-section-label" id="history-toggle" style="cursor: pointer; user-select: none;">
-                <span class="history-toggle-text">📜 日志 <span class="history-count" id="history-count"></span></span>
+                <span class="history-toggle-text">案例 <span class="history-count" id="history-count"></span></span>
                 <div class="history-toggle-right">
-                    <span class="history-swipe-tip">← 左滑可删</span>
+                    <span class="history-swipe-tip">左滑删除</span>
                     <button class="btn-icon-mini" id="btn-sync-history" title="刷新"><i data-lucide="refresh-cw" class="icon-xs"></i></button>
                     <i data-lucide="chevron-down" class="icon-xs history-chevron"></i>
                 </div>
@@ -826,7 +826,7 @@
     <div class="modal-overlay hidden" id="modal-feedback">
         <div class="modal modal-wide glass-panel">
             <div class="modal-header">
-                <h3>📋 卦例反馈</h3>
+                <h3>卦例反馈</h3>
                 <button class="modal-close"
                     onclick="document.getElementById('modal-feedback').classList.add('hidden')">✕</button>
             </div>
@@ -847,7 +847,7 @@
                 <textarea id="feedback-text" placeholder="哪里断得不准？" rows="2"
                     class="feedback-textarea"></textarea>
 
-                <button class="btn-primary" style="width: 100%; margin-top: 16px;"
+                <button class="feedback-submit-btn" style="width: 100%; margin-top: 16px;"
                     onclick="window.submitFeedback()">提交反馈</button>
             </div>
         </div>
