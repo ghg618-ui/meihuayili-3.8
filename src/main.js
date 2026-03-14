@@ -733,6 +733,7 @@ function loadHistoryRecord(id) {
         }
         $('#divination-console').classList.add('hidden');
         $('#input-chat').value = record.question || '';
+        autoResizeTextarea();
         $('#chat-messages').innerHTML = '';
         $('#chat-messages')?.classList.add('history-replay-mode');
         $('#ai-chat').classList.remove('hidden');
@@ -805,6 +806,7 @@ function startNewCase() {
     $('#btn-time-divine')?.classList.remove('hidden');
     $('#btn-quick-parse')?.classList.add('hidden');
     $('#input-chat').value = '';
+    autoResizeTextarea();
     renderHistory();
     // 手机端：隐藏顶部新起一卦按钮 + 收起抽屉
     $('#btn-new-case-mobile')?.classList.add('hidden');
