@@ -347,17 +347,22 @@ function bindEvents() {
 
         if (!analysisText.trim()) return showToast('暂无可导出的分析内容', 'error');
 
-        // 清理 markdown 标记，保留纯文本排版
-        let cleanText = analysisText
-            .replace(/^#{1,3}\s*/gm, '')           // 去掉 # ## ### 标题符号
-            .replace(/\*\*(.+?)\*\*/g, '$1')       // 去掉加粗 **xx**
-            .replace(/\*(.+?)\*/g, '$1')            // 去掉斜体 *xx*
-            .replace(/^- /gm, '• ')                 // 列表横线换成圆点
-            .replace(/\n{3,}/g, '\n\n');            // 压缩多余空行
+        const cleanText = formatAnalysisForExport(analysisText);
 
         const hexName = state.currentResult?.original?.name || '';
         const now = new Date().toLocaleString();
-        const exportText = `═══ 梅花义理 · 断卦记录 ═══\n\n【时间】${now}\n【卦名】${hexName}\n【问题】${question}\n\n─── AI 分析 ───\n\n${cleanText.trim()}\n\n— 梅花义理 meihuayili.com\n📱 微信搜索「易泓录」关注获取更多易学智慧`;
+        const exportText = [
+            '梅花义理｜断卦纪要',
+            '────────────────',
+            `时间｜${now}`,
+            `卦名｜${hexName || '未记录卦名'}`,
+            `问题｜${question}`,
+            '────────────────',
+            cleanText.trim(),
+            '────────────────',
+            '梅花义理  meihuayili.com',
+            '微信公众号｜易泓录'
+        ].join('\n');
 
         // 优先用系统分享（手机可分享到微信/备忘录），降级为复制到剪贴板
         if (navigator.share) {
@@ -383,6 +388,26 @@ function bindEvents() {
             document.body.removeChild(ta);
             showToast('断卦结果已复制到剪贴板', 'success');
         });
+    }
+
+    function formatAnalysisForExport(text) {
+        return text
+            .replace(/^#{1,3}\s*[^【\n]*【([^】]+)】\s*$/gm, '\n〔$1〕')
+            .replace(/\*\*(.+?)\*\*/g, '$1')
+            .replace(/\*(.+?)\*/g, '$1')
+            .replace(/^-\s+/gm, '• ')
+            .replace(/^>\s*/gm, '')
+            .split('\n')
+            .map((line) => {
+                const trimmed = line.trim();
+                if (!trimmed) return '';
+                if (/^〔.+〕$/.test(trimmed)) return trimmed;
+                if (/^[0-9]+\./.test(trimmed) || /^•\s/.test(trimmed)) return trimmed;
+                return `  ${trimmed}`;
+            })
+            .join('\n')
+            .replace(/\n{3,}/g, '\n\n')
+            .trim();
     }
 
     $('#input-chat')?.addEventListener('input', handleTextInputChange);
