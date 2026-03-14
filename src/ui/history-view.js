@@ -43,12 +43,20 @@ export function renderHistoryList(container, history, currentId, onSelect, onDel
     };
 
     container.querySelectorAll('.history-item').forEach(el => {
-        let startX = 0;
+        let startX = null;
         let startY = 0;
         let deltaX = 0;
+        let ignoreClick = false;
 
         el.addEventListener('click', (e) => {
             if (e.target.closest('.history-delete-btn')) return;
+            if (ignoreClick) {
+                ignoreClick = false;
+                return;
+            }
+            if (openedItem && openedItem !== el) {
+                closeOpenedItem();
+            }
             if (el.classList.contains('swiped')) {
                 closeOpenedItem();
                 return;
@@ -57,35 +65,47 @@ export function renderHistoryList(container, history, currentId, onSelect, onDel
             if (onSelect) onSelect(id);
         });
 
-        el.addEventListener('touchstart', (e) => {
-            const touch = e.changedTouches?.[0];
-            if (!touch) return;
-            startX = touch.clientX;
-            startY = touch.clientY;
+        el.addEventListener('pointerdown', (e) => {
+            if (e.pointerType === 'mouse' && e.button !== 0) return;
+            startX = e.clientX;
+            startY = e.clientY;
             deltaX = 0;
-        }, { passive: true });
+        });
 
-        el.addEventListener('touchmove', (e) => {
-            const touch = e.changedTouches?.[0];
-            if (!touch) return;
-            deltaX = touch.clientX - startX;
-            const deltaY = touch.clientY - startY;
-            if (Math.abs(deltaX) > Math.abs(deltaY) && deltaX < -18) {
+        el.addEventListener('pointermove', (e) => {
+            if (startX === null) return;
+            deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 18) {
                 e.preventDefault();
             }
-        }, { passive: false });
+        });
 
-        el.addEventListener('touchend', () => {
+        const finishSwipe = () => {
+            if (startX === null) return;
             if (deltaX < -42) {
                 if (openedItem && openedItem !== el) closeOpenedItem();
                 el.classList.add('swiped');
                 openedItem = el;
+                ignoreClick = true;
+                startX = null;
+                deltaX = 0;
                 return;
             }
 
             if (deltaX > 30 && el.classList.contains('swiped')) {
                 closeOpenedItem();
+                ignoreClick = true;
             }
+
+            startX = null;
+            deltaX = 0;
+        };
+
+        el.addEventListener('pointerup', finishSwipe);
+        el.addEventListener('pointercancel', () => {
+            startX = null;
+            deltaX = 0;
         });
 
         const delBtn = el.querySelector('.history-delete-btn');

@@ -676,6 +676,7 @@ function loadHistoryRecord(id) {
         $('#divination-console').classList.add('hidden');
         $('#input-chat').value = record.question || '';
         $('#chat-messages').innerHTML = '';
+        $('#chat-messages')?.classList.add('history-replay-mode');
         $('#ai-chat').classList.remove('hidden');
         $('#btn-divine').classList.add('hidden');
         $('#btn-time-divine')?.classList.add('hidden');
@@ -683,8 +684,7 @@ function loadHistoryRecord(id) {
 
         $('#chat-messages')?.insertAdjacentHTML('afterbegin', `
             <div class="history-replay-badge">
-                <span class="history-replay-dot"></span>
-                <span>以下为历史记录</span>
+                <span>历史记录</span>
             </div>
         `);
 
@@ -848,6 +848,7 @@ function renderResult(result, isNew = true) {
         state.lastRecordId = null;
         state.modelAnalyses = [];
         $('#chat-messages').innerHTML = '';
+        $('#chat-messages')?.classList.remove('history-replay-mode');
     }
     renderResultView($('#hexagram-display'), result, isNew);
     
