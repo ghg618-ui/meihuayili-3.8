@@ -44,13 +44,16 @@
             animation: fadeIn 0.3s ease;
         }
 
-        /* iOS WeChat 键盘修复：手机端 modal 改为顶部对齐+可滚动 */
+        /* iOS 键盘修复：手机端 modal 改为 absolute + 可滚动 */
         @media (max-width: 900px) {
             .modal-overlay {
+                position: absolute;
+                bottom: auto;
+                min-height: 100%;
                 align-items: flex-start;
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
-                padding: 12vh 0 20vh;
+                padding: 10vh 0 40vh;
             }
         }
 
@@ -64,6 +67,13 @@
             flex-direction: column;
             overflow: hidden;
             border: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 900px) {
+            .modal {
+                max-height: none;
+                overflow: visible;
+            }
         }
 
         .modal-wide {
@@ -331,8 +341,8 @@
             display: none;
         }
     </style>
-  <script type="module" src="/assets/index-ce_KvkOp.js"></script>
-  <link rel="stylesheet" href="/assets/index-B0RE93qj.css">
+  <script type="module" src="/assets/index-B5bqwB82.js"></script>
+  <link rel="stylesheet" href="/assets/index-BrI6gg_f.css">
 </head>
 
 <body>
