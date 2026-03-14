@@ -195,7 +195,8 @@ body {
   flex: 1;
   padding: 0;
   overflow-x: hidden;
-  background: transparent;
+  background: rgba(255, 251, 244, 0.84);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
 }
 
@@ -1724,6 +1725,8 @@ body {
 
   #app-main {
     padding: 0;
+    background: transparent;
+    border: none;
   }
 
   /* --- Hero Section: compact --- */
@@ -3715,6 +3718,11 @@ input[type=number] {
   [data-theme="dark"] #app-sidebar {
     border: none;
     border-right: 1px solid #3c3c3c;
+  }
+
+  [data-theme="dark"] #app-main {
+    background: #1e1e1e;
+    border-color: #3c3c3c;
   }
 
   [data-theme="dark"] .history-list {

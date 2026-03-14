@@ -62,23 +62,7 @@ export function renderHistoryList(container, history, currentId, onSelect, onDel
             if (surface) surface.style.transform = `translateX(${px}px)`;
         };
 
-        // --- TAP: 点击露出"打开"，再点别处收回 ---
-        el.addEventListener('click', (e) => {
-            if (e.target.closest('.history-delete-btn') || e.target.closest('.history-open-btn')) return;
-            if (dragging) return;
-
-            // If this item is already opened (either direction), close it
-            if (openedItem === el) {
-                closeOpenedItem();
-                return;
-            }
-            // If another item is opened, close it first
-            if (openedItem) closeOpenedItem();
-            // Show "打开" button
-            openRight(el);
-        });
-
-        // --- SWIPE: only left-swipe for delete ---
+        // --- POINTER: detect both tap and left-swipe ---
         el.addEventListener('pointerdown', (e) => {
             if (e.pointerType === 'mouse' && e.button !== 0) return;
             startX = e.clientX;
@@ -110,11 +94,21 @@ export function renderHistoryList(container, history, currentId, onSelect, onDel
             }
         });
 
-        const finishSwipe = () => {
+        const finishSwipe = (e) => {
             if (startX === null) return;
-            const dx = startX !== null ? 0 : 0; // we read dragging flag instead
 
-            if (!dragging) { startX = null; return; }
+            if (!dragging) {
+                startX = null;
+                // This was a tap — show/hide "打开" button
+                if (e && !e.target.closest('.history-delete-btn') && !e.target.closest('.history-open-btn')) {
+                    if (openedItem === el) {
+                        closeOpenedItem();
+                    } else {
+                        openRight(el);
+                    }
+                }
+                return;
+            }
 
             const isSwipedLeft = el.classList.contains('swiped-left');
 
