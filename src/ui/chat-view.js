@@ -37,10 +37,11 @@ export function appendAssistantMessageActions(msgEl) {
             <button class="msg-inline-action" onclick="window.startNewCaseFromChat()">新起一卦</button>
         </div>
         <div class="wechat-promo" onclick="window.showQRCode()">
-            <span class="wechat-promo-text">微信｜易泓录</span>
-            <span class="wechat-promo-hint">微信号 yhlchat · 点击查看二维码</span>
+            <span class="wechat-promo-text">微信号｜易泓录（yhLchat）· 点击查看二维码</span>
         </div>
     `);
+
+    window.syncMobileNewCaseButtonVisibility?.();
 }
 
 export function wrapDualLayout(existingMsgEl, leftLabel, rightLabel) {

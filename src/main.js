@@ -131,7 +131,41 @@ function closeMobileDrawer() {
     $('#app-sidebar')?.classList.remove('drawer-open');
     $('#sidebar-overlay')?.classList.remove('active');
     document.body.classList.remove('drawer-lock');
+    requestAnimationFrame(updateMobileNewCaseButtonVisibility);
 }
+
+function updateMobileNewCaseButtonVisibility() {
+    const button = $('#btn-new-case-mobile');
+    if (!button) return;
+
+    if (window.innerWidth > 900) {
+        button.classList.add('hidden');
+        return;
+    }
+
+    if ($('#app-sidebar')?.classList.contains('drawer-open')) {
+        button.classList.add('hidden');
+        return;
+    }
+
+    const hasVisibleResult = Boolean(state.currentResult) && !$('#ai-chat')?.classList.contains('hidden');
+    if (!hasVisibleResult) {
+        button.classList.add('hidden');
+        return;
+    }
+
+    const actionRow = document.querySelector('.msg-action-row');
+    const actionRowVisible = Boolean(actionRow) && (() => {
+        const rect = actionRow.getBoundingClientRect();
+        return rect.top < window.innerHeight - 20 && rect.bottom > 0;
+    })();
+
+    button.classList.toggle('hidden', actionRowVisible);
+}
+
+window.syncMobileNewCaseButtonVisibility = () => {
+    requestAnimationFrame(updateMobileNewCaseButtonVisibility);
+};
 
 // ===================== Initialization =====================
 async function init() {
@@ -305,6 +339,8 @@ function bindEvents() {
 
     // Close mobile drawer when overlay is tapped
     $('#sidebar-overlay')?.addEventListener('click', closeMobileDrawer);
+    window.addEventListener('scroll', updateMobileNewCaseButtonVisibility, { passive: true });
+    window.addEventListener('resize', updateMobileNewCaseButtonVisibility);
 
     // New Case
     $('#btn-new-case')?.addEventListener('click', startNewCase);
@@ -351,6 +387,12 @@ function bindEvents() {
     // 显示易泓录二维码弹窗
     window.showQRCode = function () {
         $('#modal-qrcode')?.classList.remove('hidden');
+        $('#btn-new-case-mobile')?.classList.add('hidden');
+    };
+
+    window.hideQRCode = function () {
+        $('#modal-qrcode')?.classList.add('hidden');
+        requestAnimationFrame(updateMobileNewCaseButtonVisibility);
     };
 
     // 导出断卦结果
@@ -370,7 +412,7 @@ function bindEvents() {
             const assistantMsgs = chatEl.querySelectorAll('.chat-message.assistant .msg-content');
             assistantMsgs.forEach(el => {
                 const clone = el.cloneNode(true);
-                clone.querySelectorAll('.thinking-block, .msg-feedback-actions, .msg-bottom-actions').forEach(n => n.remove());
+                clone.querySelectorAll('.thinking-block, .msg-feedback-actions, .msg-bottom-actions, .msg-action-row, .wechat-promo').forEach(n => n.remove());
                 const text = clone.innerText.trim();
                 if (text) analysisText += text + '\n\n';
             });
@@ -398,7 +440,7 @@ function bindEvents() {
             cleanText.trim(),
             '────────────────',
             '梅花义理  meihuayili.com',
-            '微信｜易泓录（yhlchat）'
+            '微信｜易泓录（yhLchat）'
         ].join('\n');
 
         // 优先用系统分享（手机可分享到微信/备忘录），降级为复制到剪贴板
@@ -549,9 +591,7 @@ function handleQuickParse() {
     renderResult(finalResult);
     $('#btn-quick-parse')?.classList.add('hidden');
     $('#btn-time-divine')?.classList.add('hidden');
-    if (window.innerWidth <= 900) {
-        $('#btn-new-case-mobile')?.classList.remove('hidden');
-    }
+    if (window.innerWidth <= 900) requestAnimationFrame(updateMobileNewCaseButtonVisibility);
     handleDivineMain();
 }
 
@@ -620,10 +660,7 @@ async function handleTimeDivineAuto() {
     $('#btn-time-divine')?.classList.add('hidden');
     $('#btn-quick-parse')?.classList.add('hidden');
 
-    // 手机端：显示顶部新起一卦按钮
-    if (window.innerWidth <= 900) {
-        $('#btn-new-case-mobile')?.classList.remove('hidden');
-    }
+    if (window.innerWidth <= 900) requestAnimationFrame(updateMobileNewCaseButtonVisibility);
 
     // Start analysis
     await handleDivineMain();
@@ -719,7 +756,7 @@ function loadHistoryRecord(id) {
         // 手机端：加载记录后自动收起抽屉 + 显示新起一卦
         if (window.innerWidth <= 900) {
             closeMobileDrawer();
-            $('#btn-new-case-mobile')?.classList.remove('hidden');
+            requestAnimationFrame(updateMobileNewCaseButtonVisibility);
         }
     }
 }

@@ -2279,17 +2279,19 @@ body {
     right: 16px;
     z-index: 999;
     padding: 10px 20px;
-    background: var(--accent-plum);
-    color: white;
-    border: none;
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--accent-plum);
+    border: 1px solid rgba(93, 43, 93, 0.16);
     border-radius: 100px;
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 4px 16px rgba(93, 43, 93, 0.35);
+    box-shadow: 0 4px 16px rgba(93, 43, 93, 0.16);
     letter-spacing: 0.04em;
     transition: transform 0.2s, box-shadow 0.2s;
     animation: fab-pop-in 0.3s ease-out;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
 
   .btn-new-case-fab:active {
@@ -2303,8 +2305,10 @@ body {
 }
 
 [data-theme="dark"] .btn-new-case-fab:not(.hidden) {
-  background: #0e639c;
-  box-shadow: 0 4px 16px rgba(14, 99, 156, 0.4);
+  background: rgba(37, 37, 38, 0.92);
+  color: #4a9eff;
+  border-color: #3c4b5b;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
 }
 
 @keyframes fadeIn {
@@ -3128,16 +3132,30 @@ input[type=number] {
 }
 .wechat-promo-text {
   display: block;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: var(--text-secondary);
   line-height: 1.6;
 }
-.wechat-promo-hint {
-  display: block;
-  font-size: 0.78rem;
-  color: var(--text-tertiary);
-  margin-top: 4px;
-  opacity: 0.9;
+
+#modal-qrcode {
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 900px) {
+  #modal-qrcode {
+    position: fixed;
+    inset: 0;
+    min-height: 100dvh;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 15vh 16px 10vh;
+    overflow-y: auto;
+  }
+
+  #modal-qrcode .qrcode-card {
+    margin: 0 auto;
+  }
 }
 
 /* QR Code modal */
