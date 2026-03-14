@@ -3,9 +3,9 @@
   --accent-plum-light: #e6b373;
   --accent-plum-dark: #b57a34;
   --bg-primary: #ffffff;
-  --bg-secondary: #f5f3f0;
+  --bg-secondary: #f3efe9;
   --bg-glass: rgba(255, 255, 255, 0.9);
-  --bg-subtle: #eceae7;
+  --bg-subtle: #ebe7e1;
   --text-primary: #1D1D1F;
   --text-secondary: #6E6E73;
   --text-tertiary: #86868B;
@@ -147,7 +147,7 @@ body.drawer-lock {
 body {
   margin: 0;
   padding: 0;
-  background: #f8f6f3;
+  background: #f5f0ea;
   color: var(--text-primary);
   font-family: var(--font-sans);
   line-height: 1.6;
@@ -202,7 +202,7 @@ body {
 /* --- Header --- */
 #app-header {
   border-bottom: 1px solid var(--border-color);
-  background: rgba(248, 246, 243, 0.92);
+  background: rgba(245, 240, 234, 0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   padding: 10px 0;
@@ -1338,7 +1338,7 @@ body {
 }
 
 .model-column:nth-child(1) .model-column-header {
-  background: linear-gradient(135deg, #f5f3f0 0%, #ffffff 100%);
+  background: linear-gradient(135deg, #f3efe9 0%, #ffffff 100%);
   color: var(--accent-plum);
   border-left: 4px solid var(--accent-plum);
 }
@@ -1396,7 +1396,7 @@ body {
 
 .thinking-status {
   padding: 14px 20px;
-  background: linear-gradient(135deg, #ffffff 0%, #f5f3f0 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #f3efe9 100%);
   border: 1px solid var(--border-color);
   border-radius: 12px 12px 0 0;
   color: var(--accent-plum);
@@ -2673,7 +2673,7 @@ input[type=number] {
 }
 
 .history-item.active {
-  background: rgba(248, 246, 243, 0.9);
+  background: rgba(245, 240, 234, 0.9);
   box-shadow: none;
 }
 
