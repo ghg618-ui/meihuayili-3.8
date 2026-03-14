@@ -177,6 +177,7 @@ export function updateUIForAuth() {
     const sidebarFooter = $('#sidebar-mobile-footer');
     const modelSelect = $('#model-select');
     const userTrigger = $('#user-trigger');
+    const headerRight = $('#header-right');
 
     if (state.currentUser) {
         const isPro = hasProAccess();
@@ -234,6 +235,9 @@ export function updateUIForAuth() {
             modelSelect.style.display = 'none';
         }
     }
+
+    // Reveal header after auth state is determined (prevents flash of "登录/注册")
+    if (headerRight) headerRight.style.visibility = '';
 
     window.requestAnimationFrame(() => {
         const btnTime = $('#btn-time-divine');
