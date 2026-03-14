@@ -39,7 +39,7 @@ import {
     handleAdminResetPassword,
     handleChangePassword
 } from './controllers/auth-controller.js';
-import { hasProAccess } from './storage/auth.js';
+import { hasProAccess, hydrateRememberedUser } from './storage/auth.js';
 import { handleSaveSettings, loadSettingsToModal } from './controllers/settings-controller.js';
 import { performAIAnalysis, continueAIAnalysis, performComparisonAnalysis } from './controllers/ai-controller.js';
 import makeLogger from './utils/logger.js';
@@ -131,6 +131,18 @@ function init() {
         mergeCloudHistory(state.currentUser.name).then((history) => {
             state.history = history;
             renderHistory();
+        });
+    } else {
+        hydrateRememberedUser().then((user) => {
+            if (!user?.name || state.currentUser?.name) return;
+            state.currentUser = user;
+            updateUIForAuth();
+            state.history = loadHistory(user.name);
+            renderHistory();
+            mergeCloudHistory(user.name).then((history) => {
+                state.history = history;
+                renderHistory();
+            });
         });
     }
 
@@ -874,6 +886,12 @@ document.addEventListener('DOMContentLoaded', init);
         return;
     }
 
+    // iPhone 浏览器无法可靠识别“是否已添加到主屏幕”，这里不再自动弹提示，避免误报骚扰。
+    if (isIOS && !isWeChat) {
+        hidePwaPrompts();
+        return;
+    }
+
     // Android Chrome: 捕获系统安装事件
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
@@ -881,8 +899,8 @@ document.addEventListener('DOMContentLoaded', init);
         if (!shouldSuppressBanner) banner?.classList.remove('hidden');
     });
 
-    // iOS 浏览器 / 微信内: 仅在未安装且未关闭时，显示页面下方提示
-    if ((isWeChat || isIOS) && !shouldSuppressBanner) {
+    // 微信内: 仅在未安装且未关闭时，显示页面下方提示
+    if (isWeChat && !shouldSuppressBanner) {
         banner?.classList.remove('hidden');
     }
 
