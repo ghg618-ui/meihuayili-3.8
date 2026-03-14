@@ -8,6 +8,30 @@ import makeLogger from '../utils/logger.js';
 const log = makeLogger('Auth');
 
 const API_BASE = 'https://api.meihuayili.com';
+const CURRENT_USER_KEY = 'meihua_current_user';
+const CURRENT_USER_COOKIE = 'meihua_current_user';
+const CURRENT_USER_COOKIE_MAX_AGE = 60 * 60 * 24 * 180;
+
+function persistCurrentUser(currentUser) {
+    const serialized = JSON.stringify(currentUser);
+    localStorage.setItem(CURRENT_USER_KEY, serialized);
+    document.cookie = `${CURRENT_USER_COOKIE}=${encodeURIComponent(serialized)}; path=/; max-age=${CURRENT_USER_COOKIE_MAX_AGE}; SameSite=Lax`;
+}
+
+function readCurrentUserFromCookie() {
+    const match = document.cookie.match(new RegExp(`(?:^|; )${CURRENT_USER_COOKIE}=([^;]*)`));
+    if (!match) return null;
+    try {
+        return JSON.parse(decodeURIComponent(match[1]));
+    } catch {
+        return null;
+    }
+}
+
+function clearCurrentUserPersistence() {
+    localStorage.removeItem(CURRENT_USER_KEY);
+    document.cookie = `${CURRENT_USER_COOKIE}=; path=/; max-age=0; SameSite=Lax`;
+}
 
 export function getRegisteredUsers() {
     try {
@@ -42,7 +66,7 @@ export async function loginUser(name, password) {
                 saveRegisteredUsers(users);
             }
             const currentUser = { name, hasEmail: !!data.user?.hasEmail };
-            localStorage.setItem('meihua_current_user', JSON.stringify(currentUser));
+            persistCurrentUser(currentUser);
             return currentUser;
         }
         return { error: data.error || '用户名或密码错误', code: data.code };
@@ -58,7 +82,7 @@ export async function loginUser(name, password) {
     }
     if (user.password === hp || user.passwordHash === hp) {
         const currentUser = { name };
-        localStorage.setItem('meihua_current_user', JSON.stringify(currentUser));
+        persistCurrentUser(currentUser);
         return currentUser;
     }
     return { error: '密码错误', code: 'WRONG_PASSWORD' };
@@ -83,7 +107,7 @@ export async function registerUser(name, password, email) {
             users[name] = { name, password: hp, created: new Date().toISOString() };
             saveRegisteredUsers(users);
             const currentUser = { name };
-            localStorage.setItem('meihua_current_user', JSON.stringify(currentUser));
+            persistCurrentUser(currentUser);
             return currentUser;
         }
         return { error: data.error || '注册失败' };
@@ -97,7 +121,7 @@ export async function registerUser(name, password, email) {
     users[name] = { name, password: hp, created: new Date().toISOString() };
     saveRegisteredUsers(users);
     const currentUser = { name };
-    localStorage.setItem('meihua_current_user', JSON.stringify(currentUser));
+    persistCurrentUser(currentUser);
     return currentUser;
 }
 
@@ -159,14 +183,23 @@ export async function changePassword(name, oldPassword, newPassword) {
 
 export function getCurrentUser() {
     try {
-        return JSON.parse(localStorage.getItem('meihua_current_user') || 'null');
+        const localUser = JSON.parse(localStorage.getItem(CURRENT_USER_KEY) || 'null');
+        if (localUser?.name) return localUser;
     } catch (e) {
-        return null;
+        log.warn('Failed to parse current user from localStorage', e);
     }
+
+    const cookieUser = readCurrentUserFromCookie();
+    if (cookieUser?.name) {
+        localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(cookieUser));
+        return cookieUser;
+    }
+
+    return null;
 }
 
 export function logoutUser() {
-    localStorage.removeItem('meihua_current_user');
+    clearCurrentUserPersistence();
 }
 
 /**

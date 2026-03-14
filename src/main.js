@@ -5,7 +5,7 @@
 import './index.css';
 import { $, $$, showToast } from './utils/dom.js';
 import { initModals, openModal, closeModal } from './ui/modals.js';
-import { loadHistory, addHistoryRecord, deleteHistoryRecord, addFeedbackRecord } from './storage/history.js';
+import { loadHistory, addHistoryRecord, deleteHistoryRecord, addFeedbackRecord, mergeCloudHistory } from './storage/history.js';
 import {
     getSelectedModel,
     setSelectedModel,
@@ -126,6 +126,13 @@ function init() {
     bindEvents();
     updateUIForAuth();  // 这里会设置模型选择器的显示/隐藏
     renderHistory();
+
+    if (state.currentUser?.name) {
+        mergeCloudHistory(state.currentUser.name).then((history) => {
+            state.history = history;
+            renderHistory();
+        });
+    }
 
     // 手机端：日志默认展开（手机私密，无需锁定）
     if (window.innerWidth <= 900) {
