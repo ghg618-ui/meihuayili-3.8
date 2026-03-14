@@ -85,12 +85,32 @@ export function addSystemMessage(container, text) {
 
 export function isNearBottom(container, threshold = 80) {
     if (!container) return true;
+
+    const style = window.getComputedStyle(container);
+    const isScrollable = ['auto', 'scroll'].includes(style.overflowY) && container.scrollHeight > container.clientHeight + 1;
+
+    if (!isScrollable) {
+        const scrollRoot = document.scrollingElement || document.documentElement;
+        const viewportBottom = window.scrollY + window.innerHeight;
+        return scrollRoot.scrollHeight - viewportBottom < threshold;
+    }
+
     return container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
 }
 
 export function scrollChat(container, force = false) {
     if (!container) return;
+
+    const style = window.getComputedStyle(container);
+    const isScrollable = ['auto', 'scroll'].includes(style.overflowY) && container.scrollHeight > container.clientHeight + 1;
+
     if (force || isNearBottom(container)) {
+        if (!isScrollable) {
+            const scrollRoot = document.scrollingElement || document.documentElement;
+            scrollRoot.scrollTop = scrollRoot.scrollHeight;
+            return;
+        }
+
         container.scrollTop = container.scrollHeight;
     }
 }

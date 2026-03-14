@@ -1010,6 +1010,11 @@ body {
   overflow-y: auto;
 }
 
+.chat-messages.history-replay-mode {
+  max-height: none;
+  overflow: visible;
+}
+
 /* --- Welcome Placeholder --- */
 .chat-welcome {
   display: flex;
@@ -1872,6 +1877,8 @@ body {
   .chat-messages {
     padding: 16px 16px;
     min-height: 100px;
+    max-height: none;
+    overflow: visible;
   }
 
   .chat-welcome {
