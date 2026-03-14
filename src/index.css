@@ -310,7 +310,7 @@ body {
 
 /* --- Question Hero --- */
 .question-hero {
-  padding: 36px 48px 40px;
+  padding: 42px 48px 48px;
   text-align: center;
   background: linear-gradient(180deg, var(--bg-primary) 0%, #F8F5F9 100%);
   border-radius: var(--radius-xl);
@@ -340,7 +340,7 @@ body {
   font-size: 0.9rem;
   color: var(--text-secondary);
   font-weight: 400;
-  margin-bottom: 28px;
+  margin-bottom: 34px;
   letter-spacing: 0.05em;
 }
 
@@ -364,7 +364,8 @@ body {
 
 #input-chat {
   width: 100%;
-  padding: 20px 24px 28px;
+  min-height: 174px;
+  padding: 24px 24px 34px;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   font-size: 1.15rem;
@@ -1690,7 +1691,7 @@ body {
 
   /* --- Hero Section: compact --- */
   .question-hero {
-    padding: 24px 16px 28px;
+    padding: 28px 16px 34px;
     margin-bottom: 20px;
     border-radius: var(--radius-lg);
   }
@@ -1702,7 +1703,7 @@ body {
 
   .hero-subtitle {
     font-size: 0.85rem;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
   }
 
   .current-time-mini {
@@ -1712,7 +1713,8 @@ body {
   }
 
   #input-chat {
-    padding: 14px 16px 24px;
+    min-height: 148px;
+    padding: 18px 16px 28px;
     font-size: 1rem;
     border-radius: var(--radius-md);
   }
