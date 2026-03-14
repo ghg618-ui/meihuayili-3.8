@@ -10,11 +10,6 @@ export function openModal(id) {
     const el = $(`#${id}`);
     if (el) {
         el.classList.remove('hidden');
-        // 手机端：锁 body 滚动，把页面拉到顶部让 modal 可见
-        if (window.innerWidth <= 900) {
-            document.body.style.overflow = 'hidden';
-            window.scrollTo(0, 0);
-        }
     }
 }
 
@@ -22,25 +17,7 @@ export function closeModal(id) {
     const el = $(`#${id}`);
     if (el) {
         el.classList.add('hidden');
-        document.body.style.overflow = '';
     }
-}
-
-// iOS 键盘修复：focus 时滚动到可见位置
-export function initIOSKeyboardFix() {
-    if (!isIOS) return;
-
-    document.addEventListener('focusin', (e) => {
-        const el = e.target;
-        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-            const modal = el.closest('.modal-overlay');
-            if (modal && !modal.classList.contains('hidden')) {
-                setTimeout(() => {
-                    el.scrollIntoView({ block: 'center', behavior: 'smooth' });
-                }, 300);
-            }
-        }
-    });
 }
 
 export function initModals() {

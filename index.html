@@ -157,9 +157,6 @@
             box-sizing: border-box;
         }
 
-        .masked-input {
-            -webkit-text-security: disc;
-        }
 
         .control-group input:focus {
             outline: none;
@@ -609,15 +606,15 @@
                 <div id="auth-form-main">
                     <div class="control-group">
                         <label for="auth-username">用户名</label>
-                        <input type="text" id="auth-username" placeholder="请输入用户名" autocomplete="off">
+                        <input type="text" id="auth-username" placeholder="请输入用户名" autocomplete="username">
                     </div>
                     <div class="control-group">
                         <label for="auth-password">密码</label>
-                        <input type="text" id="auth-password" class="masked-input" placeholder="请输入密码" autocomplete="off">
+                        <input type="password" id="auth-password" placeholder="请输入密码" autocomplete="current-password">
                     </div>
                     <div class="control-group hidden" id="confirm-password-group">
                         <label for="auth-confirm-password">确认密码</label>
-                        <input type="text" id="auth-confirm-password" class="masked-input" placeholder="请再次输入密码" autocomplete="off">
+                        <input type="password" id="auth-confirm-password" placeholder="请再次输入密码" autocomplete="off">
                     </div>
                     <div class="control-group hidden" id="email-group">
                         <label for="auth-email">邮箱 <span style="font-size:0.75rem; color:var(--text-tertiary)">（用于找回密码）</span></label>
@@ -644,7 +641,7 @@
                         </div>
                         <div class="control-group">
                             <label for="reset-new-password">新密码</label>
-                            <input type="text" id="reset-new-password" class="masked-input" placeholder="输入新密码（至少4位）" autocomplete="off">
+                            <input type="password" id="reset-new-password" placeholder="输入新密码（至少4位）" autocomplete="off">
                         </div>
                         <button class="btn-primary" style="width: 100%;" id="btn-reset-submit">重置密码</button>
                     </div>
@@ -679,10 +676,10 @@
                     <div id="profile-change-pwd-section" style="padding:0 4px;margin-top:14px;border-top:1px dashed var(--border-color);padding-top:14px;">
                         <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:10px;">修改密码</p>
                         <div class="control-group" style="margin-bottom:8px;">
-                            <input type="text" id="profile-old-pwd" class="masked-input" placeholder="当前密码" autocomplete="off" style="width:100%;">
+                            <input type="password" id="profile-old-pwd" placeholder="当前密码" autocomplete="off" style="width:100%;">
                         </div>
                         <div class="control-group" style="margin-bottom:8px;">
-                            <input type="text" id="profile-new-pwd" class="masked-input" placeholder="新密码（至少4位）" autocomplete="off" style="width:100%;">
+                            <input type="password" id="profile-new-pwd" placeholder="新密码（至少4位）" autocomplete="off" style="width:100%;">
                         </div>
                         <button class="btn-primary" id="btn-change-pwd" style="width:100%;font-size:0.85rem;">确认修改</button>
                     </div>
