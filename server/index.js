@@ -37,6 +37,7 @@ try {
 // ===== 配置区 =====
 const PORT = process.env.PORT || 3210;
 const UPSTREAM_TIMEOUT_MS = Number(process.env.UPSTREAM_TIMEOUT_MS || 120000);
+const ANALYSIS_TEMPERATURE = 0.35;
 
 // 多条线路，自动按顺序备用
 const ROUTES = [
@@ -561,6 +562,7 @@ app.post('/api/chat', async (req, res) => {
                     messages,
                     stream: true,
                     max_tokens: 8192,
+                    temperature: ANALYSIS_TEMPERATURE,
                 }),
                 signal: timeoutAbort.signal,
             });

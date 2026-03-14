@@ -22,6 +22,7 @@ export const isProxyMode = !!PROXY_ENDPOINT;
 const DEFAULT_TIMEOUT_MS = 180000; // 180s — enough for deep reasoning models
 const MAX_RETRIES = 2;
 const RETRY_DELAY_MS = 1500;
+const ANALYSIS_TEMPERATURE = 0.35;
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -100,7 +101,8 @@ async function _doStream({ endpoint, key, model, messages, onChunk, onFinish, si
                 model,
                 messages,
                 stream: true,
-                max_tokens: 8192
+                max_tokens: 8192,
+                temperature: ANALYSIS_TEMPERATURE,
             }),
             signal: combinedSignal
         });
