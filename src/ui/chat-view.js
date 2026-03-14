@@ -26,21 +26,19 @@ export function appendAssistantMessageActions(msgEl) {
     const contentEl = msgEl.querySelector('.msg-content');
     if (!contentEl) return;
 
-    contentEl.querySelectorAll('.msg-feedback-actions, .msg-bottom-actions, .wechat-promo').forEach((node) => node.remove());
+    contentEl.querySelectorAll('.msg-feedback-actions, .msg-bottom-actions, .msg-action-row, .wechat-promo').forEach((node) => node.remove());
 
     contentEl.insertAdjacentHTML('beforeend', `
-        <div class="msg-feedback-actions">
-            <button class="btn-feedback icon-btn" onclick="window.openFeedbackModal('${msgEl.id}')" title="提供卦例反馈">
-                <span class="fb-icon" style="font-size:1.1rem">📋</span> 卦例点评
+        <div class="msg-action-row">
+            <button class="msg-inline-action" onclick="window.openFeedbackModal('${msgEl.id}')" title="提供卦例反馈">
+                卦例点评
             </button>
-        </div>
-        <div class="msg-bottom-actions">
-            <button class="btn-new-case-inline" onclick="window.startNewCaseFromChat()">🔄 新起一卦</button>
-            <button class="btn-export-inline" onclick="window.exportDivinationResult()">📤 导出结果</button>
+            <button class="msg-inline-action" onclick="window.exportDivinationResult()">导出结果</button>
+            <button class="msg-inline-action" onclick="window.startNewCaseFromChat()">新起一卦</button>
         </div>
         <div class="wechat-promo" onclick="window.showQRCode()">
-            <span class="wechat-promo-text">微信服务号：易泓录</span>
-            <span class="wechat-promo-hint">点击查看二维码</span>
+            <span class="wechat-promo-text">微信｜易泓录</span>
+            <span class="wechat-promo-hint">微信号 yhlchat · 点击查看二维码</span>
         </div>
     `);
 }

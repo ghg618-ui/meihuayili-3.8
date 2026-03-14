@@ -398,7 +398,7 @@ function bindEvents() {
             cleanText.trim(),
             '────────────────',
             '梅花义理  meihuayili.com',
-            '微信公众号｜易泓录'
+            '微信｜易泓录（yhlchat）'
         ].join('\n');
 
         // 优先用系统分享（手机可分享到微信/备忘录），降级为复制到剪贴板

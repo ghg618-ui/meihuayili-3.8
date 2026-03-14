@@ -2144,10 +2144,10 @@ body {
 
 .msg-content h4 {
   margin: 28px 0 12px;
-  font-size: 0.9rem;
+  font-size: 0.96rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
-  color: var(--text-tertiary);
+  letter-spacing: 0.08em;
+  color: #8f8b94;
 }
 
 .msg-content h4:first-child {
@@ -3082,82 +3082,60 @@ input[type=number] {
 /* ============================================
    Feedback Mechanism Styles
    ============================================ */
-.msg-feedback-actions {
-  display: flex;
-  justify-content: flex-end;
+.msg-action-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
   margin-top: 22px;
-  border-top: 1px dashed rgba(93, 43, 93, 0.1);
-  padding-top: 14px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(93, 43, 93, 0.08);
 }
 
-.msg-bottom-actions {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 16px;
-}
-
-.btn-new-case-inline {
-  padding: 8px 24px;
-  background: transparent;
+.msg-inline-action {
+  min-width: 0;
+  padding: 11px 8px;
+  background: rgba(255, 255, 255, 0.68);
   color: var(--text-secondary);
-  border: 1px dashed var(--border-color);
-  border-radius: var(--radius-md);
-  font-size: 0.85rem;
+  border: 1px solid rgba(93, 43, 93, 0.12);
+  border-radius: 14px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   cursor: pointer;
   transition: var(--transition-smooth);
 }
 
-.btn-new-case-inline:hover {
+.msg-inline-action:hover {
   color: var(--accent-plum);
-  border-color: var(--accent-plum);
-  background: rgba(93, 43, 93, 0.04);
+  border-color: rgba(93, 43, 93, 0.24);
+  background: rgba(93, 43, 93, 0.03);
 }
 
-.btn-export-inline {
-  padding: 8px 24px;
-  background: transparent;
-  color: var(--text-secondary);
-  border: 1px dashed var(--border-color);
-  border-radius: var(--radius-md);
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: var(--transition-smooth);
-}
-
-.btn-export-inline:hover {
-  color: var(--accent-plum);
-  border-color: var(--accent-plum);
-  background: rgba(93, 43, 93, 0.04);
-}
-
-/* WeChat promo line */
 .wechat-promo {
   text-align: center;
-  margin-top: 22px;
-  padding: 16px 18px 14px;
-  background: rgba(93, 43, 93, 0.025);
-  border: 1px dashed var(--border-color);
-  border-radius: 18px;
+  margin-top: 14px;
+  padding: 10px 8px 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
   cursor: pointer;
   transition: all 0.2s;
 }
 .wechat-promo:hover {
-  background: rgba(93, 43, 93, 0.08);
-  border-color: var(--accent-plum);
+  opacity: 0.86;
 }
 .wechat-promo-text {
   display: block;
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   color: var(--text-secondary);
-  line-height: 1.7;
+  line-height: 1.6;
 }
 .wechat-promo-hint {
   display: block;
-  font-size: 0.8rem;
-  color: var(--accent-plum);
-  margin-top: 10px;
-  opacity: 0.72;
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+  opacity: 0.9;
 }
 
 /* QR Code modal */
@@ -3465,64 +3443,26 @@ input[type=number] {
   border-color: #007acc;
 }
 
-[data-theme="dark"] .btn-time-divine {
-  color: #ffffff;
-  border-color: transparent;
-  background: linear-gradient(135deg, #0e639c 0%, #1177bb 100%);
-  box-shadow: 0 2px 8px rgba(0, 122, 204, 0.25);
-}
-
-[data-theme="dark"] .btn-time-divine:hover {
-  background: linear-gradient(135deg, #1177bb 0%, #1a8ad4 100%);
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 122, 204, 0.35);
-}
-
-[data-theme="dark"] .btn-new-case {
-  border-color: transparent;
-  color: #ffffff;
-  background: linear-gradient(135deg, #0e639c 0%, #1177bb 100%);
-  box-shadow: 0 2px 8px rgba(0, 122, 204, 0.25);
-}
-
-[data-theme="dark"] .btn-new-case:hover {
-  background: linear-gradient(135deg, #1177bb 0%, #1a8ad4 100%);
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 122, 204, 0.35);
-}
-
-[data-theme="dark"] .btn-new-case-inline {
+[data-theme="dark"] .msg-inline-action {
   color: #b0b0b0;
   border-color: #444;
+  background: rgba(255,255,255,0.02);
 }
 
-[data-theme="dark"] .btn-new-case-inline:hover {
-  color: #4a9eff;
-  border-color: #4a9eff;
-  background: #2a2d2e;
-}
-
-[data-theme="dark"] .btn-export-inline {
-  color: #b0b0b0;
-  border-color: #444;
-}
-
-[data-theme="dark"] .btn-export-inline:hover {
+[data-theme="dark"] .msg-inline-action:hover {
   color: #4a9eff;
   border-color: #4a9eff;
   background: #2a2d2e;
 }
 
 [data-theme="dark"] .wechat-promo {
-  background: rgba(255,255,255,0.04);
-  border-color: #444;
+  background: transparent;
 }
 [data-theme="dark"] .wechat-promo:hover {
-  background: rgba(255,255,255,0.08);
-  border-color: #4a9eff;
+  background: transparent;
 }
 [data-theme="dark"] .wechat-promo-text { color: #b0b0b0; }
-[data-theme="dark"] .wechat-promo-hint { color: #4a9eff; }
+[data-theme="dark"] .wechat-promo-hint { color: #858585; }
 [data-theme="dark"] .qrcode-card {
   background: #2a2d2e;
   box-shadow: 0 20px 60px rgba(0,0,0,0.5);
