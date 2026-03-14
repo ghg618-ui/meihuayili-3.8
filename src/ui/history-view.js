@@ -30,10 +30,13 @@ export function renderHistoryList(container, history, currentId, onSelect, onDel
 
     // Attach listeners
     let openedItem = null;
+    const SWIPE_WIDTH = 56;
 
     const closeOpenedItem = () => {
         if (!openedItem) return;
+        const openedSurface = openedItem.querySelector('.history-item-surface');
         openedItem.classList.remove('swiped');
+        if (openedSurface) openedSurface.style.transform = '';
         const openedBtn = openedItem.querySelector('.history-delete-btn');
         if (openedBtn) {
             openedBtn.dataset.confirming = 'false';
@@ -47,6 +50,13 @@ export function renderHistoryList(container, history, currentId, onSelect, onDel
         let startY = 0;
         let deltaX = 0;
         let ignoreClick = false;
+        let dragging = false;
+        const surface = el.querySelector('.history-item-surface');
+
+        const setSurfaceOffset = (offset) => {
+            if (!surface) return;
+            surface.style.transform = `translateX(${offset}px)`;
+        };
 
         el.addEventListener('click', (e) => {
             if (e.target.closest('.history-delete-btn')) return;
@@ -67,9 +77,13 @@ export function renderHistoryList(container, history, currentId, onSelect, onDel
 
         el.addEventListener('pointerdown', (e) => {
             if (e.pointerType === 'mouse' && e.button !== 0) return;
+            if (openedItem && openedItem !== el) {
+                closeOpenedItem();
+            }
             startX = e.clientX;
             startY = e.clientY;
             deltaX = 0;
+            dragging = false;
         });
 
         el.addEventListener('pointermove', (e) => {
@@ -77,35 +91,64 @@ export function renderHistoryList(container, history, currentId, onSelect, onDel
             deltaX = e.clientX - startX;
             const deltaY = e.clientY - startY;
             if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 18) {
+                dragging = true;
                 e.preventDefault();
+
+                if (el.classList.contains('swiped')) {
+                    const nextOffset = Math.max(-SWIPE_WIDTH, Math.min(0, -SWIPE_WIDTH + deltaX));
+                    setSurfaceOffset(nextOffset);
+                    return;
+                }
+
+                const nextOffset = Math.max(-SWIPE_WIDTH, Math.min(0, deltaX));
+                setSurfaceOffset(nextOffset);
             }
         });
 
         const finishSwipe = () => {
             if (startX === null) return;
-            if (deltaX < -42) {
-                if (openedItem && openedItem !== el) closeOpenedItem();
-                el.classList.add('swiped');
-                openedItem = el;
-                ignoreClick = true;
+
+            if (!dragging) {
                 startX = null;
                 deltaX = 0;
                 return;
             }
 
-            if (deltaX > 30 && el.classList.contains('swiped')) {
+            if (!el.classList.contains('swiped') && deltaX < -32) {
+                el.classList.add('swiped');
+                setSurfaceOffset(-SWIPE_WIDTH);
+                openedItem = el;
+                ignoreClick = true;
+                startX = null;
+                deltaX = 0;
+                dragging = false;
+                return;
+            }
+
+            if (el.classList.contains('swiped') && deltaX > 22) {
                 closeOpenedItem();
                 ignoreClick = true;
+            } else if (el.classList.contains('swiped')) {
+                setSurfaceOffset(-SWIPE_WIDTH);
+            } else {
+                setSurfaceOffset(0);
             }
 
             startX = null;
             deltaX = 0;
+            dragging = false;
         };
 
         el.addEventListener('pointerup', finishSwipe);
         el.addEventListener('pointercancel', () => {
+            if (el.classList.contains('swiped')) {
+                setSurfaceOffset(-SWIPE_WIDTH);
+            } else {
+                setSurfaceOffset(0);
+            }
             startX = null;
             deltaX = 0;
+            dragging = false;
         });
 
         const delBtn = el.querySelector('.history-delete-btn');
