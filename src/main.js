@@ -4,7 +4,7 @@
  */
 import './index.css';
 import { $, $$, showToast } from './utils/dom.js';
-import { initModals, openModal, closeModal } from './ui/modals.js';
+import { initModals, openModal, closeModal, initIOSKeyboardFix } from './ui/modals.js';
 import { loadHistory, addHistoryRecord, deleteHistoryRecord, addFeedbackRecord } from './storage/history.js';
 import {
     getSelectedModel,
@@ -102,6 +102,7 @@ function closeMobileDrawer() {
 function init() {
     log.info('Initializing...');
     initModals();
+    initIOSKeyboardFix();
     restoreTheme();
 
     // Initialize Lucide icons
