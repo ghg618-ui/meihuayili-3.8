@@ -2,10 +2,10 @@
   --accent-plum: #d99848;
   --accent-plum-light: #e6b373;
   --accent-plum-dark: #b57a34;
-  --bg-primary: #fffdfa;
-  --bg-secondary: #f3eadb;
-  --bg-glass: rgba(255, 250, 242, 0.94);
-  --bg-subtle: #efe7d7;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f3f0;
+  --bg-glass: rgba(255, 255, 255, 0.9);
+  --bg-subtle: #eceae7;
   --text-primary: #1D1D1F;
   --text-secondary: #6E6E73;
   --text-tertiary: #86868B;
@@ -147,7 +147,7 @@ body.drawer-lock {
 body {
   margin: 0;
   padding: 0;
-  background: #f9f5ef;
+  background: #f8f6f3;
   color: var(--text-primary);
   font-family: var(--font-sans);
   line-height: 1.6;
@@ -175,20 +175,20 @@ body {
 
 #app-sidebar {
   width: 280px;
-  background: rgba(255, 251, 244, 0.84);
+  background: rgba(255, 255, 255, 0.8);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   z-index: 100;
-  box-shadow: 0 10px 28px rgba(181, 122, 52, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
   padding: 20px;
   transition: var(--transition-smooth);
 }
 
 #app-sidebar:hover {
-  box-shadow: 0 14px 34px rgba(181, 122, 52, 0.12);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
 }
 
 #app-main {
@@ -202,9 +202,9 @@ body {
 /* --- Header --- */
 #app-header {
   border-bottom: 1px solid var(--border-color);
-  background: rgba(255, 249, 241, 0.82);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  background: rgba(248, 246, 243, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   padding: 10px 0;
   position: sticky;
   top: 0;
@@ -245,7 +245,7 @@ body {
 .logo-version {
   font-family: var(--font-sans);
   font-size: 0.65rem;
-  background: #f6edde;
+  background: var(--bg-secondary);
   color: var(--text-tertiary);
   padding: 3px 8px;
   border-radius: 4px;
@@ -278,13 +278,13 @@ body {
   cursor: pointer;
   padding: 6px 14px;
   border-radius: 20px;
-  background: rgba(246, 237, 222, 0.86);
+  background: rgba(255, 255, 255, 0.6);
   border: 1px solid var(--border-color);
   transition: var(--transition-smooth);
 }
 
 .user-profile-mini:hover {
-  background: #fff8ef;
+  background: #ffffff;
   border-color: var(--accent-plum);
   box-shadow: var(--shadow-sm);
 }
@@ -1325,7 +1325,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 1;
-  background: rgba(255, 251, 245, 0.92);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(10px);
 }
 
@@ -1338,7 +1338,7 @@ body {
 }
 
 .model-column:nth-child(1) .model-column-header {
-  background: linear-gradient(135deg, #f4e7d5 0%, #fff8ef 100%);
+  background: linear-gradient(135deg, #f5f3f0 0%, #ffffff 100%);
   color: var(--accent-plum);
   border-left: 4px solid var(--accent-plum);
 }
@@ -1396,7 +1396,7 @@ body {
 
 .thinking-status {
   padding: 14px 20px;
-  background: linear-gradient(135deg, #fff8ef 0%, #f3e7d5 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #f5f3f0 100%);
   border: 1px solid var(--border-color);
   border-radius: 12px 12px 0 0;
   color: var(--accent-plum);
@@ -1499,8 +1499,8 @@ body {
   padding: 10px 18px;
   font-size: 0.85rem;
   color: var(--text-tertiary);
-  border-top: 2px solid rgba(181, 122, 52, 0.08);
-  background: rgba(255, 249, 241, 0.84);
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-secondary);
   text-align: center;
 }
 
@@ -2162,7 +2162,7 @@ body {
   padding: 12px 22px;
   border-radius: 999px;
   color: var(--text-primary);
-  background: rgba(255, 251, 245, 0.94);
+  background: rgba(255, 255, 255, 0.94);
   font-weight: 600;
   font-size: 0.9rem;
   z-index: 300000;
@@ -2170,8 +2170,8 @@ body {
   display: block;
   pointer-events: none;
   transition: var(--transition-smooth);
-  box-shadow: 0 12px 30px rgba(181, 122, 52, 0.12);
-  border: 1.5px solid rgba(181, 122, 52, 0.24);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border: 1.5px solid rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(10px);
 }
 
@@ -2186,7 +2186,7 @@ body {
 }
 
 .toast.info {
-  background: rgba(255, 251, 245, 0.96) !important;
+  background: rgba(255, 255, 255, 0.96) !important;
   color: var(--accent-plum) !important;
   border-color: rgba(181, 122, 52, 0.28) !important;
 }
@@ -2407,7 +2407,7 @@ body {
     right: 16px;
     z-index: 999;
     padding: 10px 20px;
-    background: rgba(255, 250, 243, 0.94);
+    background: rgba(255, 255, 255, 0.94);
     color: var(--accent-plum);
     border: 1px solid rgba(181, 122, 52, 0.22);
     border-radius: 100px;
@@ -2597,7 +2597,7 @@ body {
 
 /* --- Extra Polish for the Divination Journey --- */
 .cast-card:hover {
-  background: #fffaf2;
+  background: #ffffff;
   border: 1px solid var(--accent-plum-light);
   box-shadow: 0 15px 45px rgba(181, 122, 52, 0.12), 0 0 0 1px rgba(217, 152, 72, 0.12);
 }
@@ -2668,12 +2668,12 @@ input[type=number] {
 }
 
 .history-item:hover {
-  background: rgba(255, 253, 250, 0.72);
+  background: rgba(255, 255, 255, 0.5);
   padding-left: 24px !important;
 }
 
 .history-item.active {
-  background: rgba(255, 248, 238, 0.92);
+  background: rgba(248, 246, 243, 0.9);
   box-shadow: none;
 }
 
@@ -3258,7 +3258,7 @@ input[type=number] {
 .msg-inline-action {
   min-width: 0;
   padding: 11px 8px;
-  background: rgba(255, 250, 243, 0.88);
+  background: rgba(255, 255, 255, 0.88);
   color: var(--accent-plum);
   border: 1px solid rgba(181, 122, 52, 0.28);
   border-radius: 14px;
