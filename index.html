@@ -436,10 +436,6 @@
             <div class="history-list collapsed" id="history-list">
                 <div class="history-empty">尚无推演记录</div>
             </div>
-            <div class="sidebar-pwa-entry hidden" id="sidebar-pwa-entry">
-                <button type="button" id="btn-add-to-home" class="btn-sidebar-secondary">添加到桌面</button>
-                <p class="sidebar-pwa-hint">需要时可手动打开安装指引</p>
-            </div>
             <!-- 手机端退出登录（仅移动端显示） -->
             <div class="sidebar-mobile-footer" id="sidebar-mobile-footer">
                 <button type="button" id="btn-logout-sidebar" class="btn-logout-sidebar">退出登录</button>
@@ -452,6 +448,13 @@
             <section id="question-hero" class="glass-panel question-hero">
                 <p class="hero-tagline">古典智慧·AI断卦</p>
                 <p class="hero-subtitle">心诚则灵，输入您的疑惑，即刻为您推演分析</p>
+                <div class="quiet-pwa-entry hidden" id="quiet-pwa-entry">
+                    <button type="button" id="btn-add-to-home" class="btn-quiet-pwa">
+                        <span class="quiet-pwa-icon">⌂</span>
+                        <span>添加到桌面</span>
+                    </button>
+                    <p class="quiet-pwa-caption">下次可像 App 一样直接打开</p>
+                </div>
                 <div class="input-container-large">
                     <div class="input-wrap">
                         <textarea id="input-chat" placeholder="例如：今日面试能否顺利？" rows="2"></textarea>

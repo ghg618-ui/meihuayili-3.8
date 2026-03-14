@@ -838,11 +838,11 @@ document.addEventListener('DOMContentLoaded', init);
     };
 
     const showQuietPwaEntry = () => {
-        document.getElementById('sidebar-pwa-entry')?.classList.remove('hidden');
+        document.getElementById('quiet-pwa-entry')?.classList.remove('hidden');
     };
 
     const hideQuietPwaEntry = () => {
-        document.getElementById('sidebar-pwa-entry')?.classList.add('hidden');
+        document.getElementById('quiet-pwa-entry')?.classList.add('hidden');
     };
 
     // 已经以 standalone 模式运行（已安装），不显示
