@@ -16,7 +16,7 @@ import { TRIGRAMS, getShichen } from './core/bagua-data.js';
 import DivinationEngine from './core/divination-engine.js';
 import GanzhiCalendar from './core/ganzhi-calendar.js';
 import { renderHistoryList } from './ui/history-view.js';
-import { addMessage, addSystemMessage, scrollChat } from './ui/chat-view.js';
+import { addMessage, addSystemMessage, appendAssistantMessageActions, scrollChat } from './ui/chat-view.js';
 import { renderResultView } from './ui/hex-view.js';
 import { normalizeAnalysisText } from './utils/formatter.js';
 
@@ -699,6 +699,12 @@ function loadHistoryRecord(id) {
                 reasoning: record.reasoning,
                 modelLabel: '历史记录'
             });
+        }
+
+        const assistantMessages = $('#chat-messages')?.querySelectorAll('.chat-message.assistant');
+        const lastAssistantMessage = assistantMessages?.[assistantMessages.length - 1];
+        if (lastAssistantMessage) {
+            appendAssistantMessageActions(lastAssistantMessage);
         }
 
         renderHistory();

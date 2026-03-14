@@ -4,7 +4,7 @@
 import { $, showToast, escapeHtml } from '../utils/dom.js';
 import { loadProviderConfigs, MODEL_REGISTRY } from '../storage/settings.js';
 import { loadHistory, addHistoryRecord, loadFeedback } from '../storage/history.js';
-import { addMessage, scrollChat, wrapDualLayout } from '../ui/chat-view.js';
+import { addMessage, appendAssistantMessageActions, scrollChat, wrapDualLayout } from '../ui/chat-view.js';
 import { fetchAIStream, isProxyMode, PROXY_ENDPOINT } from '../api/ai-client.js';
 import { formatMarkdown } from '../utils/formatter.js';
 import { openModal } from '../ui/modals.js';
@@ -328,9 +328,6 @@ async function _runStream({ config, modelInfo, messages, targetEl, question, ren
                 }
 
                 let html = '';
-                if (totalReasoning && totalContent) {
-                    html += `<details class="thinking-block"><summary>💭 已完成深度分析</summary><pre>${escapeHtml(totalReasoning)}</pre></details>`;
-                }
                 if (totalContent) {
                     html += formatMarkdown(totalContent);
                 } else if (!totalReasoning) {
@@ -359,7 +356,6 @@ async function _runStream({ config, modelInfo, messages, targetEl, question, ren
 
             if (hasOutput) {
                 let finalHtml = '';
-                if (totalReasoning) finalHtml += `<details class="thinking-block"><summary>💭 深度推演逻辑</summary><pre>${escapeHtml(totalReasoning)}</pre></details>`;
                 if (totalContent) {
                     finalHtml += formatMarkdown(totalContent);
                 } else {
@@ -385,20 +381,7 @@ async function _runStream({ config, modelInfo, messages, targetEl, question, ren
             // Restore feedback button + new case button (streaming overwrites it)
             const parentMsg = targetEl.closest('.chat-message');
             if (parentMsg) {
-                const fbHtml = `<div class="msg-feedback-actions">
-                    <button class="btn-feedback icon-btn" onclick="window.openFeedbackModal('${parentMsg.id}')" title="提供卦例反馈">
-                        <span class="fb-icon" style="font-size:1.1rem">📋</span> 卦例点评
-                    </button>
-                </div>
-                <div class="msg-bottom-actions">
-                    <button class="btn-new-case-inline" onclick="window.startNewCaseFromChat()">🔄 新起一卦</button>
-                    <button class="btn-export-inline" onclick="window.exportDivinationResult()">📤 导出结果</button>
-                </div>
-                <div class="wechat-promo" onclick="window.showQRCode()">
-                    <span class="wechat-promo-text">📱 关注微信服务号「易泓录」获取更多易学智慧</span>
-                    <span class="wechat-promo-hint">👉 点击查看二维码</span>
-                </div>`;
-                targetEl.insertAdjacentHTML('beforeend', fbHtml);
+                appendAssistantMessageActions(parentMsg);
             }
 
             scrollChat($('#chat-messages'), true);

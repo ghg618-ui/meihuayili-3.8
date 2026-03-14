@@ -9,25 +9,40 @@ export function addMessage(container, { role, content, reasoning, modelLabel }) 
 
     const msgId = 'msg-' + Date.now();
 
-    const feedbackHtml = role === 'assistant' ? `
-        <div class="msg-feedback-actions">
-            <button class="btn-feedback icon-btn" onclick="window.openFeedbackModal('${msgId}')" title="提供卦例点评反馈">
-                <span class="fb-icon" style="font-size:1.1rem">📋</span> 卦例点评
-            </button>
-        </div>
-    ` : '';
-
     const msgHtml = `
         <div class="chat-message ${role}" id="${msgId}">
             <div class="msg-content">
-                ${reasoning ? `<details class="thinking-block"><summary>💭 思考过程</summary><pre>${escapeHtml(reasoning)}</pre></details>` : ''}
                 ${formatMarkdown(content)}
-                ${feedbackHtml}
             </div>
         </div>
     `;
     container.insertAdjacentHTML('beforeend', msgHtml);
     return $(`#${msgId}`);
+}
+
+export function appendAssistantMessageActions(msgEl) {
+    if (!msgEl) return;
+
+    const contentEl = msgEl.querySelector('.msg-content');
+    if (!contentEl) return;
+
+    contentEl.querySelectorAll('.msg-feedback-actions, .msg-bottom-actions, .wechat-promo').forEach((node) => node.remove());
+
+    contentEl.insertAdjacentHTML('beforeend', `
+        <div class="msg-feedback-actions">
+            <button class="btn-feedback icon-btn" onclick="window.openFeedbackModal('${msgEl.id}')" title="提供卦例反馈">
+                <span class="fb-icon" style="font-size:1.1rem">📋</span> 卦例点评
+            </button>
+        </div>
+        <div class="msg-bottom-actions">
+            <button class="btn-new-case-inline" onclick="window.startNewCaseFromChat()">🔄 新起一卦</button>
+            <button class="btn-export-inline" onclick="window.exportDivinationResult()">📤 导出结果</button>
+        </div>
+        <div class="wechat-promo" onclick="window.showQRCode()">
+            <span class="wechat-promo-text">📱 关注微信服务号「易泓录」获取更多易学智慧</span>
+            <span class="wechat-promo-hint">👉 点击查看二维码</span>
+        </div>
+    `);
 }
 
 export function wrapDualLayout(existingMsgEl, leftLabel, rightLabel) {
