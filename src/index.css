@@ -117,9 +117,10 @@ body.drawer-lock {
   overflow: hidden;
 }
 
+.logout-btn-header,
 .theme-toggle-btn {
   background: transparent;
-  border: 1.5px solid var(--border-color);
+  border: 1px solid var(--border-color);
   border-radius: 100px;
   padding: 5px 14px;
   font-size: 0.78rem;
@@ -131,6 +132,11 @@ body.drawer-lock {
   color: var(--text-secondary);
   white-space: nowrap;
 }
+.logout-btn-header:hover,
+.theme-toggle-btn:hover {
+  border-color: var(--accent-plum);
+  color: var(--text-primary);
+}
 .theme-toggle-btn .theme-icon {
   font-size: 0.85rem;
   line-height: 1;
@@ -138,10 +144,6 @@ body.drawer-lock {
 .theme-toggle-btn .theme-label {
   font-weight: 400;
   letter-spacing: 0.02em;
-}
-.theme-toggle-btn:hover {
-  border-color: var(--accent-plum);
-  color: var(--text-primary);
 }
 
 body {
