@@ -288,6 +288,28 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
+.user-profile-mini.has-user {
+  gap: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.user-profile-mini.has-user:hover {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.user-name {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: 0.01em;
+}
+
 .current-time-mini {
   font-size: 0.85rem;
   color: var(--text-tertiary);

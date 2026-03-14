@@ -178,31 +178,19 @@ export function updateUIForAuth() {
     const logoutSidebar = $('#btn-logout-sidebar');
     const sidebarFooter = $('#sidebar-mobile-footer');
     const modelSelect = $('#model-select');
+    const userTrigger = $('#user-trigger');
 
     if (state.currentUser) {
         const isPro = hasProAccess();
         const vip = isVipUser();
         if (userLabel) { userLabel.textContent = state.currentUser.name; userLabel.style.display = ''; }
-        if (userAvatar) { userAvatar.textContent = state.currentUser.name.charAt(0); userAvatar.style.display = ''; }
+        if (userAvatar) { userAvatar.textContent = ''; userAvatar.style.display = 'none'; }
+        if (userTrigger) userTrigger.classList.add('has-user');
         
         if (userQuota) {
-            userQuota.style.cursor = '';
-            userQuota.style.fontWeight = '';
-            userQuota.style.fontSize = '0.75rem';
-            if (isPro) {
-                userQuota.textContent = 'Pro';
-                userQuota.style.display = 'inline-block';
-                userQuota.style.color = 'var(--status-success)';
-            } else if (vip) {
-                const q = getUserQuota();
-                userQuota.textContent = `VIP · 剩${q}次`;
-                userQuota.style.display = 'inline-block';
-                userQuota.style.color = 'var(--accent-plum)';
-            } else {
-                userQuota.textContent = '';
-                userQuota.style.display = 'none';
-                userQuota.style.color = '';
-            }
+            userQuota.textContent = '';
+            userQuota.style.display = 'none';
+            userQuota.style.color = '';
         }
 
         // Logout buttons are visible for ALL logged-in users
@@ -227,6 +215,7 @@ export function updateUIForAuth() {
             }
         }
     } else {
+        if (userTrigger) userTrigger.classList.remove('has-user');
         if (userLabel) { userLabel.textContent = ''; userLabel.style.display = 'none'; }
         if (userAvatar) { userAvatar.textContent = ''; userAvatar.style.display = 'none'; }
         if (userQuota) {

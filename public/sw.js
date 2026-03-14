@@ -1,4 +1,4 @@
-const CACHE_NAME = 'meihua-v3.8.34';
+const CACHE_NAME = 'meihua-v3.8.35';
 const SHELL_ASSETS = [
     '/',
     '/index.html'
