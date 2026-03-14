@@ -55,6 +55,51 @@
                 -webkit-overflow-scrolling: touch;
                 padding: 10vh 0 40vh;
             }
+
+            body.auth-sheet-mode #modal-auth {
+                position: fixed;
+                inset: 0;
+                min-height: 100dvh;
+                padding: 0;
+                background: var(--bg-primary, #fff);
+                align-items: stretch;
+                justify-content: stretch;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            body.auth-sheet-mode #modal-auth .modal {
+                width: 100%;
+                max-width: none;
+                max-height: none;
+                min-height: 100dvh;
+                border-radius: 0;
+                border: none;
+                box-shadow: none;
+                overflow: visible;
+            }
+
+            body.auth-sheet-mode #modal-auth .modal-header {
+                position: sticky;
+                top: 0;
+                z-index: 2;
+                background: var(--bg-primary, #fff);
+                padding-top: max(20px, env(safe-area-inset-top));
+            }
+
+            body.auth-sheet-mode #modal-auth .modal-body {
+                flex: 1;
+                overflow: visible;
+                padding-bottom: calc(120px + env(safe-area-inset-bottom));
+            }
+
+            body.auth-sheet-mode #modal-auth .modal-footer {
+                padding-bottom: calc(16px + env(safe-area-inset-bottom));
+            }
+
+            body.auth-sheet-mode #modal-auth input {
+                font-size: 16px;
+            }
         }
 
         .modal {
@@ -614,11 +659,11 @@
                     </div>
                     <div class="control-group hidden" id="confirm-password-group">
                         <label for="auth-confirm-password">确认密码</label>
-                        <input type="password" id="auth-confirm-password" placeholder="请再次输入密码" autocomplete="off">
+                        <input type="password" id="auth-confirm-password" placeholder="请再次输入密码" autocomplete="new-password">
                     </div>
                     <div class="control-group hidden" id="email-group">
                         <label for="auth-email">邮箱 <span style="font-size:0.75rem; color:var(--text-tertiary)">（用于找回密码）</span></label>
-                        <input type="email" id="auth-email" placeholder="选填，建议绑定" autocomplete="off">
+                        <input type="email" id="auth-email" placeholder="选填，建议绑定" autocomplete="email">
                     </div>
                     <button class="btn-primary" style="width: 100%;" id="btn-auth-submit">登录</button>
                     <p id="forgot-password-link" style="text-align: center; margin-top: 10px; font-size: 0.78rem; color: var(--accent-plum); cursor: pointer;">
@@ -630,7 +675,7 @@
                 <form id="auth-form-reset" class="hidden" onsubmit="event.preventDefault();">
                     <div class="control-group">
                         <label for="reset-username">用户名</label>
-                        <input type="text" id="reset-username" placeholder="请输入你注册时的用户名">
+                        <input type="text" id="reset-username" placeholder="请输入你注册时的用户名" autocomplete="username">
                     </div>
                     <button class="btn-primary" style="width: 100%;" id="btn-send-code">发送验证码到邮箱</button>
                     <div id="reset-code-section" class="hidden" style="margin-top: 14px;">
@@ -641,7 +686,7 @@
                         </div>
                         <div class="control-group">
                             <label for="reset-new-password">新密码</label>
-                            <input type="password" id="reset-new-password" placeholder="输入新密码（至少4位）" autocomplete="off">
+                            <input type="password" id="reset-new-password" placeholder="输入新密码（至少4位）" autocomplete="new-password">
                         </div>
                         <button class="btn-primary" style="width: 100%;" id="btn-reset-submit">重置密码</button>
                     </div>
@@ -676,10 +721,10 @@
                     <form id="profile-change-pwd-section" onsubmit="event.preventDefault();" style="padding:0 4px;margin-top:14px;border-top:1px dashed var(--border-color);padding-top:14px;">
                         <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:10px;">修改密码</p>
                         <div class="control-group" style="margin-bottom:8px;">
-                            <input type="password" id="profile-old-pwd" placeholder="当前密码" autocomplete="off" style="width:100%;">
+                            <input type="password" id="profile-old-pwd" placeholder="当前密码" autocomplete="current-password" style="width:100%;">
                         </div>
                         <div class="control-group" style="margin-bottom:8px;">
-                            <input type="password" id="profile-new-pwd" placeholder="新密码（至少4位）" autocomplete="off" style="width:100%;">
+                            <input type="password" id="profile-new-pwd" placeholder="新密码（至少4位）" autocomplete="new-password" style="width:100%;">
                         </div>
                         <button class="btn-primary" id="btn-change-pwd" style="width:100%;font-size:0.85rem;">确认修改</button>
                     </form>

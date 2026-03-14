@@ -5,11 +5,18 @@ import { $ } from '../utils/dom.js';
 
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
+const useStandaloneAuthView = isIOS && isWeChat;
 
 export function openModal(id) {
     const el = $(`#${id}`);
     if (el) {
         el.classList.remove('hidden');
+        if (id === 'modal-auth' && useStandaloneAuthView && window.innerWidth <= 900) {
+            document.documentElement.classList.add('auth-sheet-mode');
+            document.body.classList.add('auth-sheet-mode');
+            window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+        }
     }
 }
 
@@ -17,47 +24,29 @@ export function closeModal(id) {
     const el = $(`#${id}`);
     if (el) {
         el.classList.add('hidden');
+        if (id === 'modal-auth') {
+            document.documentElement.classList.remove('auth-sheet-mode');
+            document.body.classList.remove('auth-sheet-mode');
+        }
     }
 }
 
 export function initModals() {
-    // 修复 iOS/微信 Autofill 后输入框无法再次点击弹出的 Bug (WebKit 触控错位以及重绘丢失问题)
-    if (isIOS) {
-        document.addEventListener('focusout', (e) => {
-            if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
-                // 当输入框失去焦点（比如因密码管理器自动填充完成而关闭键盘）时，强制重绘页面修正触控点击位置
-                setTimeout(() => {
-                    window.scrollTo({ left: window.scrollX, top: window.scrollY, behavior: 'auto' });
-                }, 100);
-            }
-        });
-
-        document.addEventListener('touchstart', (e) => {
-            const t = e.target;
-            // 如果点中了输入框，强制聚焦并恢复可能假死的光标
-            if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) {
-                if (document.activeElement === t) {
-                    return;
-                }
-                // 确保层级或失焦再聚焦能够重新触发键盘
-                setTimeout(() => t.focus(), 10);
-            }
-        }, { passive: true });
-    }
-
     // Global close button listener
     document.addEventListener('click', (e) => {
         if (e.target.matches('.modal-bg') || e.target.matches('.btn-close-modal')) {
-            const modal = e.target.closest('.modal-container');
-            if (modal) modal.classList.add('hidden');
+            const modal = e.target.closest('.modal-overlay');
+            if (modal?.id) closeModal(modal.id);
         }
     });
 
     // Close on Escape key
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-            const visibleModals = document.querySelectorAll('.modal-container:not(.hidden)');
-            visibleModals.forEach(m => m.classList.add('hidden'));
+            const visibleModals = document.querySelectorAll('.modal-overlay:not(.hidden)');
+            visibleModals.forEach((modal) => {
+                if (modal.id) closeModal(modal.id);
+            });
         }
     });
 }

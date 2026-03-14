@@ -2691,6 +2691,51 @@ input[type=number] {
     -webkit-overflow-scrolling: touch;
     padding: 10vh 0 40vh;
   }
+
+  body.auth-sheet-mode #modal-auth {
+    position: fixed;
+    inset: 0;
+    min-height: 100dvh;
+    padding: 0;
+    background: var(--bg-primary);
+    align-items: stretch;
+    justify-content: stretch;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  body.auth-sheet-mode #modal-auth .modal {
+    width: 100%;
+    max-width: none;
+    max-height: none;
+    min-height: 100dvh;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    overflow: visible;
+  }
+
+  body.auth-sheet-mode #modal-auth .modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--bg-primary);
+    padding-top: max(20px, env(safe-area-inset-top));
+  }
+
+  body.auth-sheet-mode #modal-auth .modal-body {
+    flex: 1;
+    overflow: visible;
+    padding-bottom: calc(120px + env(safe-area-inset-bottom));
+  }
+
+  body.auth-sheet-mode #modal-auth .modal-footer {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+
+  body.auth-sheet-mode #modal-auth input {
+    font-size: 16px;
+  }
 }
 
 .modal {

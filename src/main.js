@@ -215,15 +215,27 @@ function bindEvents() {
     });
     $('#tab-login')?.addEventListener('click', switchToLoginMode);
     $('#tab-register')?.addEventListener('click', switchToRegisterMode);
-    $('#btn-auth-submit')?.addEventListener('click', () => handleAuthSubmit(renderHistory));
+    $('#auth-form-main')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        handleAuthSubmit(renderHistory);
+    });
     $('#btn-redeem-vip')?.addEventListener('click', handleRedeemVip);
     $('#forgot-password-link')?.addEventListener('click', showForgotPassword);
     $('#back-to-login')?.addEventListener('click', hideForgotPassword);
-    $('#btn-send-code')?.addEventListener('click', handleSendCode);
-    $('#btn-reset-submit')?.addEventListener('click', handleResetSubmit);
+    $('#auth-form-reset')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (!$('#reset-code-section')?.classList.contains('hidden')) {
+            handleResetSubmit();
+            return;
+        }
+        handleSendCode();
+    });
     $('#btn-bind-email')?.addEventListener('click', handleBindEmail);
     $('#btn-admin-reset')?.addEventListener('click', handleAdminResetPassword);
-    $('#btn-change-pwd')?.addEventListener('click', handleChangePassword);
+    $('#profile-change-pwd-section')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        handleChangePassword();
+    });
     $('#btn-logout-header')?.addEventListener('click', () => handleLogout(renderHistory, startNewCase));
     $('#btn-logout-sidebar')?.addEventListener('click', () => handleLogout(renderHistory, startNewCase));
     $('#btn-close-auth')?.addEventListener('click', () => { hideProfilePanel(); closeModal('modal-auth'); });

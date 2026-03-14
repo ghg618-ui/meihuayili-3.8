@@ -13,6 +13,8 @@ export function switchToLoginMode() {
     $('#tab-register').classList.remove('active');
     $('#confirm-password-group').classList.add('hidden');
     $('#email-group')?.classList.add('hidden');
+    $('#auth-password')?.setAttribute('autocomplete', 'current-password');
+    $('#auth-confirm-password')?.setAttribute('autocomplete', 'off');
     $('#btn-auth-submit').textContent = '登录';
     // 确保显示登录表单，隐藏重置表单
     $('#auth-form-main')?.classList.remove('hidden');
@@ -24,6 +26,8 @@ export function switchToRegisterMode() {
     $('#tab-register').classList.add('active');
     $('#confirm-password-group').classList.remove('hidden');
     $('#email-group')?.classList.remove('hidden');
+    $('#auth-password')?.setAttribute('autocomplete', 'new-password');
+    $('#auth-confirm-password')?.setAttribute('autocomplete', 'new-password');
     $('#btn-auth-submit').textContent = '注册并进入';
     $('#auth-form-main')?.classList.remove('hidden');
     $('#auth-form-reset')?.classList.add('hidden');
