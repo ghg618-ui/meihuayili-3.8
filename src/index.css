@@ -351,18 +351,8 @@ body {
   margin: 0 auto;
 }
 
-.current-time-mini {
-  position: absolute;
-  right: 18px;
-  top: 16px;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--text-tertiary);
-  opacity: 0.42;
-  pointer-events: none;
-}
-
 #input-chat {
+  box-sizing: border-box;
   width: 100%;
   min-height: 182px;
   padding: 32px 28px;
@@ -1706,13 +1696,8 @@ body {
     margin-bottom: 24px;
   }
 
-  .current-time-mini {
-    font-size: 0.7rem;
-    right: 12px;
-    top: 12px;
-  }
-
   #input-chat {
+    box-sizing: border-box;
     min-height: 156px;
     padding: 26px 18px;
     font-size: 1rem;
