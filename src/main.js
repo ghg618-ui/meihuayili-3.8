@@ -681,6 +681,13 @@ function loadHistoryRecord(id) {
         $('#btn-time-divine')?.classList.add('hidden');
         $('#btn-quick-parse')?.classList.add('hidden');
 
+        $('#chat-messages')?.insertAdjacentHTML('afterbegin', `
+            <div class="history-replay-badge">
+                <span class="history-replay-dot"></span>
+                <span>历史回看</span>
+            </div>
+        `);
+
         renderResult(state.currentResult, false);
 
         if (state.modelAnalyses.length > 0) {
