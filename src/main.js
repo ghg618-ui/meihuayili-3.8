@@ -351,11 +351,15 @@ function bindEvents() {
 
         const hexName = state.currentResult?.original?.name || '';
         const now = new Date().toLocaleString();
+        const modeLabel = state.selectedMode === 'pro' ? '专业版' : '简化版';
+        const modelLabel = MODEL_REGISTRY[state.selectedModelKey]?.label || '未记录模型';
         const exportText = [
             '梅花义理｜断卦纪要',
             '────────────────',
             `时间｜${now}`,
             `卦名｜${hexName || '未记录卦名'}`,
+            `模式｜${modeLabel}`,
+            `引擎｜${modelLabel}`,
             `问题｜${question}`,
             '────────────────',
             cleanText.trim(),
