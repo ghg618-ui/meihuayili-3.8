@@ -560,6 +560,9 @@ function autoResizeTextarea() {
 }
 
 function handleTextInputChange() {
+    // 如果已经在分析中（有结果了），不再操控按钮和引导动画
+    if (state.currentResult) return;
+
     const text = $('#input-chat').value.trim();
     const hintText = $('#hero-hint');
     const btnTime = $('#btn-time-divine');
@@ -626,6 +629,8 @@ function handleQuickParse() {
     renderResult(finalResult);
     $('#btn-quick-parse')?.classList.add('hidden');
     $('#btn-time-divine')?.classList.add('hidden');
+    $('#ritual-guide')?.classList.add('hidden');
+    $('#btn-time-divine')?.classList.remove('breathing');
     if (window.innerWidth <= 900) requestAnimationFrame(updateMobileNewCaseButtonVisibility);
     handleDivineMain();
 }
@@ -672,6 +677,8 @@ window.completeDateClarification = function (useBeforeJie) {
     renderResult(finalResult);
     $('#btn-quick-parse')?.classList.add('hidden');
     $('#btn-time-divine')?.classList.add('hidden');
+    $('#ritual-guide')?.classList.add('hidden');
+    $('#btn-time-divine')?.classList.remove('breathing');
     handleDivineMain();
 };
 
