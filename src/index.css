@@ -503,7 +503,12 @@ body {
 }
 
 .input-hint {
-  display: none; /* 直接隐藏这行多余的提示 */
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-top: 10px;
+  text-align: center;
+  letter-spacing: 0.03em;
+  opacity: 0.75;
 }
 
 .input-hint i {

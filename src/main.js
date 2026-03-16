@@ -53,8 +53,8 @@ const NON_QUESTION_PATTERNS = [
     /^(谢谢|谢了|好的|好)$/,
 ];
 const QUESTION_HINT_RE = /(是否|能否|能不能|可不可以|会不会|行不行|该不该|要不要|如何|怎么办|怎么做|怎么选|何时|什么时候|几时|结果|前景|发展|适不适合|值不值得|有没有机会|问|请问|求问|吗|？|\?)/;
-const DIVINATION_TOPIC_RE = /(工作|上班|事业|财运|钱|感情|婚姻|婚礼|关系|学业|考试|升学|留学|学校|合作|投资|买房|搬家|出国|孩子|家庭|官司|创业|求职|offer|录取|健康|病|复合|婚期|项目|结果|前途|对象|申请|签证|贷款|收入|发展|去不去|要不要|参加|赴约|见面|出行|旅行|聚会|活动|婚宴|生日|典礼|手术|面试|告白|喜欢|认真|真心|联系|拉黑|冷淡|暧昧|在一起|分手|相亲|约会|追我|对我|对他|对她)/;
-const DIVINATION_ACTION_RE = /(去|不去|参加|不参加|做|不做|见|不见|答应|不答应|继续|放弃|退出|开始|停止|报名|赴约|出发|表白|复合|换|辞|搬|买|卖|投|考|读|去读|申请|签|借|还|合作|联系|见面|相处|追|追求|表态|断联|挽回|结婚|订婚|分开)/;
+const DIVINATION_TOPIC_RE = /(工作|上班|事业|财运|钱|感情|婚姻|婚礼|关系|学业|考试|升学|留学|学校|合作|投资|买房|搬家|出国|孩子|家庭|官司|创业|求职|offer|录取|健康|病|复合|婚期|项目|结果|前途|对象|申请|签证|贷款|收入|发展|去不去|要不要|参加|赴约|见面|出行|旅行|聚会|活动|婚宴|生日|典礼|手术|面试|告白|喜欢|认真|真心|联系|拉黑|冷淡|暧昧|在一起|分手|相亲|约会|追我|对我|对他|对她|学生|朋友|同学|家人|亲戚|同事|老师|父母|子女|客人|邻居|男生|女生)/;
+const DIVINATION_ACTION_RE = /(去|不去|参加|不参加|做|不做|见|不见|答应|不答应|继续|放弃|退出|开始|停止|报名|赴约|出发|表白|复合|换|辞|搬|买|卖|投|考|读|去读|申请|签|借|还|合作|联系|见面|相处|追|追求|表态|断联|挽回|结婚|订婚|分开|来|到|回来|过来)/;
 const DIVINATION_RELATION_RE = /(他喜欢我吗|她喜欢我吗|他对我好不好|她对我好不好|他是认真的吗|她是认真的吗|是否还需要继续联系|还要不要继续联系|该不该继续联系|要不要继续联系|我们还有可能吗|我们会在一起吗|他会联系我吗|她会联系我吗|他会不会回头|她会不会回头)/;
 
 // Pending date clarification state
@@ -70,6 +70,9 @@ function isMeaningfulDivinationQuestion(rawQuestion, hasParsedHex = false) {
 
     if (NON_QUESTION_PATTERNS.some((pattern) => pattern.test(normalized))) return false;
     if (hasParsedHex) return true;
+
+    // 明确以"吗"结尾的疑问句，字数足够即视为有效占问（无需命中关键词库）
+    if (/吗[？?]?$/.test(question) && normalized.length >= 5) return true;
 
     const hasTopic = DIVINATION_TOPIC_RE.test(question);
     const hasQuestionHint = QUESTION_HINT_RE.test(question);
@@ -573,12 +576,14 @@ function handleTextInputChange() {
     const btnTime = $('#btn-time-divine');
     const btnQuick = $('#btn-quick-parse');
     const ritual = $('#ritual-guide');
+    const inputGuidance = $('#input-guidance');
 
     if (!text) {
         btnQuick?.classList.add('hidden');
         btnTime?.classList.remove('hidden');
         btnTime?.classList.remove('breathing');
         ritual?.classList.add('hidden');
+        inputGuidance?.classList.add('hidden');
         if (hintText) hintText.style.display = 'block';
         return;
     }
@@ -589,6 +594,7 @@ function handleTextInputChange() {
         btnTime?.classList.add('hidden');
         btnTime?.classList.remove('breathing');
         ritual?.classList.add('hidden');
+        inputGuidance?.classList.add('hidden');
         if (hintText) hintText.style.display = 'none';
     } else if (meaningful) {
         btnQuick?.classList.add('hidden');
@@ -596,12 +602,14 @@ function handleTextInputChange() {
         // 显示净心引导 + 按钮呼吸光晕
         ritual?.classList.remove('hidden');
         btnTime?.classList.add('breathing');
+        inputGuidance?.classList.add('hidden');
         if (hintText) hintText.style.display = 'none';
     } else {
         btnQuick?.classList.add('hidden');
         btnTime?.classList.add('hidden');
         btnTime?.classList.remove('breathing');
         ritual?.classList.add('hidden');
+        inputGuidance?.classList.remove('hidden');
         if (hintText) hintText.style.display = 'block';
     }
 }
