@@ -512,8 +512,10 @@ function bindEvents() {
             .trim();
     }
 
-    $('#input-chat')?.addEventListener('input', handleTextInputChange);
-    $('#input-chat')?.addEventListener('input', autoResizeTextarea);
+    const inputChat = $('#input-chat');
+    inputChat?.addEventListener('input', handleTextInputChange);
+    inputChat?.addEventListener('input', autoResizeTextarea);
+    inputChat?.addEventListener('blur', handleTextInputBlur);
     $('#btn-time-divine')?.addEventListener('click', handleTimeDivineAuto);
     $('#btn-quick-parse')?.addEventListener('click', handleQuickParse);
     $('#btn-stop-generate')?.addEventListener('click', () => {
@@ -587,9 +589,9 @@ function handleTextInputChange() {
     } else if (meaningful) {
         btnQuick?.classList.add('hidden');
         btnTime?.classList.remove('hidden');
-        // 显示净心引导 + 按钮呼吸光晕
-        ritual?.classList.remove('hidden');
-        btnTime?.classList.add('breathing');
+        // 输入过程中先隐藏引导，等打完字确认后再出现
+        ritual?.classList.add('hidden');
+        btnTime?.classList.remove('breathing');
         inputGuidance?.classList.add('hidden');
         if (hintText) hintText.style.display = 'none';
     } else {
@@ -599,6 +601,25 @@ function handleTextInputChange() {
         ritual?.classList.add('hidden');
         inputGuidance?.classList.remove('hidden');
         if (hintText) hintText.style.display = 'block';
+    }
+}
+
+// 当手机键盘点击"确认"或隐藏键盘时触发
+function handleTextInputBlur() {
+    if (state.currentResult) return;
+
+    const text = $('#input-chat').value.trim();
+    if (!text) return;
+
+    const btnTime = $('#btn-time-divine');
+    const ritual = $('#ritual-guide');
+
+    const parsed = DivinationEngine.parseFromText(text);
+    const meaningful = isMeaningfulDivinationQuestion(text, Boolean(parsed));
+
+    if (!parsed && meaningful) {
+        ritual?.classList.remove('hidden');
+        btnTime?.classList.add('breathing');
     }
 }
 
