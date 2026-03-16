@@ -427,16 +427,6 @@ function bindEvents() {
         requestAnimationFrame(updateMobileNewCaseButtonVisibility);
     };
 
-    // 底部品牌标识点击 -> 显示二维码
-    const footerBrand = $('#footer-brand-btn');
-    if (footerBrand) {
-        footerBrand.addEventListener('click', window.showQRCode);
-        footerBrand.addEventListener('touchend', function (e) {
-            e.preventDefault();
-            window.showQRCode();
-        });
-    }
-
     // 导出断卦结果
     window.exportDivinationResult = function () {
         const question = $('#input-chat')?.value?.trim() || '未记录问题';

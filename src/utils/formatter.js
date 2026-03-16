@@ -61,6 +61,13 @@ function normalizeHeadingLine(line) {
 export function formatMarkdown(text) {
     if (!text) return '';
     text = normalizeAnalysisText(text);
+
+    // 【流式输出平滑处理】自动闭合未完成的加粗标记，消除文本由于未闭合标记而发生的跳动与删减闪烁
+    const boldMatches = text.match(/\*\*/g) || [];
+    if (boldMatches.length % 2 !== 0) {
+        text += '**';
+    }
+
     text = text
         .split('\n')
         .map((line) => DISPLAY_HEADING_MAP.get(line.trim()) || line)
@@ -76,8 +83,6 @@ export function formatMarkdown(text) {
     html = html.replace(/\*\*([\s\S]+?)\*\*/g, '<strong>$1</strong>');
     // Italic
     html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
-    // Clean up orphaned markdown markers that AI failed to close
-    html = html.replace(/\*{2,}/g, '');
     // Line breaks
     html = html.replace(/\n/g, '<br>');
     // Lists
