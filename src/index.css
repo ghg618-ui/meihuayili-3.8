@@ -3332,8 +3332,6 @@ input[type=number] {
   margin-top: auto;
   padding: 72px 0 24px;
   text-align: center;
-  position: relative;
-  z-index: 1000;
 }
 .footer-divider {
   display: flex;
@@ -3342,6 +3340,8 @@ input[type=number] {
   gap: 16px;
   max-width: 320px;
   margin: 0 auto;
+  padding: 12px;
+  -webkit-tap-highlight-color: rgba(217, 152, 72, 0.15);
 }
 .footer-line {
   flex: 1;
