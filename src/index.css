@@ -3319,7 +3319,7 @@ input[type=number] {
 }
 .wechat-promo-text {
   display: block;
-  font-size: 0.88rem;
+  font-size: 0.78rem;
   color: var(--text-secondary);
   line-height: 1.6;
 }
