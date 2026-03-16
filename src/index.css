@@ -1744,7 +1744,7 @@ body {
   }
 
   .main-footer {
-    padding: 28px 0 calc(12px + env(safe-area-inset-bottom));
+    padding: 28px 0 calc(72px + env(safe-area-inset-bottom));
   }
 
   .footer-divider {
@@ -3332,6 +3332,8 @@ input[type=number] {
   margin-top: auto;
   padding: 72px 0 24px;
   text-align: center;
+  position: relative;
+  z-index: 1000;
 }
 .footer-divider {
   display: flex;
