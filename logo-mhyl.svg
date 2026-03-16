@@ -1,70 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <radialGradient id="paperGlow" cx="50%" cy="44%" r="72%">
+    <radialGradient id="paper" cx="50%" cy="38%" r="78%">
       <stop offset="0%" stop-color="#fffdf8"/>
-      <stop offset="62%" stop-color="#f7f1e6"/>
-      <stop offset="100%" stop-color="#ede2cf"/>
+      <stop offset="68%" stop-color="#f7f0e3"/>
+      <stop offset="100%" stop-color="#efe4d2"/>
     </radialGradient>
-    <radialGradient id="petalGold" cx="42%" cy="28%" r="78%">
-      <stop offset="0%" stop-color="#f2cf97"/>
-      <stop offset="55%" stop-color="#dbac63"/>
-      <stop offset="100%" stop-color="#c4883a"/>
-    </radialGradient>
-    <linearGradient id="petalShade" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#fff4df" stop-opacity="0.92"/>
-      <stop offset="100%" stop-color="#c4883a" stop-opacity="0"/>
+    <linearGradient id="ink" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#9d7340"/>
+      <stop offset="100%" stop-color="#6f4d25"/>
     </linearGradient>
-    <radialGradient id="coreGlow" cx="50%" cy="50%" r="70%">
-      <stop offset="0%" stop-color="#fef8ef"/>
-      <stop offset="100%" stop-color="#d29a4a"/>
-    </radialGradient>
-    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#b98a4b" flood-opacity="0.18"/>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#8f6736" flood-opacity="0.14"/>
     </filter>
   </defs>
 
-  <rect width="512" height="512" rx="116" fill="url(#paperGlow)"/>
-  <path d="M56 392C122 350 185 338 250 352C313 365 377 414 456 446V512H0V444C20 432 36 420 56 392Z" fill="#f3eadb" opacity="0.82"/>
+  <rect width="512" height="512" rx="108" fill="url(#paper)"/>
+  <path d="M66 382C119 345 183 340 250 354C319 369 378 401 446 442" fill="none" stroke="#eadbc2" stroke-width="14" stroke-linecap="round" opacity="0.65"/>
+  <circle cx="168" cy="136" r="54" fill="#f4e7d0" opacity="0.42"/>
 
-  <g transform="translate(256 238)" filter="url(#softShadow)">
-    <g transform="rotate(-6)">
-      <path d="M0 -178C58 -170 98 -119 98 -58C98 -14 78 26 42 50C18 66 4 70 0 70C-4 70 -18 66 -42 50C-78 26 -98 -14 -98 -58C-98 -119 -58 -170 0 -178Z" fill="url(#petalGold)"/>
-      <path d="M0 -148C34 -142 62 -109 62 -69C62 -39 47 -8 20 12C11 19 4 22 0 22C-4 22 -11 19 -20 12C-47 -8 -62 -39 -62 -69C-62 -109 -34 -142 0 -148Z" fill="url(#petalShade)" opacity="0.44"/>
-    </g>
-    <g transform="rotate(66)">
-      <path d="M0 -178C58 -170 98 -119 98 -58C98 -14 78 26 42 50C18 66 4 70 0 70C-4 70 -18 66 -42 50C-78 26 -98 -14 -98 -58C-98 -119 -58 -170 0 -178Z" fill="url(#petalGold)"/>
-      <path d="M0 -148C34 -142 62 -109 62 -69C62 -39 47 -8 20 12C11 19 4 22 0 22C-4 22 -11 19 -20 12C-47 -8 -62 -39 -62 -69C-62 -109 -34 -142 0 -148Z" fill="url(#petalShade)" opacity="0.42"/>
-    </g>
-    <g transform="rotate(138)">
-      <path d="M0 -178C58 -170 98 -119 98 -58C98 -14 78 26 42 50C18 66 4 70 0 70C-4 70 -18 66 -42 50C-78 26 -98 -14 -98 -58C-98 -119 -58 -170 0 -178Z" fill="url(#petalGold)"/>
-      <path d="M0 -148C34 -142 62 -109 62 -69C62 -39 47 -8 20 12C11 19 4 22 0 22C-4 22 -11 19 -20 12C-47 -8 -62 -39 -62 -69C-62 -109 -34 -142 0 -148Z" fill="url(#petalShade)" opacity="0.38"/>
-    </g>
-    <g transform="rotate(210)">
-      <path d="M0 -178C58 -170 98 -119 98 -58C98 -14 78 26 42 50C18 66 4 70 0 70C-4 70 -18 66 -42 50C-78 26 -98 -14 -98 -58C-98 -119 -58 -170 0 -178Z" fill="url(#petalGold)"/>
-      <path d="M0 -148C34 -142 62 -109 62 -69C62 -39 47 -8 20 12C11 19 4 22 0 22C-4 22 -11 19 -20 12C-47 -8 -62 -39 -62 -69C-62 -109 -34 -142 0 -148Z" fill="url(#petalShade)" opacity="0.42"/>
-    </g>
-    <g transform="rotate(282)">
-      <path d="M0 -178C58 -170 98 -119 98 -58C98 -14 78 26 42 50C18 66 4 70 0 70C-4 70 -18 66 -42 50C-78 26 -98 -14 -98 -58C-98 -119 -58 -170 0 -178Z" fill="url(#petalGold)"/>
-      <path d="M0 -148C34 -142 62 -109 62 -69C62 -39 47 -8 20 12C11 19 4 22 0 22C-4 22 -11 19 -20 12C-47 -8 -62 -39 -62 -69C-62 -109 -34 -142 0 -148Z" fill="url(#petalShade)" opacity="0.4"/>
-    </g>
-
-    <circle cx="0" cy="0" r="46" fill="url(#coreGlow)"/>
-    <circle cx="0" cy="0" r="24" fill="#fff9ef" opacity="0.92"/>
-    <g fill="#b57a34" opacity="0.84">
-      <circle cx="0" cy="-52" r="8"/>
-      <circle cx="48" cy="-16" r="8"/>
-      <circle cx="30" cy="40" r="8"/>
-      <circle cx="-30" cy="40" r="8"/>
-      <circle cx="-48" cy="-16" r="8"/>
-    </g>
-    <g fill="#f8ead1" opacity="0.78">
-      <circle cx="0" cy="-52" r="3.5"/>
-      <circle cx="48" cy="-16" r="3.5"/>
-      <circle cx="30" cy="40" r="3.5"/>
-      <circle cx="-30" cy="40" r="3.5"/>
-      <circle cx="-48" cy="-16" r="3.5"/>
-    </g>
+  <g filter="url(#soft)">
+    <text x="256" y="288" text-anchor="middle" font-family="'STKaiti', 'Kaiti SC', 'Songti SC', serif" font-size="248" font-weight="500" fill="url(#ink)">梅</text>
   </g>
 
-  <path d="M336 105C369 123 397 156 412 196" fill="none" stroke="#ead9bf" stroke-width="8" stroke-linecap="round" opacity="0.65"/>
+  <path d="M145 332C176 307 204 292 236 286" fill="none" stroke="#c9964c" stroke-width="6" stroke-linecap="round" opacity="0.2"/>
+  <rect x="352" y="356" width="26" height="26" rx="3" fill="#b54a35" opacity="0.92"/>
+  <rect x="359" y="363" width="12" height="12" rx="1.5" fill="#f3e7d6" opacity="0.55"/>
 </svg>
