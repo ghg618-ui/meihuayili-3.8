@@ -624,8 +624,17 @@
             <footer class="main-footer">
                 <div class="footer-divider" onclick="window.showQRCode()" style="cursor: pointer; touch-action: manipulation;">
                     <span class="footer-line"></span>
-                    <span class="footer-brand">易 道 智 慧</span>
+                    <span class="footer-brand">
+                        <span class="fb-char" style="--i:0">易</span>
+                        <span class="fb-char" style="--i:1">道</span>
+                        <span class="fb-char" style="--i:2">智</span>
+                        <span class="fb-char" style="--i:3">慧</span>
+                    </span>
                     <span class="footer-line"></span>
+                </div>
+                <div class="footer-wait-hint hidden" id="footer-wait-hint">
+                    <span class="hint-arrow">↑</span>
+                    <span>等待中可点击</span>
                 </div>
             </footer>
         </main>
