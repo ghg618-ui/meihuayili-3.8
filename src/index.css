@@ -1447,10 +1447,9 @@ body {
 
 /* Progress bar track */
 .thinking-progress-bar {
-  height: 3px;
+  height: 2px;
   background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-top: none;
+  border: none;
   border-radius: 0 0 12px 12px;
   overflow: hidden;
   margin-bottom: 16px;
@@ -3405,17 +3404,17 @@ input[type=number] {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  margin-top: 10px;
-  font-size: 0.6rem;
-  color: var(--text-tertiary);
-  opacity: 0.6;
+  margin-top: 4px;
+  font-size: 0.68rem;
+  color: var(--accent-plum-dark);
+  opacity: 0.7;
   letter-spacing: 0.08em;
   font-family: var(--font-sans);
 }
 .footer-wait-hint .hint-arrow {
   display: inline-block;
   animation: hint-bounce 2s ease-in-out infinite;
-  font-size: 0.7rem;
+  font-size: 0.72rem;
 }
 .footer-wait-hint.hidden {
   display: none;
