@@ -3377,11 +3377,6 @@ input[type=number] {
   letter-spacing: 0.03em;
 }
 
-.footer-brand-stack:hover .fb-char,
-.footer-brand-stack:hover .footer-meta {
-  color: var(--accent-plum);
-}
-
 body.oracle-waiting .btn-new-case-fab {
   display: none !important;
 }
