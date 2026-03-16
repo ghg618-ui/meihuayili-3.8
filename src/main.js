@@ -79,8 +79,8 @@ function isMeaningfulDivinationQuestion(rawQuestion, hasParsedHex = false) {
     if (hasTopic && hasQuestionHint) return true;
     if (hasTopic && normalized.length >= 6) return true;
     if (hasAction && hasQuestionHint && normalized.length >= 8) return true;
-    if (hasQuestionHint && normalized.length >= 12) return true;
-    if (normalized.length >= 18) return true;
+    if (hasQuestionHint && normalized.length >= 10) return true;
+    if (normalized.length >= 12) return true;
     return false;
 }
 
