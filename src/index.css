@@ -3359,9 +3359,7 @@ input[type=number] {
   user-select: none;
   position: relative;
   display: inline-block;
-  padding: 12px 16px;
-  -webkit-tap-highlight-color: rgba(217, 152, 72, 0.15);
-  touch-action: manipulation;
+  padding: 0 4px;
 }
 
 .footer-brand::after {
@@ -3431,6 +3429,10 @@ body.oracle-waiting .footer-brand::after {
 
 body.oracle-waiting .footer-line {
   animation: footer-line-glow 3.6s ease-in-out infinite;
+}
+
+body.oracle-waiting .btn-new-case-fab {
+  display: none !important;
 }
 
 /* --- QR Close Button --- */
