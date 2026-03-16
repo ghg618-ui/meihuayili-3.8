@@ -1762,13 +1762,6 @@ body {
     letter-spacing: 0.42em;
   }
 
-  .footer-brand::after {
-    bottom: calc(100% + 8px);
-    font-size: 0.58rem;
-    padding: 4px 9px;
-    letter-spacing: 0.12em;
-  }
-
   .hero-tagline {
     font-size: 1.1rem;
     margin-bottom: 6px;
@@ -3351,87 +3344,131 @@ input[type=number] {
 .footer-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(181, 122, 52, 0.06) 30%,
+    var(--border-color) 50%,
+    rgba(181, 122, 52, 0.06) 70%,
+    transparent 100%);
+  position: relative;
+  overflow: hidden;
 }
+/* 流光层：一道柔和的金色光沿线条缓缓滑过 */
+.footer-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -40%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(217, 152, 72, 0.5),
+    rgba(217, 152, 72, 0.8),
+    rgba(217, 152, 72, 0.5),
+    transparent);
+  animation: footer-line-flow 6s ease-in-out infinite;
+}
+/* 左侧线：光从左端向中间流动 */
+.footer-line:first-child::after {
+  animation-name: footer-line-flow-ltr;
+}
+/* 右侧线：光从右端向中间流动 */
+.footer-line:last-child::after {
+  animation-name: footer-line-flow-rtl;
+  animation-delay: 0.3s;
+}
+
 .footer-brand {
   font-family: var(--font-serif);
   font-size: 0.82rem;
   letter-spacing: 0.35em;
-  color: var(--text-tertiary);
   cursor: pointer;
-  transition: color 0.3s;
   white-space: nowrap;
   user-select: none;
   position: relative;
   display: inline-block;
   padding: 0 4px;
-}
-
-.footer-brand::after {
-  content: '轻触可见';
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% + 10px);
-  transform: translate(-50%, 8px);
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(255, 248, 238, 0.94);
-  border: 1px solid rgba(181, 122, 52, 0.18);
-  color: var(--accent-plum-dark);
-  font-family: var(--font-sans);
-  font-size: 0.62rem;
-  letter-spacing: 0.16em;
-  line-height: 1;
-  white-space: nowrap;
-  box-shadow: 0 10px 24px rgba(181, 122, 52, 0.12);
-  opacity: 0;
-  pointer-events: none;
+  /* 文字流光：一道微光缓缓划过字体 */
+  background: linear-gradient(
+    90deg,
+    var(--text-tertiary) 0%,
+    var(--text-tertiary) 40%,
+    var(--accent-plum) 50%,
+    var(--text-tertiary) 60%,
+    var(--text-tertiary) 100%
+  );
+  background-size: 250% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: footer-text-shimmer 6s ease-in-out infinite;
 }
 .footer-brand:hover {
-  color: var(--accent-plum);
+  -webkit-text-fill-color: var(--accent-plum);
 }
 
-@keyframes footer-invite-breath {
-  0%, 100% {
-    color: var(--text-tertiary);
-    text-shadow: 0 0 0 rgba(217, 152, 72, 0);
-  }
-  50% {
-    color: var(--accent-plum);
-    text-shadow: 0 4px 18px rgba(217, 152, 72, 0.18);
-  }
-}
+/* --- Footer动画关键帧 --- */
 
-@keyframes footer-line-glow {
+/* 左侧线流光：光点从左侧滑入右端（向中间汇聚） */
+@keyframes footer-line-flow-ltr {
   0%, 100% {
-    opacity: 0.42;
-  }
-  50% {
-    opacity: 0.92;
-  }
-}
-
-@keyframes footer-hint-float {
-  0%, 100% {
+    left: -40%;
     opacity: 0;
-    transform: translate(-50%, 8px);
   }
-  20%, 80% {
-    opacity: 0.96;
-    transform: translate(-50%, 0);
+  10% {
+    opacity: 1;
+  }
+  50% {
+    left: 100%;
+    opacity: 1;
+  }
+  60%, 100% {
+    left: 100%;
+    opacity: 0;
   }
 }
 
+/* 右侧线流光：光点从右侧滑入左端（向中间汇聚） */
+@keyframes footer-line-flow-rtl {
+  0%, 100% {
+    left: 100%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    left: -40%;
+    opacity: 1;
+  }
+  60%, 100% {
+    left: -40%;
+    opacity: 0;
+  }
+}
+
+/* 文字流光：一抹金色微光从左到右划过 */
+@keyframes footer-text-shimmer {
+  0%, 100% {
+    background-position: 100% 0;
+  }
+  50% {
+    background-position: 0% 0;
+  }
+}
+
+/* 断卦期间：底部完全安静，不分散注意力 */
 body.oracle-waiting .footer-brand {
-  animation: footer-invite-breath 3.6s ease-in-out infinite;
+  animation: none;
+  background: none;
+  -webkit-text-fill-color: var(--text-tertiary);
+  color: var(--text-tertiary);
 }
-
-body.oracle-waiting .footer-brand::after {
-  animation: footer-hint-float 3.6s ease-in-out infinite;
-}
-
-body.oracle-waiting .footer-line {
-  animation: footer-line-glow 3.6s ease-in-out infinite;
+body.oracle-waiting .footer-line::after {
+  animation: none;
+  opacity: 0;
 }
 
 body.oracle-waiting .btn-new-case-fab {
