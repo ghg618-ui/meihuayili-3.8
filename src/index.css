@@ -1757,6 +1757,13 @@ body {
     letter-spacing: 0.42em;
   }
 
+  .footer-brand::after {
+    bottom: calc(100% + 8px);
+    font-size: 0.58rem;
+    padding: 4px 9px;
+    letter-spacing: 0.12em;
+  }
+
   .hero-tagline {
     font-size: 1.1rem;
     margin-bottom: 6px;
@@ -3348,9 +3355,78 @@ input[type=number] {
   transition: color 0.3s;
   white-space: nowrap;
   user-select: none;
+  position: relative;
+  display: inline-block;
+  padding: 0 4px;
+}
+
+.footer-brand::after {
+  content: '轻触可见';
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translate(-50%, 8px);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 248, 238, 0.94);
+  border: 1px solid rgba(181, 122, 52, 0.18);
+  color: var(--accent-plum-dark);
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 10px 24px rgba(181, 122, 52, 0.12);
+  opacity: 0;
+  pointer-events: none;
 }
 .footer-brand:hover {
   color: var(--accent-plum);
+}
+
+@keyframes footer-invite-breath {
+  0%, 100% {
+    color: var(--text-tertiary);
+    transform: translateY(0);
+    text-shadow: 0 0 0 rgba(217, 152, 72, 0);
+  }
+  50% {
+    color: var(--accent-plum);
+    transform: translateY(-2px);
+    text-shadow: 0 4px 18px rgba(217, 152, 72, 0.18);
+  }
+}
+
+@keyframes footer-line-glow {
+  0%, 100% {
+    opacity: 0.42;
+  }
+  50% {
+    opacity: 0.92;
+  }
+}
+
+@keyframes footer-hint-float {
+  0%, 100% {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  20%, 80% {
+    opacity: 0.96;
+    transform: translate(-50%, 0);
+  }
+}
+
+body.oracle-waiting .footer-brand {
+  animation: footer-invite-breath 3.6s ease-in-out infinite;
+}
+
+body.oracle-waiting .footer-brand::after {
+  animation: footer-hint-float 3.6s ease-in-out infinite;
+}
+
+body.oracle-waiting .footer-line {
+  animation: footer-line-glow 3.6s ease-in-out infinite;
 }
 
 /* --- QR Close Button --- */
@@ -3360,9 +3436,6 @@ input[type=number] {
   color: #aaa;
   cursor: pointer;
   transition: color 0.2s;
-}
-.qrcode-close:hover {
-  color: var(--accent-plum);
 }
 
 #modal-qrcode {
@@ -3913,6 +3986,12 @@ input[type=number] {
 [data-theme="dark"] .qrcode-sub { color: #888; }
 [data-theme="dark"] .qrcode-close { color: #666; }
 [data-theme="dark"] .footer-brand { color: #666; }
+[data-theme="dark"] .footer-brand::after {
+  background: rgba(36, 36, 36, 0.94);
+  border-color: rgba(217, 152, 72, 0.18);
+  color: #d5a35a;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+}
 [data-theme="dark"] .footer-line { background: linear-gradient(90deg, transparent, #454545, transparent); }
 
 [data-theme="dark"] #hexagram-display,

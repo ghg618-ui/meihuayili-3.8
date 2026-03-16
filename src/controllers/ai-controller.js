@@ -17,6 +17,10 @@ import { updateUIForAuth } from './auth-controller.js'; // 引入更新 UI 的�
 
 const log = makeLogger('AI');
 
+function toggleFooterInvitation(active) {
+    document.body.classList.toggle('oracle-waiting', Boolean(active));
+}
+
 export async function performAIAnalysis(question, renderHistory, isFollowUp = false) {
     try {
         // 检查是否已经起卦
@@ -206,6 +210,7 @@ async function _runStream({ config, modelInfo, messages, targetEl, question, ren
     $('#chat-status').textContent = '思考中...';
     $('#btn-stop-generate')?.classList.remove('hidden');
     $('#btn-continue-generate')?.classList.add('hidden');
+    toggleFooterInvitation(true);
 
     // If continuing, clear leftover thinking UI so it re-initialises cleanly
     if (targetEl.querySelector('.thinking-status')) {
@@ -346,6 +351,7 @@ async function _runStream({ config, modelInfo, messages, targetEl, question, ren
             const totalContent = prefixContent + content;
             const totalReasoning = prefixReasoning + reasoning;
             const hasOutput = Boolean((totalContent && totalContent.trim()) || (totalReasoning && totalReasoning.trim()));
+            toggleFooterInvitation(false);
 
             $('#chat-status').textContent = '';
             $('#btn-stop-generate')?.classList.add('hidden');
@@ -494,6 +500,8 @@ async function _runStream({ config, modelInfo, messages, targetEl, question, ren
                 setTimeout(() => continueAIAnalysis(), 800);
                 return;
             }
+
+            toggleFooterInvitation(false);
 
             const safeMsg = escapeHtml(err.message || '未知错误');
             const suggestion = isProxyMode
