@@ -1751,14 +1751,26 @@ body {
     padding: 28px 0 calc(72px + env(safe-area-inset-bottom));
   }
 
-  .footer-divider {
+  .footer-brand-stack {
     max-width: calc(100% - 40px);
+    gap: 6px;
+  }
+
+  .footer-divider {
     gap: 12px;
   }
 
   .footer-brand {
     font-size: 0.76rem;
     letter-spacing: 0.42em;
+  }
+
+  .footer-meta {
+    font-size: 0.72rem;
+  }
+
+  .footer-meta-hint {
+    font-size: 0.62rem;
   }
 
   .hero-tagline {
@@ -3304,41 +3316,28 @@ input[type=number] {
   background: rgba(217, 152, 72, 0.08);
 }
 
-.wechat-promo {
-  text-align: center;
-  margin-top: 16px;
-  padding: 10px 8px 0;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.wechat-promo:hover {
-  opacity: 0.86;
-}
-.wechat-promo-text {
-  display: block;
-  font-size: 0.78rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
-}
-
 /* --- Footer Brand Badge --- */
 .main-footer {
   margin-top: auto;
   padding: 72px 0 24px;
   text-align: center;
 }
+.footer-brand-stack {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  max-width: 320px;
+  margin: 0 auto;
+  padding: 10px 12px 4px;
+  -webkit-tap-highlight-color: rgba(217, 152, 72, 0.15);
+}
 .footer-divider {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 16px;
-  max-width: 320px;
-  margin: 0 auto;
-  padding: 12px;
-  -webkit-tap-highlight-color: rgba(217, 152, 72, 0.15);
+  width: 100%;
 }
 .footer-line {
   flex: 1;
@@ -3349,24 +3348,6 @@ input[type=number] {
     var(--border-color) 50%,
     rgba(181, 122, 52, 0.06) 70%,
     transparent 100%);
-  position: relative;
-  overflow: hidden;
-}
-/* 流光层：默认隐藏，仅断卦期间激活 */
-.footer-line::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -40%;
-  width: 40%;
-  height: 100%;
-  background: linear-gradient(90deg,
-    transparent,
-    rgba(217, 152, 72, 0.5),
-    rgba(217, 152, 72, 0.8),
-    rgba(217, 152, 72, 0.5),
-    transparent);
-  opacity: 0;
 }
 
 .footer-brand {
@@ -3383,12 +3364,6 @@ input[type=number] {
   padding: 0 4px;
   color: var(--text-tertiary);
 }
-.footer-brand:hover {
-  color: var(--accent-plum);
-}
-.footer-brand:hover .fb-char {
-  color: var(--accent-plum);
-}
 
 /* 每个字符单元 */
 .fb-char {
@@ -3398,73 +3373,25 @@ input[type=number] {
   padding: 0 0.15em;
 }
 
-/* 等待提示 */
-.footer-wait-hint {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  margin-top: 4px;
+.footer-meta {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  letter-spacing: 0.03em;
+}
+
+.footer-meta-hint {
   font-size: 0.68rem;
-  color: var(--accent-plum-dark);
-  opacity: 0.7;
+  line-height: 1.4;
+  color: var(--text-tertiary);
   letter-spacing: 0.08em;
-  font-family: var(--font-sans);
-}
-.footer-wait-hint .hint-arrow {
-  display: inline-block;
-  animation: hint-bounce 2s ease-in-out infinite;
-  font-size: 0.72rem;
-}
-.footer-wait-hint.hidden {
-  display: none;
 }
 
-@keyframes hint-bounce {
-  0%, 100% { transform: translateY(0); opacity: 0.5; }
-  50% { transform: translateY(-3px); opacity: 1; }
+.footer-brand-stack:hover .fb-char,
+.footer-brand-stack:hover .footer-meta,
+.footer-brand-stack:hover .footer-meta-hint {
+  color: var(--accent-plum);
 }
-
-/* --- Footer动画关键帧 --- */
-
-/* 线条流光：从左到右 */
-@keyframes footer-line-flow-ltr {
-  0% { left: -40%; opacity: 0; }
-  15% { opacity: 1; }
-  85% { opacity: 1; }
-  100% { left: 100%; opacity: 0; }
-}
-
-/* 字符接力点亮：灰→金→灰 */
-@keyframes footer-char-glow {
-  0%, 100% { color: var(--text-tertiary); }
-  40%, 60% { color: var(--accent-plum); }
-}
-
-/* === 断卦期间：接力式流光 === */
-/* 整个接力周期 4.5s：
-   0~1s    左线流光
-   0.8~2.8s 四个字依次点亮 (0.5s间隔)
-   2.5~3.5s 右线流光
-   3.5~4.5s 停顿
-*/
-body.oracle-waiting .footer-line:first-child::after {
-  animation: footer-line-flow-ltr 1s ease-in-out infinite;
-  animation-duration: 4.5s;
-  animation-timing-function: ease-in-out;
-  /* 左线占 0~22% 的时间 */
-}
-body.oracle-waiting .footer-line:last-child::after {
-  animation: footer-line-flow-ltr 4.5s ease-in-out infinite;
-  animation-delay: 2.5s;
-}
-body.oracle-waiting .fb-char {
-  animation: footer-char-glow 4.5s ease-in-out infinite;
-}
-body.oracle-waiting .fb-char:nth-child(1) { animation-delay: 0.8s; }
-body.oracle-waiting .fb-char:nth-child(2) { animation-delay: 1.3s; }
-body.oracle-waiting .fb-char:nth-child(3) { animation-delay: 1.8s; }
-body.oracle-waiting .fb-char:nth-child(4) { animation-delay: 2.3s; }
 
 body.oracle-waiting .btn-new-case-fab {
   display: none !important;

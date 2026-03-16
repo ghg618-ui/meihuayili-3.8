@@ -36,9 +36,6 @@ export function appendAssistantMessageActions(msgEl) {
             <button class="msg-inline-action" onclick="window.exportDivinationResult()">导出结果</button>
             <button class="msg-inline-action" onclick="window.startNewCaseFromChat()">新起一卦</button>
         </div>
-        <div class="wechat-promo" onclick="window.showQRCode()">
-            <span class="wechat-promo-text">微信号｜易泓录（yhLchat）· 点击查看二维码</span>
-        </div>
     `);
 
     window.syncMobileNewCaseButtonVisibility?.();

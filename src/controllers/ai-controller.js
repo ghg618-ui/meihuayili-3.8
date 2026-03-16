@@ -19,8 +19,6 @@ const log = makeLogger('AI');
 
 function toggleFooterInvitation(active) {
     document.body.classList.toggle('oracle-waiting', Boolean(active));
-    const hint = document.getElementById('footer-wait-hint');
-    if (hint) hint.classList.toggle('hidden', !active);
 }
 
 export async function performAIAnalysis(question, renderHistory, isFollowUp = false) {
