@@ -1753,7 +1753,7 @@ body {
 
   .footer-brand-stack {
     max-width: calc(100% - 40px);
-    gap: 6px;
+    gap: 4px;
   }
 
   .footer-divider {
@@ -1766,11 +1766,7 @@ body {
   }
 
   .footer-meta {
-    font-size: 0.72rem;
-  }
-
-  .footer-meta-hint {
-    font-size: 0.62rem;
+    font-size: 0.68rem;
   }
 
   .hero-tagline {
@@ -3326,10 +3322,10 @@ input[type=number] {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
   max-width: 320px;
   margin: 0 auto;
-  padding: 10px 12px 4px;
+  padding: 8px 12px 2px;
   -webkit-tap-highlight-color: rgba(217, 152, 72, 0.15);
 }
 .footer-divider {
@@ -3374,22 +3370,15 @@ input[type=number] {
 }
 
 .footer-meta {
-  font-size: 0.78rem;
-  line-height: 1.5;
-  color: var(--text-secondary);
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--text-tertiary);
+  opacity: 0.88;
   letter-spacing: 0.03em;
 }
 
-.footer-meta-hint {
-  font-size: 0.68rem;
-  line-height: 1.4;
-  color: var(--text-tertiary);
-  letter-spacing: 0.08em;
-}
-
 .footer-brand-stack:hover .fb-char,
-.footer-brand-stack:hover .footer-meta,
-.footer-brand-stack:hover .footer-meta-hint {
+.footer-brand-stack:hover .footer-meta {
   color: var(--accent-plum);
 }
 
