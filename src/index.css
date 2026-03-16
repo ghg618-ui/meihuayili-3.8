@@ -3279,7 +3279,7 @@ input[type=number] {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
-  margin-top: 22px;
+  margin-top: 36px;
   padding-top: 16px;
   border-top: 1px solid rgba(181, 122, 52, 0.1);
 }
@@ -3306,7 +3306,7 @@ input[type=number] {
 
 .wechat-promo {
   text-align: center;
-  margin-top: 28px;
+  margin-top: 16px;
   padding: 10px 8px 0;
   background: transparent;
   border: none;
