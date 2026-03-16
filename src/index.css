@@ -1023,8 +1023,8 @@ body {
   padding: 5px 16px;
   font-size: 0.8rem;
   background: transparent;
-  color: #B07878;
-  border: 1.5px solid #C48B8B;
+  color: var(--accent-plum);
+  border: 1.5px solid var(--accent-plum-light);
   border-radius: 100px;
   cursor: pointer;
   font-weight: 500;
@@ -1034,8 +1034,8 @@ body {
 }
 
 .btn-stop:hover {
-  background: rgba(196, 139, 139, 0.1);
-  border-color: #B07878;
+  background: rgba(217, 152, 72, 0.1);
+  border-color: var(--accent-plum);
 }
 
 .btn-continue {
@@ -3353,7 +3353,7 @@ input[type=number] {
   position: relative;
   overflow: hidden;
 }
-/* 流光层：一道柔和的金色光沿线条缓缓滑过 */
+/* 流光层：默认隐藏，仅断卦期间激活 */
 .footer-line::after {
   content: '';
   position: absolute;
@@ -3367,16 +3367,7 @@ input[type=number] {
     rgba(217, 152, 72, 0.8),
     rgba(217, 152, 72, 0.5),
     transparent);
-  animation: footer-line-flow 6s ease-in-out infinite;
-}
-/* 左侧线：光从左端向中间流动 */
-.footer-line:first-child::after {
-  animation-name: footer-line-flow-ltr;
-}
-/* 右侧线：光从右端向中间流动 */
-.footer-line:last-child::after {
-  animation-name: footer-line-flow-rtl;
-  animation-delay: 0.3s;
+  opacity: 0;
 }
 
 .footer-brand {
@@ -3403,7 +3394,7 @@ input[type=number] {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: footer-text-shimmer 6s ease-in-out infinite;
+  /* 默认静止，断卦期间才激活 */
 }
 .footer-brand:hover {
   -webkit-text-fill-color: var(--accent-plum);
@@ -3411,64 +3402,43 @@ input[type=number] {
 
 /* --- Footer动画关键帧 --- */
 
-/* 左侧线流光：光点从左侧滑入右端（向中间汇聚） */
+/* 线条流光：统一从左到右划过 */
 @keyframes footer-line-flow-ltr {
-  0%, 100% {
+  0% {
     left: -40%;
     opacity: 0;
   }
-  10% {
+  15% {
     opacity: 1;
   }
-  50% {
-    left: 100%;
+  85% {
     opacity: 1;
   }
-  60%, 100% {
+  100% {
     left: 100%;
     opacity: 0;
   }
 }
 
-/* 右侧线流光：光点从右侧滑入左端（向中间汇聚） */
-@keyframes footer-line-flow-rtl {
-  0%, 100% {
-    left: 100%;
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  50% {
-    left: -40%;
-    opacity: 1;
-  }
-  60%, 100% {
-    left: -40%;
-    opacity: 0;
-  }
-}
-
-/* 文字流光：一抹金色微光从左到右划过 */
+/* 文字流光：灰色→浅金色，从左到右划过 */
 @keyframes footer-text-shimmer {
-  0%, 100% {
+  0% {
     background-position: 100% 0;
   }
-  50% {
-    background-position: 0% 0;
+  100% {
+    background-position: -50% 0;
   }
 }
 
-/* 断卦期间：底部完全安静，不分散注意力 */
-body.oracle-waiting .footer-brand {
-  animation: none;
-  background: none;
-  -webkit-text-fill-color: var(--text-tertiary);
-  color: var(--text-tertiary);
-}
+/* === 断卦期间：流光激活 === */
 body.oracle-waiting .footer-line::after {
-  animation: none;
-  opacity: 0;
+  animation: footer-line-flow-ltr 3s ease-in-out infinite;
+}
+body.oracle-waiting .footer-line:last-child::after {
+  animation-delay: 0.4s;
+}
+body.oracle-waiting .footer-brand {
+  animation: footer-text-shimmer 3s ease-in-out infinite;
 }
 
 body.oracle-waiting .btn-new-case-fab {
