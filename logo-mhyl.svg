@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8f4ee"/>
+      <stop offset="100%" stop-color="#f0e8da"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#e6b373"/>
+      <stop offset="100%" stop-color="#c4883a"/>
+    </linearGradient>
+    <linearGradient id="goldLight" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d99848" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#b57a34" stop-opacity="0.06"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="256" fill="url(#bg)"/>
+
+  <!-- Subtle outer ring -->
+  <circle cx="256" cy="256" r="230" fill="none" stroke="url(#gold)" stroke-width="1.5" opacity="0.25"/>
+
+  <!-- Five plum blossom petals -->
+  <g transform="translate(256,240)">
+    <!-- Petal 1 (top) -->
+    <ellipse cx="0" cy="-72" rx="38" ry="52" fill="url(#gold)" opacity="0.88" transform="rotate(0)"/>
+    <!-- Petal 2 (top-right) -->
+    <ellipse cx="0" cy="-72" rx="38" ry="52" fill="url(#gold)" opacity="0.82" transform="rotate(72)"/>
+    <!-- Petal 3 (bottom-right) -->
+    <ellipse cx="0" cy="-72" rx="38" ry="52" fill="url(#gold)" opacity="0.78" transform="rotate(144)"/>
+    <!-- Petal 4 (bottom-left) -->
+    <ellipse cx="0" cy="-72" rx="38" ry="52" fill="url(#gold)" opacity="0.78" transform="rotate(216)"/>
+    <!-- Petal 5 (top-left) -->
+    <ellipse cx="0" cy="-72" rx="38" ry="52" fill="url(#gold)" opacity="0.82" transform="rotate(288)"/>
+
+    <!-- Center pistil -->
+    <circle cx="0" cy="0" r="16" fill="#c4883a"/>
+    <circle cx="0" cy="0" r="10" fill="#f0e8da"/>
+    <circle cx="0" cy="0" r="5" fill="#d99848"/>
+
+    <!-- Small stamens -->
+    <circle cx="0" cy="-24" r="3.5" fill="#b57a34" opacity="0.7"/>
+    <circle cx="22.8" cy="-7.4" r="3.5" fill="#b57a34" opacity="0.7"/>
+    <circle cx="14.1" cy="19.4" r="3.5" fill="#b57a34" opacity="0.7"/>
+    <circle cx="-14.1" cy="19.4" r="3.5" fill="#b57a34" opacity="0.7"/>
+    <circle cx="-22.8" cy="-7.4" r="3.5" fill="#b57a34" opacity="0.7"/>
+  </g>
+
+  <!-- Text: 梅花义理 -->
+  <text x="256" y="380" text-anchor="middle" font-family="'Noto Serif SC', 'STSong', 'SimSun', serif" font-size="42" font-weight="600" fill="#8a6d3b" letter-spacing="0.12em">梅花义理</text>
+
+  <!-- Subtitle -->
+  <text x="256" y="418" text-anchor="middle" font-family="'Noto Sans SC', 'PingFang SC', sans-serif" font-size="18" fill="#b5a07a" letter-spacing="0.3em">AI 断卦</text>
+</svg>
