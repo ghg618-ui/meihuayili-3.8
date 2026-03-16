@@ -3389,12 +3389,10 @@ input[type=number] {
 @keyframes footer-invite-breath {
   0%, 100% {
     color: var(--text-tertiary);
-    transform: translateY(0);
     text-shadow: 0 0 0 rgba(217, 152, 72, 0);
   }
   50% {
     color: var(--accent-plum);
-    transform: translateY(-2px);
     text-shadow: 0 4px 18px rgba(217, 152, 72, 0.18);
   }
 }
