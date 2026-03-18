@@ -526,8 +526,10 @@ app.post('/api/chat', async (req, res) => {
 
     // 设置 SSE 流式响应头
     res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Cache-Control', 'no-cache, no-transform');
+    res.setHeader('Connection', 'keep-alive');
     res.setHeader('X-Accel-Buffering', 'no'); // 关闭 nginx 缓冲
+    res.setHeader('X-Content-Type-Options', 'nosniff');
     res.flushHeaders();
 
     const clientAbort = new AbortController();
@@ -602,6 +604,13 @@ app.post('/api/chat', async (req, res) => {
                     if (done) break;
                     const chunk = decoder.decode(value, { stream: true });
                     res.write(chunk);
+                    // 强制立即发出，避免 Cloudflare / 中间层攒包
+                    if (typeof res.flush === 'function') {
+                        res.flush();
+                    } else if (res.socket && !res.socket.destroyed) {
+                        res.socket.uncork?.();
+                        res.socket.cork?.();
+                    }
                 }
 
                 return res.end();

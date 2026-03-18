@@ -34,9 +34,20 @@ const localStorageMock = (() => {
 })();
 Object.defineProperty(global, 'localStorage', { value: localStorageMock });
 
+let warnSpy;
+let errorSpy;
+
 beforeEach(() => {
     localStorageMock.clear();
     jest.clearAllMocks();
+    global.fetch = jest.fn(() => Promise.reject(new Error('network unavailable')));
+    warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+afterEach(() => {
+    warnSpy.mockRestore();
+    errorSpy.mockRestore();
 });
 
 describe('Settings', () => {
@@ -89,52 +100,52 @@ describe('Settings', () => {
 });
 
 describe('Auth', () => {
-    test('registerUser should create new user', () => {
-        const user = registerUser('testuser', 'password123');
+    test('registerUser should create new user', async () => {
+        const user = await registerUser('testuser', 'password123');
         expect(user).toBeDefined();
         expect(user.name).toBe('testuser');
         expect(user.error).toBeUndefined();
     });
 
-    test('registerUser should reject duplicate username', () => {
-        registerUser('testuser', 'pass1');
-        const dup = registerUser('testuser', 'pass2');
+    test('registerUser should reject duplicate username', async () => {
+        await registerUser('testuser', 'pass1');
+        const dup = await registerUser('testuser', 'pass2');
         expect(dup.error).toBe('用户已存在');
     });
 
-    test('loginUser should authenticate valid credentials', () => {
-        registerUser('john', 'secret');
-        const user = loginUser('john', 'secret');
+    test('loginUser should authenticate valid credentials', async () => {
+        await registerUser('john', 'secret');
+        const user = await loginUser('john', 'secret');
         expect(user).toBeDefined();
         expect(user.name).toBe('john');
     });
 
-    test('loginUser should fail with wrong password', () => {
-        registerUser('john', 'secret');
-        const user = loginUser('john', 'wrongpass');
-        expect(user).toBeNull();
+    test('loginUser should fail with wrong password', async () => {
+        await registerUser('john', 'secret');
+        const user = await loginUser('john', 'wrongpass');
+        expect(user).toEqual({ error: '密码错误', code: 'WRONG_PASSWORD' });
     });
 
-    test('loginUser should fail with non-existent user', () => {
-        const user = loginUser('ghost', 'any');
-        expect(user).toBeNull();
+    test('loginUser should fail with non-existent user', async () => {
+        const user = await loginUser('ghost', 'any');
+        expect(user).toEqual({ error: '用户尚未注册', code: 'USER_NOT_FOUND' });
     });
 
     test('getCurrentUser should return null when not logged in', () => {
         expect(getCurrentUser()).toBeNull();
     });
 
-    test('getCurrentUser should return user after login', () => {
-        registerUser('alice', 'pass');
-        loginUser('alice', 'pass');
+    test('getCurrentUser should return user after login', async () => {
+        await registerUser('alice', 'pass');
+        await loginUser('alice', 'pass');
         const current = getCurrentUser();
         expect(current).toBeDefined();
         expect(current.name).toBe('alice');
     });
 
-    test('logoutUser should clear current user', () => {
-        registerUser('bob', 'pass');
-        loginUser('bob', 'pass');
+    test('logoutUser should clear current user', async () => {
+        await registerUser('bob', 'pass');
+        await loginUser('bob', 'pass');
         logoutUser();
         expect(getCurrentUser()).toBeNull();
     });
@@ -168,12 +179,12 @@ describe('History', () => {
         expect(history[1].question).toBe('first');
     });
 
-    test('addHistoryRecord should limit to 100 records', () => {
+    test('addHistoryRecord should limit to 50 records', () => {
         for (let i = 0; i < 105; i++) {
             addHistoryRecord('alice', { id: i, question: `q${i}` });
         }
         const history = loadHistory('alice');
-        expect(history.length).toBeLessThanOrEqual(100);
+        expect(history.length).toBeLessThanOrEqual(50);
     });
 
     test('deleteHistoryRecord should remove specific record', () => {

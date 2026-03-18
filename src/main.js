@@ -169,6 +169,7 @@ async function init() {
     initModals();
     initAuthPasswordAssist();
     restoreTheme();
+    setupMarketingActions();
 
     // Initialize Lucide icons
     if (typeof lucide !== 'undefined') {
@@ -546,6 +547,65 @@ function bindEvents() {
 
     // Theme toggle
     $('#btn-theme-toggle')?.addEventListener('click', toggleTheme);
+}
+
+function setupMarketingActions() {
+    // --- Page switching: landing ↔ app ---
+    function switchToApp() {
+        document.getElementById('page-landing')?.classList.add('page-hidden');
+        document.getElementById('page-app')?.classList.remove('page-hidden');
+        document.body.classList.remove('mode-landing');
+        document.body.classList.add('mode-app');
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        document.getElementById('input-chat')?.focus();
+    }
+
+    function switchToLanding() {
+        document.getElementById('page-app')?.classList.add('page-hidden');
+        document.getElementById('page-landing')?.classList.remove('page-hidden');
+        document.body.classList.remove('mode-app');
+        document.body.classList.add('mode-landing');
+        window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+
+    // Set initial mode
+    document.body.classList.add('mode-landing');
+
+    // "开始使用" / "进入应用" → switch to app
+    document.getElementById('btn-start-experience')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchToApp();
+    });
+    document.getElementById('btn-cta-enter')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchToApp();
+    });
+
+    // "返回首页" → switch to landing
+    document.getElementById('btn-back-landing')?.addEventListener('click', () => {
+        switchToLanding();
+    });
+
+    // Expose for global use
+    window.switchToApp = switchToApp;
+    window.switchToLanding = switchToLanding;
+
+    // --- Install guide buttons ---
+    const installButtons = [
+        document.getElementById('btn-landing-install'),
+        document.getElementById('btn-install-guide-secondary'),
+    ].filter(Boolean);
+
+    installButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            if (typeof window.triggerPwaInstallGuide === 'function') {
+                window.triggerPwaInstallGuide();
+                return;
+            }
+            document.getElementById('pwa-install-banner')?.classList.remove('hidden');
+            document.getElementById('pwa-install-banner')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+    });
 }
 
 // ===================== Handlers =====================
@@ -1039,6 +1099,7 @@ document.addEventListener('DOMContentLoaded', init);
         document.getElementById('pwa-install-banner')?.classList.add('hidden');
         document.getElementById('pwa-ios-guide')?.classList.add('hidden');
         document.getElementById('pwa-wechat-guide')?.classList.add('hidden');
+        document.getElementById('pwa-android-guide')?.classList.add('hidden');
     };
 
     // 已经以 standalone 模式运行（已安装），不显示
@@ -1057,12 +1118,15 @@ document.addEventListener('DOMContentLoaded', init);
     const btnIosClose = document.getElementById('btn-pwa-ios-close');
     const wechatGuide = document.getElementById('pwa-wechat-guide');
     const btnWechatClose = document.getElementById('btn-pwa-wechat-close');
+    const androidGuide = document.getElementById('pwa-android-guide');
+    const btnAndroidClose = document.getElementById('btn-pwa-android-close');
     if (!banner) return;
 
     let deferredPrompt = null;
     const ua = navigator.userAgent;
     const isWeChat = /MicroMessenger/i.test(ua);
     const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+    const isAndroid = /Android|HarmonyOS|HMOS/i.test(ua);
     const isInstalled = Boolean(localStorage.getItem('pwa_installed'));
     const shouldSuppressBanner = Boolean(localStorage.getItem('pwa_dismissed'));
 
@@ -1089,7 +1153,7 @@ document.addEventListener('DOMContentLoaded', init);
         banner?.classList.remove('hidden');
     }
 
-    const openInstallFlow = () => {
+    const openInstallFlow = ({ keepBanner = false } = {}) => {
         if (deferredPrompt) {
             // Android: 触发系统安装弹窗
             deferredPrompt.prompt();
@@ -1101,13 +1165,19 @@ document.addEventListener('DOMContentLoaded', init);
             });
         } else if (isWeChat) {
             // 微信内: 引导用户用浏览器打开
-            markPwaPromptHandled();
-            banner?.classList.add('hidden');
+            if (!keepBanner) markPwaPromptHandled();
+            if (!keepBanner) banner?.classList.add('hidden');
             wechatGuide?.classList.remove('hidden');
         } else if (isIOS) {
             iosGuide?.classList.remove('hidden');
+        } else if (isAndroid) {
+            if (!keepBanner) markPwaPromptHandled();
+            if (!keepBanner) banner?.classList.add('hidden');
+            androidGuide?.classList.remove('hidden');
         }
     };
+
+    window.triggerPwaInstallGuide = () => openInstallFlow({ keepBanner: true });
 
     btnInstall?.addEventListener('click', openInstallFlow);
 
@@ -1122,6 +1192,11 @@ document.addEventListener('DOMContentLoaded', init);
     });
 
     btnWechatClose?.addEventListener('click', () => {
+        markPwaPromptHandled();
+        hidePwaPrompts();
+    });
+
+    btnAndroidClose?.addEventListener('click', () => {
         markPwaPromptHandled();
         hidePwaPrompts();
     });

@@ -7,8 +7,8 @@
 
 const LEVELS = { debug: 0, info: 1, warn: 2, error: 3 };
 
-// Default to debug; Vite sets import.meta.env.PROD at build time
-const isProd = import.meta.env?.PROD ?? false;
+// Default to debug; Vite and Jest both expose NODE_ENV safely here.
+const isProd = typeof process !== 'undefined' && process.env?.NODE_ENV === 'production';
 const minLevel = isProd ? LEVELS.warn : LEVELS.debug;
 
 function makeLogger(module) {

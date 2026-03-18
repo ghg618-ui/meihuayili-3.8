@@ -1,6 +1,6 @@
 /**
  * History List View
- * 点击 → 露出"打开"按钮，左滑 → 露出"删除"按钮
+ * 点击 → 直接打开，左滑 → 露出"删除"按钮
  */
 import { $, $$, escapeHtml } from '../utils/dom.js';
 
@@ -12,14 +12,14 @@ export function renderHistoryList(container, history, currentId, onSelect, onDel
         return;
     }
 
-    const SWIPE_WIDTH = 60;
+    const SWIPE_WIDTH = 68;
+    const SWIPE_THRESHOLD = 30; // 手指至少移动 30px 才算滑动
 
     container.innerHTML = history.map(item => {
         const name = item.result?.original?.name || '未知卦象';
         const time = (item.timestamp || '').split(' ')[0] || '';
         return `
         <div class="history-item ${String(currentId) === String(item.id) ? 'active' : ''}" data-id="${item.id}">
-            <button class="history-open-btn" type="button">打开</button>
             <div class="history-item-surface">
                 <div class="history-item-top">
                     <span class="history-item-name">${escapeHtml(name)}</span>
@@ -37,37 +37,30 @@ export function renderHistoryList(container, history, currentId, onSelect, onDel
     const closeOpenedItem = () => {
         if (!openedItem) return;
         const s = openedItem.querySelector('.history-item-surface');
-        openedItem.classList.remove('swiped-left', 'swiped-right');
+        openedItem.classList.remove('swiped-left');
         if (s) s.style.transform = '';
         const delBtn = openedItem.querySelector('.history-delete-btn');
         if (delBtn) { delBtn.dataset.confirming = 'false'; delBtn.textContent = '删除'; }
         openedItem = null;
     };
 
-    const openRight = (el) => {
-        closeOpenedItem();
-        el.classList.add('swiped-right');
-        const s = el.querySelector('.history-item-surface');
-        if (s) s.style.transform = `translateX(${SWIPE_WIDTH}px)`;
-        openedItem = el;
-    };
-
     container.querySelectorAll('.history-item').forEach(el => {
         let startX = null;
         let startY = 0;
         let dragging = false;
+        let lockedAxis = null; // 'h' or 'v' — lock to prevent accidental triggers
         const surface = el.querySelector('.history-item-surface');
 
         const setOffset = (px) => {
             if (surface) surface.style.transform = `translateX(${px}px)`;
         };
 
-        // --- POINTER: detect both tap and left-swipe ---
         el.addEventListener('pointerdown', (e) => {
             if (e.pointerType === 'mouse' && e.button !== 0) return;
             startX = e.clientX;
             startY = e.clientY;
             dragging = false;
+            lockedAxis = null;
         });
 
         el.addEventListener('pointermove', (e) => {
@@ -75,21 +68,26 @@ export function renderHistoryList(container, history, currentId, onSelect, onDel
             const dx = e.clientX - startX;
             const dy = e.clientY - startY;
 
-            // Only enter drag mode on clear leftward horizontal gesture
-            if (!dragging && Math.abs(dx) > Math.abs(dy) && dx < -18) {
+            // Determine axis lock after 8px movement
+            if (!lockedAxis && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+                lockedAxis = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
+            }
+
+            // If scrolling vertically, bail out
+            if (lockedAxis === 'v') return;
+
+            // Need clear leftward gesture past threshold to start drag
+            if (!dragging && lockedAxis === 'h' && dx < -SWIPE_THRESHOLD) {
                 dragging = true;
+                el.setPointerCapture(e.pointerId);
             }
             if (!dragging) return;
             e.preventDefault();
 
             if (el.classList.contains('swiped-left')) {
+                // Already showing delete, allow drag to close
                 setOffset(Math.max(-SWIPE_WIDTH, Math.min(0, -SWIPE_WIDTH + dx)));
             } else {
-                // Close any right-revealed state first, then track left drag
-                if (el.classList.contains('swiped-right')) {
-                    el.classList.remove('swiped-right');
-                    openedItem = null;
-                }
                 setOffset(Math.max(-SWIPE_WIDTH, Math.min(0, dx)));
             }
         });
@@ -99,12 +97,15 @@ export function renderHistoryList(container, history, currentId, onSelect, onDel
 
             if (!dragging) {
                 startX = null;
-                // This was a tap — show/hide "打开" button
-                if (e && !e.target.closest('.history-delete-btn') && !e.target.closest('.history-open-btn')) {
-                    if (openedItem === el) {
+                lockedAxis = null;
+                // Tap → directly open the case (unless tapping the delete button)
+                if (e && !e.target.closest('.history-delete-btn')) {
+                    if (openedItem) {
+                        // If any item has delete showing, just close it
                         closeOpenedItem();
                     } else {
-                        openRight(el);
+                        const id = el.dataset.id;
+                        if (onSelect) onSelect(id);
                     }
                 }
                 return;
@@ -113,7 +114,6 @@ export function renderHistoryList(container, history, currentId, onSelect, onDel
             const isSwipedLeft = el.classList.contains('swiped-left');
 
             if (isSwipedLeft) {
-                // Was showing delete; check if dragged right enough to close
                 const currentX = surface ? parseFloat(surface.style.transform.replace(/[^-\d.]/g, '')) || 0 : 0;
                 if (currentX > -SWIPE_WIDTH / 2) {
                     closeOpenedItem();
@@ -121,7 +121,6 @@ export function renderHistoryList(container, history, currentId, onSelect, onDel
                     setOffset(-SWIPE_WIDTH);
                 }
             } else {
-                // From neutral/right state: check if surface moved left enough
                 const currentX = surface ? parseFloat(surface.style.transform.replace(/[^-\d.]/g, '')) || 0 : 0;
                 if (currentX < -SWIPE_WIDTH / 2) {
                     closeOpenedItem();
@@ -133,27 +132,15 @@ export function renderHistoryList(container, history, currentId, onSelect, onDel
                 }
             }
 
-            startX = null; dragging = false;
+            startX = null; dragging = false; lockedAxis = null;
         };
 
         el.addEventListener('pointerup', finishSwipe);
         el.addEventListener('pointercancel', () => {
             if (el.classList.contains('swiped-left')) setOffset(-SWIPE_WIDTH);
-            else if (el.classList.contains('swiped-right')) setOffset(SWIPE_WIDTH);
             else setOffset(0);
-            startX = null; dragging = false;
+            startX = null; dragging = false; lockedAxis = null;
         });
-
-        // --- Open button ---
-        const openBtn = el.querySelector('.history-open-btn');
-        if (openBtn) {
-            openBtn.onclick = (e) => {
-                e.stopPropagation();
-                const id = el.dataset.id;
-                closeOpenedItem();
-                if (onSelect) onSelect(id);
-            };
-        }
 
         // --- Delete button ---
         const delBtn = el.querySelector('.history-delete-btn');
@@ -166,10 +153,12 @@ export function renderHistoryList(container, history, currentId, onSelect, onDel
                     if (onDelete) onDelete(id);
                 } else {
                     delBtn.dataset.confirming = 'true';
-                    delBtn.textContent = '确认';
+                    delBtn.textContent = '确认?';
                     setTimeout(() => {
-                        delBtn.dataset.confirming = 'false';
-                        delBtn.textContent = '删除';
+                        if (delBtn.dataset.confirming === 'true') {
+                            delBtn.dataset.confirming = 'false';
+                            delBtn.textContent = '删除';
+                        }
                     }, 3000);
                 }
             };
