@@ -249,6 +249,8 @@ export function hasProAccess() {
 export function getUserQuota() {
     const user = getCurrentUser();
     if (!user) return getGuestQuota();
+    
+    // Pro 用户无限次
     if (hasProAccess()) return 999;
 
     const users = getRegisteredUsers();
@@ -261,13 +263,17 @@ export function getUserQuota() {
         userData.usedQuota = 0;
         saveRegisteredUsers(users);
     }
-    const maxQuota = userData.vipCode ? 15 : 10;
+    
+    // 免费注册用户每日3次（与游客一致）
+    const maxQuota = 3;
     return Math.max(0, maxQuota - (userData.usedQuota || 0));
 }
 
 export function decreaseUserQuota() {
     const user = getCurrentUser();
     if (!user) return decreaseGuestQuota();
+    
+    // Pro 用户不扣额度
     if (hasProAccess()) return true;
 
     const users = getRegisteredUsers();
@@ -280,7 +286,8 @@ export function decreaseUserQuota() {
         userData.usedQuota = 0;
     }
     
-    const maxQuota = userData.vipCode ? 15 : 10;
+    // 免费用户每日3次
+    const maxQuota = 3;
     if ((userData.usedQuota || 0) >= maxQuota) return false;
 
     userData.usedQuota = (userData.usedQuota || 0) + 1;
@@ -322,29 +329,167 @@ function decreaseGuestQuota() {
     return true;
 }
 
-// ===== VIP 码兑换 =====
-const VALID_VIP_CODES = ['YIHONG2026', 'MEIHUA888'];
+// ===== 兑换码系统（商业化）=====
 
-export function redeemVipCode(code) {
+/**
+ * 兑换码类型定义
+ * M: 月度 Pro (Monthly)
+ * Y: 年度 Pro (Yearly)  
+ * L: 终身 Pro (Lifetime)
+ */
+const REDEEM_CODE_TYPES = {
+    'M': { name: '月度 Pro', days: 30, price: '¥19.9' },
+    'Y': { name: '年度 Pro', days: 365, price: '¥99' },
+    'L': { name: '终身 Pro', days: 36500, price: '¥299' },
+};
+
+/**
+ * 验证兑换码格式并解析
+ * 格式: MHYL-{TYPE}-{CODE}
+ * 示例: MHYL-M-A1B2-C3D4 (月度)
+ *       MHYL-Y-X7Y8-Z9W0 (年度)
+ *       MHYL-L-P1Q2-R3S4 (终身)
+ */
+function parseRedeemCode(code) {
+    const trimmed = (code || '').trim().toUpperCase();
+    const match = trimmed.match(/^MHYL-([MYL])-([A-Z0-9]{4})-([A-Z0-9]{4})$/);
+    if (!match) return null;
+    
+    return {
+        fullCode: trimmed,
+        type: match[1],
+        part1: match[2],
+        part2: match[3],
+        typeInfo: REDEEM_CODE_TYPES[match[1]],
+    };
+}
+
+/**
+ * 获取已使用的兑换码列表（防止重复使用）
+ */
+function getUsedRedeemCodes() {
+    try {
+        return JSON.parse(localStorage.getItem('meihua_used_redeem_codes') || '[]');
+    } catch { return []; }
+}
+
+function addUsedRedeemCode(code) {
+    const used = getUsedRedeemCodes();
+    used.push(code);
+    localStorage.setItem('meihua_used_redeem_codes', JSON.stringify(used));
+}
+
+/**
+ * 兑换 Pro 会员
+ */
+export function redeemProCode(code) {
     const user = getCurrentUser();
     if (!user) return { error: '请先登录再兑换' };
 
-    const trimmed = (code || '').trim().toUpperCase();
-    if (!VALID_VIP_CODES.includes(trimmed)) return { error: '兑换码无效' };
+    const parsed = parseRedeemCode(code);
+    if (!parsed) return { error: '兑换码格式错误，正确格式：MHYL-M-XXXX-XXXX' };
+
+    // 检查是否已被使用
+    const usedCodes = getUsedRedeemCodes();
+    if (usedCodes.includes(parsed.fullCode)) {
+        return { error: '该兑换码已被使用' };
+    }
 
     const users = getRegisteredUsers();
     const userData = users[user.name];
     if (!userData) return { error: '用户数据异常' };
-    if (userData.vipCode) return { error: '您已兑换过VIP码' };
 
-    userData.vipCode = trimmed;
+    // 计算过期时间
+    const now = Date.now();
+    const existingExpiry = userData.proExpiry || 0;
+    
+    // 如果已有 Pro 且未过期，在原有基础上延长
+    const baseTime = existingExpiry > now ? existingExpiry : now;
+    const newExpiry = baseTime + (parsed.typeInfo.days * 24 * 60 * 60 * 1000);
+
+    // 更新用户数据
+    userData.proType = parsed.type; // M/Y/L
+    userData.proExpiry = newExpiry;
+    userData.proActivatedAt = now;
+    
+    // 标记兑换码为已使用
+    addUsedRedeemCode(parsed.fullCode);
     saveRegisteredUsers(users);
-    return { success: true };
+
+    return { 
+        success: true, 
+        type: parsed.type,
+        typeName: parsed.typeInfo.name,
+        expiryDate: new Date(newExpiry).toLocaleDateString('zh-CN'),
+    };
+}
+
+/**
+ * 获取用户 Pro 状态详情
+ */
+export function getProStatus() {
+    const user = getCurrentUser();
+    if (!user) return { isPro: false, type: null, expiry: null };
+
+    const users = getRegisteredUsers();
+    const userData = users[user.name];
+    if (!userData) return { isPro: false, type: null, expiry: null };
+
+    // 管理员始终有 Pro
+    const adminList = ['admin', 'gonghg'];
+    if (adminList.includes(user.name)) {
+        return { isPro: true, type: 'ADMIN', expiry: null, isLifetime: true };
+    }
+
+    const now = Date.now();
+    const expiry = userData.proExpiry || 0;
+    const isPro = expiry > now;
+    const isLifetime = userData.proType === 'L';
+
+    return {
+        isPro,
+        type: userData.proType,
+        expiry: isPro ? new Date(expiry).toLocaleDateString('zh-CN') : null,
+        isLifetime,
+        daysLeft: isPro && !isLifetime ? Math.ceil((expiry - now) / (24 * 60 * 60 * 1000)) : null,
+    };
+}
+
+/**
+ * 检查是否有 Pro 权限（兼容旧代码）
+ */
+export function hasProAccess() {
+    const status = getProStatus();
+    return status.isPro;
+}
+
+/**
+ * 获取 Pro 类型（用于区分不同层级）
+ * 返回: 'free' | 'monthly' | 'yearly' | 'lifetime' | 'admin'
+ */
+export function getUserTier() {
+    const status = getProStatus();
+    if (!status.isPro) return 'free';
+    if (status.type === 'ADMIN') return 'admin';
+    if (status.type === 'M') return 'monthly';
+    if (status.type === 'Y') return 'yearly';
+    if (status.type === 'L') return 'lifetime';
+    return 'free';
+}
+
+/**
+ * 检查是否是终身 Pro（专业版功能）
+ */
+export function isLifetimePro() {
+    const status = getProStatus();
+    return status.isPro && status.isLifetime;
+}
+
+// ===== 旧版 VIP 码兼容（保留但标记为已弃用）=====
+export function redeemVipCode(code) {
+    return redeemProCode(code);
 }
 
 export function isVipUser() {
-    const user = getCurrentUser();
-    if (!user) return false;
-    const users = getRegisteredUsers();
-    return !!users[user.name]?.vipCode;
+    return hasProAccess();
 }

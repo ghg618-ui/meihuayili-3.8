@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>梅花义理 - 兑换码生成器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #F9F7F2 0%, #F5F0E6 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #2C3E50;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 8px;
+            color: #2C3E50;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #78909C;
+            margin-bottom: 40px;
+            font-size: 14px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #546E7A;
+        }
+        
+        select, input[type="number"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E0E0E0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #FAFAFA;
+        }
+        
+        select:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #b57a34;
+            background: white;
+        }
+        
+        .price-display {
+            display: inline-block;
+            background: linear-gradient(135deg, #b57a34 0%, #8c6028 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #b57a34 0%, #8c6028 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(181, 122, 52, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .results {
+            margin-top: 24px;
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .result-count {
+            font-size: 14px;
+            color: #78909C;
+        }
+        
+        .copy-all-btn {
+            width: auto;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+        
+        .code-list {
+            background: #F9F7F2;
+            border-radius: 12px;
+            padding: 16px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .code-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #E8E8E8;
+        }
+        
+        .code-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .code-text {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: 600;
+            color: #2C3E50;
+            letter-spacing: 1px;
+        }
+        
+        .code-type {
+            font-size: 12px;
+            color: #78909C;
+            margin-left: 8px;
+        }
+        
+        .copy-btn {
+            width: auto;
+            padding: 6px 12px;
+            font-size: 12px;
+            background: #E8E8E8;
+            color: #546E7A;
+        }
+        
+        .copy-btn:hover {
+            background: #D0D0D0;
+        }
+        
+        .copy-btn.copied {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, rgba(181, 122, 52, 0.08) 0%, rgba(181, 122, 52, 0.02) 100%);
+            border-left: 4px solid #b57a34;
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 24px;
+        }
+        
+        .info-box h3 {
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #8c6028;
+        }
+        
+        .info-box p {
+            font-size: 13px;
+            color: #546E7A;
+            line-height: 1.6;
+        }
+        
+        .info-box code {
+            background: rgba(181, 122, 52, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        @media (max-width: 600px) {
+            .card {
+                padding: 24px 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌸 梅花义理 · 兑换码生成器</h1>
+        <p class="subtitle">管理员专用工具</p>
+        
+        <div class="info-box">
+            <h3>📋 兑换码格式说明</h3>
+            <p>
+                格式：<code>MHYL-{类型}-{4位}-{4位}</code><br>
+                示例：<code>MHYL-M-A1B2-C3D4</code>（月度）<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>MHYL-Y-X7Y8-Z9W0</code>（年度）<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>MHYL-L-P1Q2-R3S4</code>（终身）
+            </p>
+        </div>
+        
+        <div class="card">
+            <div class="form-group">
+                <label>
+                    选择类型
+                    <span class="price-display" id="priceTag">¥19.9</span>
+                </label>
+                <select id="codeType">
+                    <option value="M" data-price="¥19.9" data-name="月度 Pro" data-days="30">月度 Pro（30天）</option>
+                    <option value="Y" data-price="¥99" data-name="年度 Pro" data-days="365">年度 Pro（365天）</option>
+                    <option value="L" data-price="¥299" data-name="终身 Pro" data-days="永久">终身 Pro（永久）</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>生成数量</label>
+                <input type="number" id="codeCount" min="1" max="100" value="10">
+            </div>
+            
+            <button onclick="generateCodes()">生成兑换码</button>
+            
+            <div class="results" id="results" style="display: none;">
+                <div class="result-header">
+                    <span class="result-count" id="resultCount"></span>
+                    <button class="copy-all-btn" onclick="copyAllCodes()">复制全部</button>
+                </div>
+                <div class="code-list" id="codeList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 价格显示更新
+        document.getElementById('codeType').addEventListener('change', function() {
+            const selected = this.options[this.selectedIndex];
+            document.getElementById('priceTag').textContent = selected.dataset.price;
+        });
+        
+        // 生成随机码
+        function generateRandomPart() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < 4; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+        
+        // 生成兑换码
+        function generateCodes() {
+            const type = document.getElementById('codeType').value;
+            const count = parseInt(document.getElementById('codeCount').value);
+            const selected = document.getElementById('codeType').options[document.getElementById('codeType').selectedIndex];
+            const typeName = selected.dataset.name;
+            
+            const codes = [];
+            for (let i = 0; i < count; i++) {
+                const part1 = generateRandomPart();
+                const part2 = generateRandomPart();
+                codes.push({
+                    code: `MHYL-${type}-${part1}-${part2}`,
+                    type: typeName
+                });
+            }
+            
+            displayCodes(codes);
+        }
+        
+        // 显示兑换码
+        function displayCodes(codes) {
+            const resultsDiv = document.getElementById('results');
+            const codeListDiv = document.getElementById('codeList');
+            const resultCountSpan = document.getElementById('resultCount');
+            
+            resultCountSpan.textContent = `共生成 ${codes.length} 个兑换码`;
+            
+            codeListDiv.innerHTML = codes.map((item, index) => `
+                <div class="code-item">
+                    <div>
+                        <span class="code-text">${item.code}</span>
+                        <span class="code-type">${item.type}</span>
+                    </div>
+                    <button class="copy-btn" onclick="copyCode(this, '${item.code}')">复制</button>
+                </div>
+            `).join('');
+            
+            resultsDiv.style.display = 'block';
+            
+            // 保存到全局变量供复制全部使用
+            window.generatedCodes = codes.map(c => c.code);
+        }
+        
+        // 复制单个
+        function copyCode(btn, code) {
+            navigator.clipboard.writeText(code).then(() => {
+                btn.textContent = '已复制';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = '复制';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+        
+        // 复制全部
+        function copyAllCodes() {
+            if (!window.generatedCodes || window.generatedCodes.length === 0) return;
+            
+            const text = window.generatedCodes.join('\n');
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('.copy-all-btn');
+                const originalText = btn.textContent;
+                btn.textContent = '已复制全部';
+                btn.style.background = '#4CAF50';
+                btn.style.color = 'white';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                    btn.style.color = '';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
