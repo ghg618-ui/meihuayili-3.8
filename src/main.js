@@ -622,6 +622,7 @@ function handleTextInputChange() {
     const btnQuick = $('#btn-quick-parse');
     const ritual = $('#ritual-guide');
     const inputGuidance = $('#input-guidance');
+    const warning = $('#divination-warning');  // 起卦警示
 
     if (!text) {
         btnQuick?.classList.add('hidden');
@@ -629,6 +630,7 @@ function handleTextInputChange() {
         btnTime?.classList.remove('breathing');
         ritual?.classList.add('hidden');
         inputGuidance?.classList.add('hidden');
+        warning?.classList.add('hidden');  // 空状态时隐藏警示
         // 空状态时显示完整提示
         if (hintText) {
             hintText.style.display = 'block';
@@ -644,6 +646,7 @@ function handleTextInputChange() {
         btnTime?.classList.remove('breathing');
         ritual?.classList.add('hidden');
         inputGuidance?.classList.add('hidden');
+        warning?.classList.add('hidden');  // 识别到卦象时隐藏警示
         if (hintText) hintText.style.display = 'none';
     } else if (meaningful) {
         btnQuick?.classList.add('hidden');
@@ -652,6 +655,8 @@ function handleTextInputChange() {
         ritual?.classList.add('hidden');
         btnTime?.classList.remove('breathing');
         inputGuidance?.classList.add('hidden');
+        // 显示起卦警示（敬畏天地大道）
+        warning?.classList.remove('hidden');
         // 输入问题时保留提示，但降低透明度（保持仪式感）
         if (hintText) {
             hintText.style.display = 'block';
@@ -663,6 +668,7 @@ function handleTextInputChange() {
         btnTime?.classList.remove('breathing');
         ritual?.classList.add('hidden');
         inputGuidance?.classList.remove('hidden');
+        warning?.classList.add('hidden');
         if (hintText) hintText.style.display = 'block';
     }
 }

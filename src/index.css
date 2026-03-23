@@ -401,6 +401,79 @@ body {
   margin: 0 auto;
 }
 
+/* ==============================
+   起卦警示 · 敬畏天地大道
+   ============================== */
+.divination-warning {
+  margin: 24px 0;
+  padding: 24px 28px;
+  background: linear-gradient(135deg, 
+    rgba(201, 146, 74, 0.06) 0%,
+    rgba(181, 122, 52, 0.08) 100%
+  );
+  border-left: 3px solid var(--accent-plum);
+  border-radius: var(--radius-md);
+  text-align: center;
+  animation: warning-fade-in 0.5s ease;
+}
+
+@keyframes warning-fade-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.warning-icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+  filter: grayscale(0.3);
+}
+
+.warning-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  letter-spacing: 0.08em;
+}
+
+.warning-text {
+  font-size: 0.9rem;
+  line-height: 1.9;
+  color: var(--text-secondary);
+  margin-bottom: 18px;
+}
+
+.warning-text strong {
+  color: var(--accent-plum-dark);
+  font-weight: 600;
+}
+
+.warning-reminder {
+  padding-top: 16px;
+  border-top: 1px solid rgba(181, 122, 52, 0.15);
+}
+
+.warning-reminder span {
+  font-size: 0.88rem;
+  color: var(--text-tertiary);
+  letter-spacing: 0.12em;
+  font-weight: 500;
+}
+
+/* 深色模式 */
+[data-theme="dark"] .divination-warning {
+  background: linear-gradient(135deg, 
+    rgba(201, 146, 74, 0.12) 0%,
+    rgba(181, 122, 52, 0.15) 100%
+  );
+  border-left-color: var(--accent-plum-light);
+}
+
+[data-theme="dark"] .warning-text strong {
+  color: var(--accent-plum-light);
+}
+
 #input-chat {
   box-sizing: border-box;
   width: 100%;
