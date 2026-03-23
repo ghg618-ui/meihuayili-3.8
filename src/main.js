@@ -1101,6 +1101,84 @@ function renderResult(result, isNew = true) {
 }
 
 // ============================================
+// 追问功能（Pro用户专属）
+// ============================================
+window.startFollowUp = function(msgId) {
+    const msgEl = document.getElementById(msgId);
+    if (!msgEl) return;
+    
+    // 检查追问次数
+    const followUpCount = parseInt(msgEl.dataset.followUpCount || '0');
+    const tier = getUserTier();
+    const maxFollowUp = tier === 'lifetime' || tier === 'admin' ? 5 : 3;
+    
+    if (followUpCount >= maxFollowUp) {
+        showToast('本轮追问次数已用完', 'error');
+        return;
+    }
+    
+    // 创建追问输入框
+    const existingInput = msgEl.querySelector('.followup-input-area');
+    if (existingInput) {
+        existingInput.remove();
+        return;
+    }
+    
+    const contentEl = msgEl.querySelector('.msg-content');
+    contentEl.insertAdjacentHTML('beforeend', `
+        <div class="followup-input-area" style="margin-top: 16px; padding: 12px; background: rgba(181, 122, 52, 0.05); border-radius: 8px; border: 1px solid rgba(181, 122, 52, 0.2);">
+            <p style="font-size: 13px; color: #78909C; margin-bottom: 8px;">💬 针对此卦象继续提问（追问 ${followUpCount + 1}/${maxFollowUp}）</p>
+            <div style="display: flex; gap: 8px;">
+                <input type="text" class="followup-input" placeholder="例如：如果我想推迟一周再做决定，结果会如何？" 
+                    style="flex: 1; padding: 10px 12px; border: 1px solid #E0E0E0; border-radius: 6px; font-size: 14px;">
+                <button class="btn-primary" onclick="window.submitFollowUp('${msgId}')" style="width: auto; padding: 0 16px; font-size: 14px;">发送</button>
+                <button class="btn-secondary" onclick="window.cancelFollowUp('${msgId}')" style="width: auto; padding: 0 12px; font-size: 14px;">取消</button>
+            </div>
+        </div>
+    `);
+    
+    // 自动聚焦输入框
+    setTimeout(() => {
+        msgEl.querySelector('.followup-input')?.focus();
+    }, 100);
+};
+
+window.cancelFollowUp = function(msgId) {
+    const msgEl = document.getElementById(msgId);
+    if (!msgEl) return;
+    const inputArea = msgEl.querySelector('.followup-input-area');
+    if (inputArea) inputArea.remove();
+};
+
+window.submitFollowUp = async function(msgId) {
+    const msgEl = document.getElementById(msgId);
+    if (!msgEl) return;
+    
+    const input = msgEl.querySelector('.followup-input');
+    const question = input?.value?.trim();
+    
+    if (!question) {
+        showToast('请输入追问内容', 'error');
+        return;
+    }
+    
+    // 更新追问次数
+    const followUpCount = parseInt(msgEl.dataset.followUpCount || '0');
+    msgEl.dataset.followUpCount = followUpCount + 1;
+    
+    // 移除输入框
+    const inputArea = msgEl.querySelector('.followup-input-area');
+    if (inputArea) inputArea.remove();
+    
+    // 添加用户追问消息
+    addMessage($('#chat-messages'), { role: 'user', content: `💬 追问：${question}` });
+    scrollChat($('#chat-messages'), true);
+    
+    // 执行追问分析（不扣除额度）
+    await performAIAnalysis(question, renderHistory, true);
+};
+
+// ============================================
 // Feedback Mechanism (Self-Iteration System)
 // ============================================
 window.openFeedbackModal = function (msgId) {

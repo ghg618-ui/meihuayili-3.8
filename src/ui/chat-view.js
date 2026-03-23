@@ -3,6 +3,7 @@
  */
 import { $, escapeHtml } from '../utils/dom.js';
 import { formatMarkdown } from '../utils/formatter.js';
+import { hasProAccess, getUserTier } from '../storage/auth.js';
 
 export function addMessage(container, { role, content, reasoning, modelLabel }) {
     if (!container) return;
@@ -20,7 +21,7 @@ export function addMessage(container, { role, content, reasoning, modelLabel }) 
     return $(`#${msgId}`);
 }
 
-export function appendAssistantMessageActions(msgEl) {
+export function appendAssistantMessageActions(msgEl, allowFollowUp = true) {
     if (!msgEl) return;
 
     const contentEl = msgEl.querySelector('.msg-content');
@@ -28,11 +29,34 @@ export function appendAssistantMessageActions(msgEl) {
 
     contentEl.querySelectorAll('.msg-feedback-actions, .msg-bottom-actions, .msg-action-row, .wechat-promo').forEach((node) => node.remove());
 
+    // 检查是否是 Pro 用户且允许追问
+    const isPro = hasProAccess();
+    const tier = getUserTier();
+    const followUpCount = parseInt(msgEl.dataset.followUpCount || '0');
+    const maxFollowUp = tier === 'lifetime' || tier === 'admin' ? 5 : 3;
+    const canFollowUp = isPro && allowFollowUp && followUpCount < maxFollowUp;
+
+    let followUpButton = '';
+    if (canFollowUp) {
+        followUpButton = `
+            <button class="msg-inline-action msg-followup-btn" onclick="window.startFollowUp('${msgEl.id}')" title="针对此卦象继续提问">
+                💬 追问 (${followUpCount}/${maxFollowUp})
+            </button>
+        `;
+    } else if (isPro && followUpCount >= maxFollowUp) {
+        followUpButton = `
+            <button class="msg-inline-action" disabled title="本轮追问次数已用完">
+                💬 追问已用完
+            </button>
+        `;
+    }
+
     contentEl.insertAdjacentHTML('beforeend', `
         <div class="msg-action-row">
             <button class="msg-inline-action" onclick="window.openFeedbackModal('${msgEl.id}')" title="提供卦例反馈">
                 卦例点评
             </button>
+            ${followUpButton}
             <button class="msg-inline-action" onclick="window.exportDivinationResult()">导出结果</button>
             <button class="msg-inline-action" onclick="window.startNewCaseFromChat()">新起一卦</button>
         </div>
