@@ -405,7 +405,8 @@ body {
   min-height: 120px;
   max-height: 50vh;
   padding: 24px 24px;
-  border: 1px solid var(--border-color);
+  /* 边框颜色加深，更易看见 */
+  border: 1.5px solid rgba(181, 122, 52, 0.28);  /* 从 0.14 增加到 0.28 */
   border-radius: var(--radius-lg);
   font-size: 1.15rem;
   font-family: var(--font-serif);
@@ -3923,8 +3924,9 @@ body.oracle-waiting .btn-new-case-fab {
 }
 
 [data-theme="dark"] #input-chat {
-  border: 1px solid #3c3c3c;
-  background: #1e1e1e;
+  /* 深色模式：边框更明显 */
+  border: 1.5px solid rgba(201, 146, 74, 0.35);
+  background: #2C2824;
 }
 
 [data-theme="dark"] #input-chat:focus {
@@ -4238,8 +4240,9 @@ body.oracle-waiting .btn-new-case-fab {
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  border: 2px solid rgba(139, 92, 246, 0.3);
-  box-shadow: 0 0 24px rgba(139, 92, 246, 0.12), inset 0 0 16px rgba(139, 92, 246, 0.06);
+  /* 暖金色呼吸光晕 - 土金相生，与整体色调一致 */
+  border: 2px solid rgba(201, 146, 74, 0.35);
+  box-shadow: 0 0 24px rgba(201, 146, 74, 0.18), inset 0 0 16px rgba(201, 146, 74, 0.1);
   animation: ritual-breathe 4s ease-in-out infinite;
 }
 
@@ -4249,8 +4252,9 @@ body.oracle-waiting .btn-new-case-fab {
 }
 
 [data-theme="dark"] .ritual-breath-ring {
-  border-color: rgba(180, 140, 255, 0.35);
-  box-shadow: 0 0 30px rgba(180, 140, 255, 0.18), inset 0 0 20px rgba(180, 140, 255, 0.08);
+  /* 深色模式：更亮的暖金 */
+  border-color: rgba(212, 165, 92, 0.45);
+  box-shadow: 0 0 30px rgba(212, 165, 92, 0.25), inset 0 0 20px rgba(212, 165, 92, 0.12);
 }
 
 .ritual-text {
