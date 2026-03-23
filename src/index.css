@@ -390,6 +390,8 @@ body {
   font-weight: 400;
   margin-bottom: 34px;
   letter-spacing: 0.05em;
+  /* 透明度过渡，让输入问题时平滑变淡 */
+  transition: opacity 0.3s ease;
 }
 
 .input-container-large {

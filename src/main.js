@@ -629,7 +629,11 @@ function handleTextInputChange() {
         btnTime?.classList.remove('breathing');
         ritual?.classList.add('hidden');
         inputGuidance?.classList.add('hidden');
-        if (hintText) hintText.style.display = 'block';
+        // 空状态时显示完整提示
+        if (hintText) {
+            hintText.style.display = 'block';
+            hintText.style.opacity = '1';
+        }
         return;
     }
     const parsed = DivinationEngine.parseFromText(text);
@@ -648,7 +652,11 @@ function handleTextInputChange() {
         ritual?.classList.add('hidden');
         btnTime?.classList.remove('breathing');
         inputGuidance?.classList.add('hidden');
-        if (hintText) hintText.style.display = 'none';
+        // 输入问题时保留提示，但降低透明度（保持仪式感）
+        if (hintText) {
+            hintText.style.display = 'block';
+            hintText.style.opacity = '0.5';  // 半透明，保持仪式感
+        }
     } else {
         btnQuick?.classList.add('hidden');
         btnTime?.classList.add('hidden');
