@@ -1,16 +1,28 @@
 :root {
-  --accent-plum: #d99848;
-  --accent-plum-light: #e6b373;
-  --accent-plum-dark: #b57a34;
-  --bg-primary: #ffffff;
-  --bg-secondary: #f5f3f0;
-  --bg-glass: rgba(255, 255, 255, 0.9);
-  --bg-subtle: #eceae7;
-  --text-primary: #1D1D1F;
-  --text-secondary: #6E6E73;
-  --text-tertiary: #86868B;
-  --border-color: rgba(181, 122, 52, 0.14);
-  --border-hover: rgba(217, 152, 72, 0.2);
+  /* 新中式极简主义色彩体系 - 基于八字喜用神（土>金>水）
+   * 背景：暖米色/阴土（田园之土，湿润包容）
+   * 强调：哑光金/古铜色（土金相生，稳重质感）
+   * 文字：深炭灰/黛蓝（水主智，深沉深邃）
+   */
+  --accent-plum: #b57a34;        /* 古铜金 - 哑光质感，避免土豪金 */
+  --accent-plum-light: #c9924a;  /* 暖金 - 渐变提亮 */
+  --accent-plum-dark: #8c6028;   /* 深赭石 - 土中带金，增加厚重感 */
+  
+  /* 阴土背景色系 - 暖调米黄，像陈旧纸张或泥土 */
+  --bg-primary: #F9F7F2;         /* 主背景：浅米黄（田园之土） */
+  --bg-secondary: #F5F0E6;       /* 次背景：淡卡其（湿润包容） */
+  --bg-glass: rgba(249, 247, 242, 0.95);  /* 玻璃质感：半透明米黄 */
+  --bg-subtle: #EBE5D9;          /* 微妙背景：稍深米色（层次过渡） */
+  
+  /* 水属性文字色系 - 深炭灰/黛蓝，主智慧深沉 */
+  --text-primary: #2C3E50;       /* 主文字：黛蓝色（深邃智慧） */
+  --text-secondary: #546E7A;     /* 次文字：灰蓝色（中等深度） */
+  --text-tertiary: #78909C;      /* 第三级：浅黛色（提示信息） */
+  
+  /* 金属性边框 - 哑光质感，土金相生 */
+  --border-color: rgba(181, 122, 52, 0.18);  /* 边框：淡古铜色 */
+  --border-hover: rgba(193, 154, 107, 0.35); /* 悬停：暖金色 */
+  
   --radius-xl: 20px;
   --radius-lg: 16px;
   --radius-md: 12px;
@@ -46,18 +58,26 @@
 }
 
 [data-theme="dark"] {
-  --accent-plum: #007acc;
-  --accent-plum-light: #4a9eff;
-  --accent-plum-dark: #005a9e;
-  --bg-primary: #1e1e1e;
-  --bg-secondary: #252526;
-  --bg-glass: rgba(37, 37, 38, 0.95);
-  --bg-subtle: #2d2d30;
-  --text-primary: #cccccc;
-  --text-secondary: #9d9d9d;
-  --text-tertiary: #858585;
-  --border-color: #454545;
-  --border-hover: #007acc;
+  /* 深色模式：保持土>金>水的五行体系 */
+  --accent-plum: #c9924a;        /* 暖金色 - 深色模式下提亮 */
+  --accent-plum-light: #d4a55c;  /* 更亮的暖金 */
+  --accent-plum-dark: #a67c2e;   /* 深古铜 */
+  
+  /* 阴土深色背景 - 暖调深灰，避免纯黑 */
+  --bg-primary: #2C2824;         /* 主背景：深暖灰（泥土色） */
+  --bg-secondary: #3A352F;       /* 次背景：深卡其 */
+  --bg-glass: rgba(44, 40, 36, 0.95);  /* 玻璃质感 */
+  --bg-subtle: #453F38;          /* 微妙背景 */
+  
+  /* 水属性深色文字 - 保持黛蓝调 */
+  --text-primary: #B0C4D4;       /* 主文字：浅黛蓝（智慧之光） */
+  --text-secondary: #8FA3B3;     /* 次文字：灰蓝色 */
+  --text-tertiary: #6B7F8C;      /* 第三级：深灰蓝 */
+  
+  /* 金属性深色边框 */
+  --border-color: rgba(201, 146, 74, 0.25);
+  --border-hover: rgba(212, 165, 92, 0.45);
+  
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
@@ -398,14 +418,17 @@ body {
 }
 
 #input-chat::placeholder {
-  color: var(--text-tertiary);
-  opacity: 0.45;
+  /* 土属性占位符 - 中灰色，既不影响主内容又能看清 */
+  color: var(--text-secondary);
+  opacity: 0.65;                  /* 提高对比度 */
 }
 
 #input-chat:focus {
   outline: none;
-  border-color: var(--accent-plum);
-  box-shadow: 0 0 0 4px rgba(217, 152, 72, 0.12);
+  /* 土金相生 - 暖金色光晕，像田园被阳光照耀 */
+  border-color: var(--accent-plum-light);
+  box-shadow: 0 0 0 3px rgba(201, 146, 74, 0.15),
+              0 0 20px rgba(181, 122, 52, 0.12);  /* 内外双层光晕 */
 }
 
 /* --- Quick Parse Button & Hero Actions --- */
@@ -420,18 +443,23 @@ body {
   padding: 12px 32px;
   font-size: 0.95rem;
   font-family: var(--font-sans);
-  font-weight: 500;
+  font-weight: 600;               /* 加粗一点，增加分量 */
+  /* 淡金色渐变背景 - 像温润的玉或金属牌 */
+  background: linear-gradient(135deg, 
+    rgba(201, 146, 74, 0.08) 0%,   /* 极淡的金色从米白开始 */
+    rgba(181, 122, 52, 0.12) 100%  /* 稍深的金色 */
+  );
   color: var(--accent-plum);
-  background: transparent;
   border: 1.5px solid var(--accent-plum);
   border-radius: 100px;
   cursor: pointer;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;         /* 增加字间距，更透气 */
   text-align: center;
-  transition: none;
+  transition: var(--transition-smooth);
   appearance: none;
   -webkit-appearance: none;
   -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 1px 3px rgba(181, 122, 52, 0.08); /* 微妙的立体感 */
 }
 
 .btn-time-divine:hover,
@@ -440,11 +468,15 @@ body {
 .btn-time-divine:focus-within,
 .btn-time-divine:active,
 .btn-time-divine:visited {
-  background: transparent !important;
-  color: var(--accent-plum) !important;
-  border-color: var(--accent-plum) !important;
-  box-shadow: none !important;
-  outline: none !important;
+  /* 悬停时渐变加深 - 金生水，流动感 */
+  background: linear-gradient(135deg, 
+    rgba(201, 146, 74, 0.15) 0%,
+    rgba(181, 122, 52, 0.20) 100%
+  ) !important;
+  color: var(--accent-plum-dark) !important;
+  border-color: var(--accent-plum-dark) !important;
+  box-shadow: 0 2px 8px rgba(181, 122, 52, 0.18) !important;
+  transform: translateY(-1px);
 }
 
 [data-theme="dark"] .btn-time-divine {
@@ -2872,25 +2904,32 @@ input[type=number] {
 .btn-new-case {
   width: auto;
   padding: 9px 28px;
-  background: transparent;
-  color: var(--accent-plum);
-  border: 1.5px solid var(--accent-plum);
+  /* 实心印章式设计 - 增加土的厚重感 */
+  background: linear-gradient(135deg, var(--accent-plum) 0%, var(--accent-plum-dark) 100%);
+  color: #F9F7F2;                /* 米白色文字，与背景呼应 */
+  border: none;                   /* 去掉边框，更像印章 */
   border-radius: 100px;
-  font-weight: 500;
+  font-weight: 600;               /* 加粗字体，增加分量 */
   cursor: pointer;
   font-size: 0.85rem;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;         /* 增加字间距，更透气 */
   text-align: center;
   transition: var(--transition-smooth);
+  box-shadow: 0 2px 8px rgba(181, 122, 52, 0.25); /* 土金相生的微光 */
 }
 
 .btn-new-case:hover {
-  background: var(--accent-plum);
-  color: white;
+  /* 悬停时更亮的金色 - 金生水，流动感 */
+  background: linear-gradient(135deg, var(--accent-plum-light) 0%, var(--accent-plum) 100%);
+  color: #FFFFFF;
+  transform: translateY(-1px);    /* 微微上浮 */
+  box-shadow: 0 4px 12px rgba(181, 122, 52, 0.35);
 }
 
 .btn-new-case:active {
-  transform: scale(0.97);
+  /* 按下时沉稳下压 - 土的稳定性 */
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(181, 122, 52, 0.2);
 }
 
 /* --- Modals --- */
@@ -3331,7 +3370,8 @@ input[type=number] {
 .footer-brand {
   font-family: var(--font-serif);
   font-size: 0.82rem;
-  letter-spacing: 0.35em;
+  /* 增加字间距，更透气 - 符合金的肃杀与清朗 */
+  letter-spacing: 0.55em;         /* 从 0.35em 增加到 0.55em */
   cursor: pointer;
   white-space: nowrap;
   user-select: none;
@@ -3888,8 +3928,10 @@ body.oracle-waiting .btn-new-case-fab {
 }
 
 [data-theme="dark"] #input-chat:focus {
-  box-shadow: none;
-  border-color: #007acc;
+  /* 深色模式：土金相生 - 暖金光晕 */
+  box-shadow: 0 0 0 3px rgba(201, 146, 74, 0.25),
+              0 0 25px rgba(201, 146, 74, 0.18);
+  border-color: var(--accent-plum-light);
 }
 
 [data-theme="dark"] .msg-inline-action {
