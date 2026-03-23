@@ -488,6 +488,69 @@
                 </div>
             </section>
 
+            <!-- 心诚启卦 · 引导弹窗（首次访问显示） -->
+            <div id="qigua-modal" class="qigua-modal-overlay">
+                <div class="qigua-modal-container">
+                    <button class="qigua-close-btn" id="qigua-close-btn">×</button>
+                    
+                    <div class="qigua-modal-content">
+                        <!-- 第一屏：警示 -->
+                        <div class="qigua-screen active" id="qigua-screen-1">
+                            <span class="qigua-icon-warning">⚠️</span>
+                            <h2 class="qigua-title">此非游戏，亦非娱乐</h2>
+                            <p class="qigua-subtitle">
+                                乃依《周易》"时位相应"之理<br>
+                                以当下时空为机，推演天地消息
+                            </p>
+                            <div class="qigua-quote">
+                                <p>若心存戏谑，则卦不成象</p>
+                                <p>若意散神驰，则断无准绳</p>
+                                <p class="qigua-source">——《系辞传》："君子居则观其象而玩其辞，动则观其变而玩其占"</p>
+                            </div>
+                            <button class="qigua-btn-next" id="qigua-btn-1">我明白了 →</button>
+                        </div>
+
+                        <!-- 第二屏：静心 -->
+                        <div class="qigua-screen" id="qigua-screen-2">
+                            <span class="qigua-icon-meditate">🧘</span>
+                            <h2 class="qigua-title">请闭目三次深呼吸</h2>
+                            <p class="qigua-subtitle">
+                                心中默念所问之事<br>
+                                勿杂念纷飞
+                            </p>
+                            <div class="qigua-breath-guide">
+                                <div class="qigua-breath-circle">
+                                    <div class="qigua-breath-inner"></div>
+                                </div>
+                                <p class="qigua-breath-text">吸 · 呼</p>
+                            </div>
+                            <p class="qigua-quote" style="font-size: 12px; text-align: center;">
+                                "寂然不动，感而遂通天下之故"
+                            </p>
+                            <button class="qigua-btn-next" id="qigua-btn-2">已静心 →</button>
+                        </div>
+
+                        <!-- 第三屏：准备 -->
+                        <div class="qigua-screen" id="qigua-screen-3">
+                            <span class="qigua-icon-ready">✨</span>
+                            <h2 class="qigua-title">我已准备就绪</h2>
+                            <p class="qigua-subtitle">
+                                愿以诚心感召天机
+                            </p>
+                            <div class="qigua-progress-container">
+                                <div class="qigua-progress-bar">
+                                    <div class="qigua-progress-fill" id="qigua-progress"></div>
+                                </div>
+                                <p class="qigua-progress-text" id="qigua-progress-text">凝神静气...</p>
+                            </div>
+                            <button class="qigua-btn-start" id="qigua-start-btn" disabled>
+                                心诚启卦
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- PWA 安装引导 -->
             <div id="pwa-install-banner" class="pwa-install-banner hidden">
                 <span class="pwa-install-text">📲 添加到手机桌面，下次打开更方便</span>

@@ -246,6 +246,9 @@ async function init() {
     }
 
     log.info('Ready.');
+    
+    // 初始化心诚启卦引导弹窗（首次访问显示）
+    initQiguaModal();
 }
 
 function populateSelects() {
@@ -1210,3 +1213,147 @@ document.addEventListener('DOMContentLoaded', init);
         hidePwaPrompts();
     });
 })();
+
+// ========================================
+// 心诚启卦 · 引导弹窗逻辑
+// ========================================
+
+/**
+ * 初始化心诚启卦引导弹窗
+ * 首次访问时显示三屏引导，后续直接显示简版警示
+ */
+function initQiguaModal() {
+    // 检查是否已看过引导
+    const hasSeenGuide = localStorage.getItem('meihua_has_seen_qigua_guide');
+    if (hasSeenGuide) {
+        return; // 已看过，不再显示
+    }
+    
+    const modal = document.getElementById('qigua-modal');
+    if (!modal) return;
+    
+    // 显示弹窗
+    setTimeout(() => {
+        modal.classList.add('active');
+    }, 500);
+    
+    // 绑定事件
+    bindQiguaModalEvents();
+}
+
+/**
+ * 绑定弹窗事件
+ */
+function bindQiguaModalEvents() {
+    const modal = document.getElementById('qigua-modal');
+    const closeBtn = document.getElementById('qigua-close-btn');
+    const btn1 = document.getElementById('qigua-btn-1');
+    const btn2 = document.getElementById('qigua-btn-2');
+    const startBtn = document.getElementById('qigua-start-btn');
+    
+    // 关闭按钮
+    closeBtn?.addEventListener('click', () => {
+        closeQiguaModal();
+    });
+    
+    // 点击遮罩层关闭
+    modal?.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeQiguaModal();
+        }
+    });
+    
+    // ESC 键关闭
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal?.classList.contains('active')) {
+            closeQiguaModal();
+        }
+    });
+    
+    // 第一屏：我明白了
+    btn1?.addEventListener('click', () => {
+        showQiguaScreen(2);
+    });
+    
+    // 第二屏：已静心
+    btn2?.addEventListener('click', () => {
+        showQiguaScreen(3);
+        startProgressAnimation();
+    });
+    
+    // 第三屏：心诚启卦
+    startBtn?.addEventListener('click', () => {
+        closeQiguaModal();
+    });
+}
+
+/**
+ * 显示指定屏幕
+ */
+function showQiguaScreen(screenNum) {
+    document.querySelectorAll('.qigua-screen').forEach(screen => {
+        screen.classList.remove('active');
+    });
+    const targetScreen = document.getElementById(`qigua-screen-${screenNum}`);
+    if (targetScreen) {
+        targetScreen.classList.add('active');
+    }
+}
+
+/**
+ * 启动进度条动画
+ */
+function startProgressAnimation() {
+    const progressFill = document.getElementById('qigua-progress');
+    const progressText = document.getElementById('qigua-progress-text');
+    const startBtn = document.getElementById('qigua-start-btn');
+    
+    if (!progressFill || !startBtn) return;
+    
+    let progress = 0;
+    const duration = 3000; // 3秒
+    const interval = 50; // 每50ms更新一次
+    const step = 100 / (duration / interval);
+    
+    const timer = setInterval(() => {
+        progress += step;
+        if (progress >= 100) {
+            progress = 100;
+            clearInterval(timer);
+            
+            // 进度完成，启用按钮
+            startBtn.disabled = false;
+            startBtn.textContent = '心诚启卦';
+            if (progressText) {
+                progressText.textContent = '可以起卦了';
+            }
+        }
+        
+        progressFill.style.width = `${progress}%`;
+        
+        // 更新提示文字
+        if (progressText && progress < 100) {
+            if (progress < 30) {
+                progressText.textContent = '凝神静气...';
+            } else if (progress < 60) {
+                progressText.textContent = '调息入定...';
+            } else if (progress < 90) {
+                progressText.textContent = '感应天地...';
+            } else {
+                progressText.textContent = '即将就绪...';
+            }
+        }
+    }, interval);
+}
+
+/**
+ * 关闭弹窗
+ */
+function closeQiguaModal() {
+    const modal = document.getElementById('qigua-modal');
+    if (modal) {
+        modal.classList.remove('active');
+        // 标记已看过引导
+        localStorage.setItem('meihua_has_seen_qigua_guide', 'true');
+    }
+}

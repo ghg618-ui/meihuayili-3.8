@@ -37,6 +37,294 @@
   --transition-bounce: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* ========================================
+   心诚启卦 · 引导弹窗样式
+   ======================================== */
+.qigua-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(44, 62, 80, 0.92) 0%, rgba(26, 35, 45, 0.95) 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.qigua-modal-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+.qigua-modal-container {
+    position: relative;
+    width: 90%;
+    max-width: 520px;
+    background: linear-gradient(145deg, #F9F7F2 0%, #F5F0E6 100%);
+    border-radius: 16px;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(212, 175, 55, 0.2),
+        inset 0 0 60px rgba(212, 175, 55, 0.05);
+    overflow: hidden;
+    transform: scale(0.95) translateY(20px);
+    transition: transform 0.5s ease;
+}
+
+.qigua-modal-overlay.active .qigua-modal-container {
+    transform: scale(1) translateY(0);
+}
+
+.qigua-modal-content {
+    position: relative;
+    padding: 50px 40px;
+    z-index: 10;
+}
+
+.qigua-screen {
+    display: none;
+    text-align: center;
+    animation: qiguaFadeIn 0.8s ease;
+}
+
+.qigua-screen.active {
+    display: block;
+}
+
+@keyframes qiguaFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.qigua-icon-warning,
+.qigua-icon-meditate,
+.qigua-icon-ready {
+    font-size: 48px;
+    margin-bottom: 20px;
+    display: block;
+    animation: qiguaFloat 3s ease-in-out infinite;
+}
+
+@keyframes qiguaFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+.qigua-title {
+    font-family: var(--font-serif);
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 12px 0;
+    letter-spacing: 2px;
+}
+
+.qigua-subtitle {
+    font-family: var(--font-serif);
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin: 0 0 25px 0;
+    line-height: 1.8;
+}
+
+.qigua-quote {
+    background: linear-gradient(135deg, rgba(201, 146, 74, 0.08) 0%, rgba(201, 146, 74, 0.02) 100%);
+    border-left: 3px solid var(--accent-plum);
+    padding: 20px 25px;
+    margin: 25px 0;
+    border-radius: 0 8px 8px 0;
+    text-align: left;
+}
+
+.qigua-quote p {
+    font-family: var(--font-serif);
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 8px 0;
+    line-height: 1.9;
+}
+
+.qigua-source {
+    font-family: var(--font-serif);
+    font-size: 12px;
+    color: var(--text-tertiary);
+    font-style: italic;
+    margin-top: 15px;
+}
+
+.qigua-breath-guide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 30px 0;
+}
+
+.qigua-breath-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(201, 146, 74, 0.15) 0%, rgba(201, 146, 74, 0.05) 100%);
+    border: 2px solid rgba(201, 146, 74, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+    animation: qiguaBreathe 4s ease-in-out infinite;
+}
+
+.qigua-breath-inner {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-plum) 0%, var(--accent-plum-dark) 100%);
+    opacity: 0.6;
+}
+
+@keyframes qiguaBreathe {
+    0%, 100% { 
+        transform: scale(1); 
+        opacity: 0.7;
+    }
+    50% { 
+        transform: scale(1.25); 
+        opacity: 1;
+    }
+}
+
+.qigua-breath-text {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    color: var(--text-secondary);
+    letter-spacing: 8px;
+    animation: qiguaBreathText 4s ease-in-out infinite;
+}
+
+@keyframes qiguaBreathText {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+.qigua-progress-container {
+    margin: 35px 0 25px 0;
+}
+
+.qigua-progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(201, 146, 74, 0.15);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+}
+
+.qigua-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent-plum) 0%, var(--accent-plum-dark) 50%, var(--accent-plum) 100%);
+    border-radius: 3px;
+    transition: width 0.1s linear;
+}
+
+.qigua-progress-text {
+    font-family: var(--font-serif);
+    font-size: 13px;
+    color: var(--text-tertiary);
+    margin-top: 12px;
+    letter-spacing: 1px;
+}
+
+.qigua-btn-next,
+.qigua-btn-start {
+    width: 100%;
+    padding: 16px 0;
+    background: linear-gradient(135deg, var(--accent-plum) 0%, var(--accent-plum-dark) 100%);
+    border: none;
+    border-radius: 50px;
+    font-family: var(--font-serif);
+    font-size: 17px;
+    font-weight: 600;
+    color: #FFF;
+    cursor: pointer;
+    letter-spacing: 3px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(181, 122, 52, 0.3);
+    margin-top: 20px;
+}
+
+.qigua-btn-next:hover,
+.qigua-btn-start:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(181, 122, 52, 0.4);
+}
+
+.qigua-btn-start:disabled {
+    background: linear-gradient(135deg, #BDC3C7 0%, #95A5A6 100%);
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.6;
+}
+
+.qigua-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 32px;
+    height: 32px;
+    background: rgba(201, 146, 74, 0.1);
+    border: 1px solid rgba(201, 146, 74, 0.2);
+    border-radius: 50%;
+    color: var(--text-tertiary);
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+}
+
+.qigua-close-btn:hover {
+    background: rgba(201, 146, 74, 0.2);
+    color: var(--text-secondary);
+}
+
+@media (max-width: 480px) {
+    .qigua-modal-container {
+        width: 95%;
+        margin: 20px;
+    }
+    
+    .qigua-modal-content {
+        padding: 40px 25px;
+    }
+    
+    .qigua-title {
+        font-size: 22px;
+    }
+    
+    .qigua-subtitle {
+        font-size: 14px;
+    }
+    
+    .qigua-icon-warning,
+    .qigua-icon-meditate,
+    .qigua-icon-ready {
+        font-size: 40px;
+    }
+}
+
 /* --- Lucide Icon Sizes --- */
 .icon-xs { width: 14px; height: 14px; vertical-align: middle; }
 .icon-sm { width: 16px; height: 16px; vertical-align: middle; }
