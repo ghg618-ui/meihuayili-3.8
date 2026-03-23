@@ -912,6 +912,29 @@
                     </div>
                 </div>
                 <button class="btn-primary" style="width: 100%; margin-top: 20px;" id="btn-save-settings">保存设置</button>
+                
+                <!-- 兑换 Pro 会员 -->
+                <div class="settings-provider-section" style="margin-top: 24px; border-top: 1px solid var(--border-color); padding-top: 24px;">
+                    <div class="provider-header">
+                        <span class="provider-name">💎 兑换 Pro 会员</span>
+                        <span class="provider-tag" id="pro-status-tag">免费用户</span>
+                    </div>
+                    <div id="pro-status-info" style="margin-bottom: 16px; font-size: 13px; color: var(--text-secondary);">
+                        当前额度：每日 3 次起卦
+                    </div>
+                    <div class="control-group" id="redeem-code-group">
+                        <label for="settings-redeem-code">输入兑换码</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="settings-redeem-code" placeholder="MHYL-M-XXXX-XXXX" 
+                                style="flex: 1; text-transform: uppercase;" autocomplete="off" maxlength="16">
+                            <button class="btn-secondary" id="btn-redeem-code" style="width: auto; padding: 0 20px;">激活</button>
+                        </div>
+                        <p class="label-hint" style="margin-top: 6px;">
+                            获取兑换码：添加微信 <strong>meihuayili</strong>，备注"Pro会员"
+                        </p>
+                    </div>
+                    <div id="redeem-result" style="margin-top: 12px; display: none;"></div>
+                </div>
             </div>
         </div>
     </div>

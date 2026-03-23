@@ -40,7 +40,7 @@ import {
     handleAdminResetPassword,
     handleChangePassword
 } from './controllers/auth-controller.js';
-import { hasProAccess, hydrateRememberedUser, getCurrentUser } from './storage/auth.js';
+import { hasProAccess, hydrateRememberedUser, getCurrentUser, redeemProCode, getProStatus, getUserTier } from './storage/auth.js';
 import { handleSaveSettings, loadSettingsToModal } from './controllers/settings-controller.js';
 import { performAIAnalysis, continueAIAnalysis, performComparisonAnalysis } from './controllers/ai-controller.js';
 import makeLogger from './utils/logger.js';
@@ -601,10 +601,14 @@ function bindEvents() {
     // Settings
     $('#fab-settings')?.addEventListener('click', () => {
         loadSettingsToModal();
+        updateProStatusInSettings();  // 更新 Pro 状态显示
         openModal('modal-settings');
     });
     $('#btn-save-settings')?.addEventListener('click', handleSaveSettings);
     $('#btn-close-settings')?.addEventListener('click', () => closeModal('modal-settings'));
+    
+    // 兑换码激活
+    $('#btn-redeem-code')?.addEventListener('click', handleRedeemCode);
 
     // Theme toggle
     $('#btn-theme-toggle')?.addEventListener('click', toggleTheme);
@@ -1418,5 +1422,117 @@ function closeQiguaModal() {
         modal.classList.remove('active');
         // 标记已看过引导
         localStorage.setItem('meihua_has_seen_qigua_guide', 'true');
+    }
+}
+
+// ========================================
+// 兑换码系统
+// ========================================
+
+/**
+ * 更新设置面板中的 Pro 状态显示
+ */
+function updateProStatusInSettings() {
+    const status = getProStatus();
+    const tagEl = document.getElementById('pro-status-tag');
+    const infoEl = document.getElementById('pro-status-info');
+    const redeemGroup = document.getElementById('redeem-code-group');
+    
+    if (!tagEl || !infoEl) return;
+    
+    if (status.isPro) {
+        const tier = getUserTier();
+        const tierNames = {
+            'admin': '管理员',
+            'monthly': '月度 Pro',
+            'yearly': '年度 Pro',
+            'lifetime': '终身 Pro'
+        };
+        
+        tagEl.textContent = tierNames[tier] || 'Pro 会员';
+        tagEl.style.background = 'linear-gradient(135deg, #b57a34 0%, #8c6028 100%)';
+        tagEl.style.color = 'white';
+        
+        if (status.isLifetime) {
+            infoEl.innerHTML = '✨ 终身 Pro 会员，无限次起卦，深度分析';
+        } else if (status.daysLeft) {
+            infoEl.innerHTML = `✨ Pro 会员有效期至 ${status.expiry}（剩余 ${status.daysLeft} 天）<br>无限次起卦，深度分析`;
+        } else {
+            infoEl.innerHTML = '✨ Pro 会员，无限次起卦，深度分析';
+        }
+        
+        // 已激活 Pro，隐藏兑换输入框或显示续费提示
+        if (redeemGroup) {
+            redeemGroup.innerHTML = `
+                <p style="color: var(--accent-plum); font-size: 14px;">
+                    ✓ 您已是 Pro 会员，可以续费延长有效期
+                </p>
+                <div style="display: flex; gap: 8px; margin-top: 8px;">
+                    <input type="text" id="settings-redeem-code" placeholder="MHYL-M-XXXX-XXXX" 
+                        style="flex: 1; text-transform: uppercase;" autocomplete="off" maxlength="16">
+                    <button class="btn-secondary" id="btn-redeem-code" style="width: auto; padding: 0 20px;">续费</button>
+                </div>
+            `;
+            // 重新绑定事件
+            document.getElementById('btn-redeem-code')?.addEventListener('click', handleRedeemCode);
+        }
+    } else {
+        tagEl.textContent = '免费用户';
+        tagEl.style.background = '#E8E8E8';
+        tagEl.style.color = '#78909C';
+        infoEl.innerHTML = '当前额度：每日 3 次起卦<br>升级 Pro 享受无限次 + 深度分析';
+    }
+}
+
+/**
+ * 处理兑换码激活
+ */
+function handleRedeemCode() {
+    const input = document.getElementById('settings-redeem-code');
+    const resultDiv = document.getElementById('redeem-result');
+    const code = input?.value?.trim();
+    
+    if (!code) {
+        showRedeemResult('error', '请输入兑换码');
+        return;
+    }
+    
+    const result = redeemProCode(code);
+    
+    if (result.error) {
+        showRedeemResult('error', result.error);
+    } else {
+        showRedeemResult('success', `🎉 兑换成功！您已成为 ${result.typeName}<br>有效期至：${result.expiryDate}`);
+        // 更新显示
+        updateProStatusInSettings();
+        // 清空输入框
+        if (input) input.value = '';
+        // 刷新用户额度显示
+        updateUIForAuth();
+    }
+}
+
+/**
+ * 显示兑换结果
+ */
+function showRedeemResult(type, message) {
+    const resultDiv = document.getElementById('redeem-result');
+    if (!resultDiv) return;
+    
+    resultDiv.style.display = 'block';
+    resultDiv.innerHTML = message;
+    resultDiv.style.padding = '12px 16px';
+    resultDiv.style.borderRadius = '8px';
+    resultDiv.style.fontSize = '14px';
+    resultDiv.style.lineHeight = '1.6';
+    
+    if (type === 'success') {
+        resultDiv.style.background = 'rgba(76, 175, 80, 0.1)';
+        resultDiv.style.color = '#4CAF50';
+        resultDiv.style.border = '1px solid rgba(76, 175, 80, 0.3)';
+    } else {
+        resultDiv.style.background = 'rgba(244, 67, 54, 0.1)';
+        resultDiv.style.color = '#F44336';
+        resultDiv.style.border = '1px solid rgba(244, 67, 54, 0.3)';
     }
 }
