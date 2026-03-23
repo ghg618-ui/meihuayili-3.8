@@ -50,13 +50,19 @@ const NON_QUESTION_PATTERNS = [
     /^(你好|您好|嗨|哈喽|hello|hi)$/i,
     /^(在吗|你在吗|有人吗|在不在|忙吗|收到吗)$/,
     /^(测试|试试|test)$/i,
-    /^(谢谢|谢了|好的|好)$/,
+    /^(谢谢|谢了|好的|好|嗯|哦|啊|呵呵|哈哈|嘿嘿)$/,
+    /^(是的|对的|不是|不对|可以|不可以|行|不行|能|不能)$/,
+    /^(什么|为什么|怎么|如何|哪里|哪个|谁|几|多少)$/,  // 纯疑问词
 ];
 
 // Pending date clarification state
 let _pendingParsedResult = null;
 let _pendingDateInfo = null;
 
+/**
+ * 检测是否为有意义的占卦问题
+ * 增强版：检测重复字符、纯符号、无意义短语等
+ */
 function isMeaningfulDivinationQuestion(rawQuestion, hasParsedHex = false) {
     if (hasParsedHex) return true;
 
@@ -65,14 +71,62 @@ function isMeaningfulDivinationQuestion(rawQuestion, hasParsedHex = false) {
     
     // 清除所有常见标点符号和空格
     const normalized = question
-        .replace(/[\s,.，。!！?？~～、]/g, '')
+        .replace(/[\s,.，。!！?？~～、·…—–\-_()（）【】\[\]{}"'`]/g, '')
         .toLowerCase();
 
-    // 拦截纯寒暄与测试短语
+    // 1. 拦截纯寒暄与测试短语
     if (NON_QUESTION_PATTERNS.some((pattern) => pattern.test(normalized))) return false;
 
-    // 不再使用庞大词缀库判定：只要字数大于或等于3，即放行
-    return normalized.length >= 3;
+    // 2. 检测重复字符（如"对对对"、"啊啊啊"、"111"）
+    if (isRepeatedChars(normalized)) return false;
+    
+    // 3. 检测纯数字或纯符号
+    if (/^[\d]+$/.test(normalized)) return false;
+    if (/^[a-z]+$/.test(normalized) && normalized.length < 4) return false;  // 纯英文且太短
+    
+    // 4. 太短的内容不太可能是有意义的问题（至少5个字符）
+    if (normalized.length < 5) return false;
+    
+    // 5. 检测是否包含问题关键词或疑问语气
+    const hasQuestionIndicator = /[吗呢吧啊呀哇嘛]$/.test(normalized) ||  // 语气词结尾
+        /能否|是否|可否|会不会|能不能|要不要|行不行/.test(normalized) ||  // 疑问结构
+        /如何|怎么|怎样|什么时候|哪里|为什么|多久/.test(normalized) ||  // 疑问词
+        /想|打算|考虑|准备|计划|决定/.test(normalized) ||  // 意向词
+        /工作|事业|感情|婚姻|健康|财运|学业|考试|面试|投资/.test(normalized);  // 占卦常见主题
+    
+    // 6. 如果有明确的问题指示词，放行
+    if (hasQuestionIndicator) return true;
+    
+    // 7. 没有问题指示词但长度足够（>= 8字符），也放行
+    return normalized.length >= 8;
+}
+
+/**
+ * 检测是否为重复字符（如"对对对"、"哈哈哈"、"111"）
+ */
+function isRepeatedChars(str) {
+    if (!str || str.length < 2) return false;
+    
+    // 检测所有字符是否相同
+    const firstChar = str[0];
+    if (str.split('').every(c => c === firstChar)) return true;
+    
+    // 检测两字符重复模式（如"哈哈哈哈"、"嘿嘿嘿嘿"）
+    if (str.length >= 4) {
+        const pattern = str.slice(0, 2);
+        const repeated = pattern.repeat(Math.ceil(str.length / 2)).slice(0, str.length);
+        if (repeated === str) return true;
+    }
+    
+    // 检测三字符以内的高频重复（> 70%相同字符）
+    const charCount = {};
+    for (const c of str) {
+        charCount[c] = (charCount[c] || 0) + 1;
+    }
+    const maxCount = Math.max(...Object.values(charCount));
+    if (maxCount / str.length > 0.7) return true;
+    
+    return false;
 }
 
 // ===================== Icon Utilities =====================
@@ -658,8 +712,17 @@ function handleTextInputChange() {
         ritual?.classList.add('hidden');
         btnTime?.classList.remove('breathing');
         inputGuidance?.classList.add('hidden');
-        // 显示起卦警示（敬畏天地大道）
-        warning?.classList.remove('hidden');
+        
+        // 起卦警示显示策略：
+        // - 如果用户已看过三屏引导，不再显示完整警示（避免冗余）
+        // - 如果是首次用户，显示警示（教育作用）
+        const hasSeenGuide = localStorage.getItem('meihua_has_seen_qigua_guide');
+        if (hasSeenGuide) {
+            warning?.classList.add('hidden');  // 已看过引导，不再显示警示
+        } else {
+            warning?.classList.remove('hidden');  // 首次用户，显示警示
+        }
+        
         // 输入问题时保留提示，但降低透明度（保持仪式感）
         if (hintText) {
             hintText.style.display = 'block';
