@@ -12,8 +12,10 @@ const log = makeLogger('AIClient');
 // ====== 代理服务器配置 ======
 // 填入 Mac Mini 的 Cloudflare Tunnel 地址，例如：
 //   'https://api.meihuayili.com'
+// 本地调试使用本地服务器：
+//   'http://localhost:3210'
 // 留空 '' 则继续直连模式（密钥从浏览器发出）
-const PROXY_BASE_URL = 'https://api.meihuayili.com';
+const PROXY_BASE_URL = 'http://localhost:3210';
 // ============================
 
 export const PROXY_ENDPOINT = PROXY_BASE_URL ? `${PROXY_BASE_URL.replace(/\/$/, '')}/api/chat` : null;

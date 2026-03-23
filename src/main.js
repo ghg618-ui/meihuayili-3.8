@@ -169,7 +169,11 @@ async function init() {
     initModals();
     initAuthPasswordAssist();
     restoreTheme();
-    setupMarketingActions();
+    // 直接进入应用主界面，不显示官网 landing 页
+    document.body.classList.remove('mode-landing');
+    document.body.classList.add('mode-app');
+    document.getElementById('page-landing')?.classList.add('page-hidden');
+    document.getElementById('page-app')?.classList.remove('page-hidden');
 
     // Initialize Lucide icons
     if (typeof lucide !== 'undefined') {
@@ -568,23 +572,14 @@ function setupMarketingActions() {
         window.scrollTo({ top: 0, behavior: 'instant' });
     }
 
-    // Set initial mode
-    document.body.classList.add('mode-landing');
+    // 初始化时直接进入应用模式
+    document.body.classList.add('mode-app');
+    document.body.classList.remove('mode-landing');
+    document.getElementById('page-landing')?.classList.add('page-hidden');
+    document.getElementById('page-app')?.classList.remove('page-hidden');
 
-    // "开始使用" / "进入应用" → switch to app
-    document.getElementById('btn-start-experience')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        switchToApp();
-    });
-    document.getElementById('btn-cta-enter')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        switchToApp();
-    });
-
-    // "返回首页" → switch to landing
-    document.getElementById('btn-back-landing')?.addEventListener('click', () => {
-        switchToLanding();
-    });
+    // 移除所有 landing 页切换按钮的事件绑定
+    // 不再需要 switchToLanding 功能
 
     // Expose for global use
     window.switchToApp = switchToApp;

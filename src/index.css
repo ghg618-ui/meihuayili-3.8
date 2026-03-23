@@ -4167,13 +4167,7 @@ body.oracle-waiting .btn-new-case-fab {
   }
 
   .history-hint {
-    margin-top: 6px;
-    padding: 8px 12px;
-    font-size: 0.76rem;
-    border-radius: 10px;
-    background: color-mix(in srgb, var(--accent-plum) 8%, var(--bg-primary));
-    border: 1px dashed color-mix(in srgb, var(--accent-plum) 28%, var(--border-color));
-    opacity: 0.92;
+    display: none; /* 手机端隐藏带锁提示，只显示 swipe-tip */
   }
 }
 
