@@ -3763,6 +3763,23 @@ input[type=number] {
   letter-spacing: 0.03em;
 }
 
+.footer-feedback {
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--text-tertiary);
+  opacity: 0.75;
+  letter-spacing: 0.05em;
+  margin-top: 6px;
+  cursor: pointer;
+  transition: opacity 0.3s, color 0.3s;
+  -webkit-tap-highlight-color: rgba(217, 152, 72, 0.15);
+}
+
+.footer-feedback:hover {
+  opacity: 1;
+  color: var(--accent-color);
+}
+
 body.oracle-waiting .btn-new-case-fab {
   display: none !important;
 }

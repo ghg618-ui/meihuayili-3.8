@@ -610,8 +610,11 @@ function bindEvents() {
     $('#btn-save-settings')?.addEventListener('click', handleSaveSettings);
     $('#btn-close-settings')?.addEventListener('click', () => closeModal('modal-settings'));
     
-    // 用户反馈
+    // 用户反馈（设置面板内）
     $('#btn-submit-feedback')?.addEventListener('click', handleFeedbackSubmit);
+    
+    // 通用反馈（底部入口）
+    $('#btn-submit-general-feedback')?.addEventListener('click', handleGeneralFeedbackSubmit);
 
     // Theme toggle
     $('#btn-theme-toggle')?.addEventListener('click', toggleTheme);
@@ -1737,6 +1740,103 @@ function showFeedbackResult(type, message) {
     }
     
     // 3秒后自动隐藏
+    setTimeout(() => {
+        resultDiv.style.display = 'none';
+    }, 5000);
+}
+
+/**
+ * 处理通用反馈提交（底部入口）
+ */
+function handleGeneralFeedbackSubmit() {
+    const typeRadio = document.querySelector('input[name="general-feedback-type"]:checked');
+    const contentEl = document.getElementById('general-feedback-content');
+    const contactEl = document.getElementById('general-feedback-contact');
+    const resultDiv = document.getElementById('general-feedback-result');
+    
+    const type = typeRadio?.value || 'other';
+    const content = contentEl?.value?.trim();
+    const contact = contactEl?.value?.trim();
+    
+    if (!content) {
+        showGeneralFeedbackResult('error', '请填写反馈内容');
+        return;
+    }
+    
+    if (content.length < 5) {
+        showGeneralFeedbackResult('error', '反馈内容至少5个字');
+        return;
+    }
+    
+    // 构建反馈数据
+    const feedbackData = {
+        type,
+        typeLabel: getGeneralFeedbackTypeLabel(type),
+        content,
+        contact: contact || '未提供',
+        timestamp: new Date().toISOString(),
+        user: getCurrentUser()?.name || '游客',
+        userAgent: navigator.userAgent,
+        url: window.location.href,
+        source: '底部入口'
+    };
+    
+    // 保存到 localStorage
+    saveFeedback(feedbackData);
+    
+    // 显示成功提示
+    showGeneralFeedbackResult('success', '🙏 感谢您的反馈！我们会认真阅读并持续改进。');
+    
+    // 清空表单
+    if (contentEl) contentEl.value = '';
+    if (contactEl) contactEl.value = '';
+    
+    // 记录到控制台
+    console.log('【通用反馈】', feedbackData);
+    
+    // 3秒后自动关闭弹窗
+    setTimeout(() => {
+        document.getElementById('modal-general-feedback')?.classList.add('hidden');
+    }, 2000);
+}
+
+/**
+ * 获取通用反馈类型标签
+ */
+function getGeneralFeedbackTypeLabel(type) {
+    const labels = {
+        'feature': '功能建议',
+        'bug': '问题反馈',
+        'other': '其他'
+    };
+    return labels[type] || '其他';
+}
+
+/**
+ * 显示通用反馈提交结果
+ */
+function showGeneralFeedbackResult(type, message) {
+    const resultDiv = document.getElementById('general-feedback-result');
+    if (!resultDiv) return;
+    
+    resultDiv.style.display = 'block';
+    resultDiv.innerHTML = message;
+    resultDiv.style.padding = '12px 16px';
+    resultDiv.style.borderRadius = '8px';
+    resultDiv.style.fontSize = '14px';
+    resultDiv.style.lineHeight = '1.6';
+    
+    if (type === 'success') {
+        resultDiv.style.background = 'rgba(76, 175, 80, 0.1)';
+        resultDiv.style.color = '#4CAF50';
+        resultDiv.style.border = '1px solid rgba(76, 175, 80, 0.3)';
+    } else {
+        resultDiv.style.background = 'rgba(244, 67, 54, 0.1)';
+        resultDiv.style.color = '#F44336';
+        resultDiv.style.border = '1px solid rgba(244, 67, 54, 0.3)';
+    }
+    
+    // 5秒后自动隐藏
     setTimeout(() => {
         resultDiv.style.display = 'none';
     }, 5000);

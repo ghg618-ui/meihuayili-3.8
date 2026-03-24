@@ -733,6 +733,7 @@
                         <span class="footer-line"></span>
                     </div>
                     <div class="footer-meta">微信号｜易泓录（yhLchat）</div>
+                    <div class="footer-feedback" onclick="event.stopPropagation(); document.getElementById('modal-general-feedback').classList.remove('hidden');">💬 意见反馈</div>
                 </div>
             </footer>
         </main>
@@ -1016,6 +1017,48 @@
 
                 <button class="feedback-submit-btn" style="width: 100%; margin-top: 16px;"
                     onclick="window.submitFeedback()">提交反馈</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- General Feedback Modal -->
+    <div class="modal-overlay hidden" id="modal-general-feedback">
+        <div class="modal modal-wide glass-panel">
+            <div class="modal-header">
+                <h3>💬 意见反馈</h3>
+                <button class="modal-close" onclick="document.getElementById('modal-general-feedback').classList.add('hidden')">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">您的建议是我们迭代的动力，欢迎随时告诉我们。</p>
+                <div class="control-group">
+                    <label>反馈类型</label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+                        <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; padding: 6px 12px; background: var(--bg-subtle); border-radius: 20px; border: 1px solid var(--border-color);">
+                            <input type="radio" name="general-feedback-type" value="feature" checked style="accent-color: var(--accent-plum);">
+                            <span>功能建议</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; padding: 6px 12px; background: var(--bg-subtle); border-radius: 20px; border: 1px solid var(--border-color);">
+                            <input type="radio" name="general-feedback-type" value="bug" style="accent-color: var(--accent-plum);">
+                            <span>问题反馈</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; padding: 6px 12px; background: var(--bg-subtle); border-radius: 20px; border: 1px solid var(--border-color);">
+                            <input type="radio" name="general-feedback-type" value="other" style="accent-color: var(--accent-plum);">
+                            <span>其他</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label for="general-feedback-content">详细描述</label>
+                    <textarea id="general-feedback-content" placeholder="请描述您的建议或遇到的问题..." 
+                        style="width: 100%; min-height: 120px; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; resize: vertical; font-family: inherit; box-sizing: border-box;"></textarea>
+                </div>
+                <div class="control-group">
+                    <label for="general-feedback-contact">您的联系方式（选填）</label>
+                    <input type="text" id="general-feedback-contact" placeholder="微信 / 邮箱，方便我们回复" 
+                        style="width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+                </div>
+                <button class="btn-primary" id="btn-submit-general-feedback" style="width: 100%; margin-top: 8px;">提交反馈</button>
+                <div id="general-feedback-result" style="margin-top: 12px; display: none;"></div>
             </div>
         </div>
     </div>
