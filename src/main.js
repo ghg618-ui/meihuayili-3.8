@@ -604,14 +604,14 @@ function bindEvents() {
     // Settings
     $('#fab-settings')?.addEventListener('click', () => {
         loadSettingsToModal();
-        updateProStatusInSettings();  // 更新 Pro 状态显示
+        updateQuotaDisplay();  // 更新额度显示
         openModal('modal-settings');
     });
     $('#btn-save-settings')?.addEventListener('click', handleSaveSettings);
     $('#btn-close-settings')?.addEventListener('click', () => closeModal('modal-settings'));
     
-    // 兑换码激活
-    $('#btn-redeem-code')?.addEventListener('click', handleRedeemCode);
+    // 用户反馈
+    $('#btn-submit-feedback')?.addEventListener('click', handleFeedbackSubmit);
 
     // Theme toggle
     $('#btn-theme-toggle')?.addEventListener('click', toggleTheme);
@@ -1617,3 +1617,154 @@ function showRedeemResult(type, message) {
         resultDiv.style.border = '1px solid rgba(244, 67, 54, 0.3)';
     }
 }
+
+// ========================================
+// 用户反馈系统
+// ========================================
+
+/**
+ * 更新设置面板中的额度显示
+ */
+function updateQuotaDisplay() {
+    const remainingEl = document.getElementById('quota-remaining');
+    if (!remainingEl) return;
+    
+    const quota = getUserQuota();
+    const maxQuota = 3;
+    const used = maxQuota - quota;
+    
+    remainingEl.textContent = `${quota}/${maxQuota}`;
+}
+
+/**
+ * 处理用户反馈提交
+ */
+function handleFeedbackSubmit() {
+    const typeRadio = document.querySelector('input[name="feedback-type"]:checked');
+    const contentEl = document.getElementById('feedback-content');
+    const contactEl = document.getElementById('feedback-contact');
+    const resultDiv = document.getElementById('feedback-result');
+    
+    const type = typeRadio?.value || 'other';
+    const content = contentEl?.value?.trim();
+    const contact = contactEl?.value?.trim();
+    
+    if (!content) {
+        showFeedbackResult('error', '请填写反馈内容');
+        return;
+    }
+    
+    if (content.length < 10) {
+        showFeedbackResult('error', '反馈内容至少10个字，请详细描述');
+        return;
+    }
+    
+    // 构建反馈数据
+    const feedbackData = {
+        type,
+        typeLabel: getFeedbackTypeLabel(type),
+        content,
+        contact: contact || '未提供',
+        timestamp: new Date().toISOString(),
+        user: getCurrentUser()?.name || '游客',
+        userAgent: navigator.userAgent,
+        url: window.location.href,
+    };
+    
+    // 保存到 localStorage
+    saveFeedback(feedbackData);
+    
+    // 显示成功提示
+    showFeedbackResult('success', '🙏 感谢您的反馈！我们会认真阅读并持续改进产品。');
+    
+    // 清空表单
+    if (contentEl) contentEl.value = '';
+    if (contactEl) contactEl.value = '';
+    
+    // 记录到控制台（方便你查看）
+    console.log('【用户反馈】', feedbackData);
+}
+
+/**
+ * 获取反馈类型标签
+ */
+function getFeedbackTypeLabel(type) {
+    const labels = {
+        'accuracy': '准确度问题',
+        'feature': '功能建议',
+        'experience': '使用体验',
+        'other': '其他'
+    };
+    return labels[type] || '其他';
+}
+
+/**
+ * 保存反馈到本地存储
+ */
+function saveFeedback(feedbackData) {
+    try {
+        const key = 'meihua_user_feedback';
+        const existing = JSON.parse(localStorage.getItem(key) || '[]');
+        existing.push(feedbackData);
+        localStorage.setItem(key, JSON.stringify(existing));
+    } catch (e) {
+        console.error('保存反馈失败', e);
+    }
+}
+
+/**
+ * 显示反馈提交结果
+ */
+function showFeedbackResult(type, message) {
+    const resultDiv = document.getElementById('feedback-result');
+    if (!resultDiv) return;
+    
+    resultDiv.style.display = 'block';
+    resultDiv.innerHTML = message;
+    resultDiv.style.padding = '12px 16px';
+    resultDiv.style.borderRadius = '8px';
+    resultDiv.style.fontSize = '14px';
+    resultDiv.style.lineHeight = '1.6';
+    
+    if (type === 'success') {
+        resultDiv.style.background = 'rgba(76, 175, 80, 0.1)';
+        resultDiv.style.color = '#4CAF50';
+        resultDiv.style.border = '1px solid rgba(76, 175, 80, 0.3)';
+    } else {
+        resultDiv.style.background = 'rgba(244, 67, 54, 0.1)';
+        resultDiv.style.color = '#F44336';
+        resultDiv.style.border = '1px solid rgba(244, 67, 54, 0.3)';
+    }
+    
+    // 3秒后自动隐藏
+    setTimeout(() => {
+        resultDiv.style.display = 'none';
+    }, 5000);
+}
+
+// 导出反馈数据（供你查看）
+window.exportFeedbackData = function() {
+    try {
+        const key = 'meihua_user_feedback';
+        const data = JSON.parse(localStorage.getItem(key) || '[]');
+        
+        if (data.length === 0) {
+            console.log('暂无反馈数据');
+            return '暂无反馈数据';
+        }
+        
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `meihua-feedback-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        
+        console.log(`已导出 ${data.length} 条反馈数据`);
+        return `已导出 ${data.length} 条反馈数据`;
+    } catch (e) {
+        console.error('导出失败', e);
+        return '导出失败';
+    }
+};
