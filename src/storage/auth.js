@@ -224,28 +224,6 @@ export function logoutUser() {
     }).catch((e) => log.warn('服务器退出登录失败', e));
 }
 
-/**
- * 检查用户是否有专业版权限
- * 目前支持：管理员账户、付费用户（未来扩展）
- * @returns {boolean}
- */
-export function hasProAccess() {
-    const user = getCurrentUser();
-    if (!user) return false;
-    
-    const users = getRegisteredUsers();
-    const userData = users[user.name];
-    if (!userData) return false;
-    
-    // 管理员白名单（当前阶段仅管理员显示专业功能，避免普通用户被误判）
-    const adminList = ['admin', 'gonghg'];
-    if (adminList.includes(user.name)) return true;
-
-    // 付费体系未正式上线：先全部按普通用户处理
-    // 后续接入订阅时，再改为严格字段校验（如 status==='active' 且未过期）。
-    return false;
-}
-
 export function getUserQuota() {
     const user = getCurrentUser();
     if (!user) return getGuestQuota();
