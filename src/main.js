@@ -71,7 +71,7 @@ function isMeaningfulDivinationQuestion(rawQuestion, hasParsedHex = false) {
     
     // 清除所有常见标点符号和空格
     const normalized = question
-        .replace(/[\s,.，。!！?？~～、·…—–\-_()（）【】\[\]{}"'`]/g, '')
+        .replace(/[\s,.，。!！?？~～、·…—–\-_()（）【】{}{}"'`]/g, '')
         .toLowerCase();
 
     // 1. 拦截纯寒暄与测试短语
@@ -131,8 +131,8 @@ function isRepeatedChars(str) {
 
 // ===================== Icon Utilities =====================
 function refreshIcons() {
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
+    if (typeof window.lucide !== 'undefined') {
+        window.lucide.createIcons();
     }
 }
 
@@ -230,8 +230,8 @@ async function init() {
     document.getElementById('page-app')?.classList.remove('page-hidden');
 
     // Initialize Lucide icons
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
+    if (typeof window.lucide !== 'undefined') {
+        window.lucide.createIcons();
     }
 
     // 先用本地缓存立即恢复用户（瞬间完成，不等网络）
