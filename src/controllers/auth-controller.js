@@ -200,7 +200,10 @@ export function updateUIForAuth() {
         if (modelSelect) {
             modelSelect.innerHTML = '';
             if (isPro) {
+                // Pro 用户显示模型（暂时隐藏海外模型）
                 for (const [key, model] of Object.entries(MODEL_REGISTRY)) {
+                    // 跳过海外模型（openrouter）
+                    if (model.provider === 'openrouter') continue;
                     modelSelect.add(new Option(model.label, key));
                 }
                 modelSelect.classList.add('show-for-pro');
